@@ -50,7 +50,7 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 - Invariants throw `DomainException` subclasses (`<Context>/Exception/<Violation>.php`) → 422 `problem+json` (404 for `NotFound`) through `DomainExceptionListener`, message translated from `translations/exceptions+intl-icu.<locale>.yaml`.
 - Handlers are invokable, end with `Transaction::commit()`. No bus, no domain events: `CompleteTaskHandler` orchestrates task → reward → player → `AchievementCheck`.
 - **Owner scoping**: every user-owned aggregate (`Task`, `Project`, …) has an `owner`; Doctrine repositories/read ports filter through `Infrastructure\Persistence\Doctrine\OwnerScope` (a new query must too). Another user's id answers 404.
-- Achievements: one `AchievementRule` class per achievement (auto-tagged `app.achievement_rule`), translations for its title/description in `assets/vue/i18n/<locale>/achievements.json`.
+- Achievements: one `AchievementRule` class per achievement (auto-tagged `app.achievement_rule`, listed by `#[AsTaggedItem(priority)]`, highest first), translations for its title/description in `assets/vue/i18n/<locale>/achievements.json`.
 
 ## Accounts & security
 
