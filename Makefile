@@ -73,6 +73,7 @@ e2e-run:
 	$(EXEC) php-e2e php bin/console doctrine:database:drop --force --if-exists --env=test
 	$(EXEC) php-e2e php bin/console doctrine:database:create --env=test
 	$(EXEC) php-e2e php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=test
+	$(EXEC) php-e2e php bin/console doctrine:fixtures:load --no-interaction --env=test
 	$(DC) --profile e2e run $(NO_TTY) --rm playwright sh -c "npm ci --no-audit --no-fund && ./node_modules/.bin/playwright test $(PLAYWRIGHT_ARGS)"
 
 qa: cs phpstan deptrac test test-js e2e

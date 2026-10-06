@@ -1,0 +1,8 @@
+{
+    "title": "Inbox",
+    "subtitle": "Tasks without a project.",
+    "empty": {
+        "title": "Inbox zero",
+        "hint": "New tasks without a project land here."
+    }
+}

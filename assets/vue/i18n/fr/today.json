@@ -1,0 +1,12 @@
+{
+    "title": "Aujourd’hui",
+    "composer": "Ajouter une tâche pour aujourd’hui",
+    "left": "Plus rien à faire | 1 tâche restante | {count} tâches restantes",
+    "earlier": "Des jours précédents",
+    "moveAll": "Tout ramener à aujourd’hui",
+    "done": "Faites aujourd’hui",
+    "empty": {
+        "title": "Rien de prévu aujourd’hui",
+        "hint": "Ajoutez une tâche ci-dessus, ou utilisez le soleil d’une tâche pour l’amener ici."
+    }
+}

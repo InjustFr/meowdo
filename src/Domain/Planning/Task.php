@@ -163,7 +163,7 @@ class Task
 
     public function isOnTime(\DateTimeImmutable $today): bool
     {
-        return null !== $this->dueOn && Day::normalize($today) <= $this->dueOn;
+        return null !== $this->dueOn && Day::normalize($today) <= $this->dueOn();
     }
 
     public function id(): Ulid
@@ -193,12 +193,12 @@ class Task
 
     public function plannedOn(): ?\DateTimeImmutable
     {
-        return $this->plannedOn;
+        return null === $this->plannedOn ? null : Day::normalize($this->plannedOn);
     }
 
     public function dueOn(): ?\DateTimeImmutable
     {
-        return $this->dueOn;
+        return null === $this->dueOn ? null : Day::normalize($this->dueOn);
     }
 
     public function quadrant(): ?Quadrant

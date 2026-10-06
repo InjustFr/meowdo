@@ -1,0 +1,48 @@
+{
+    "title": "Habiller {name}",
+    "subtitle": "Dépensez les pièces gagnées en terminant vos tâches. Survolez un objet pour l’essayer.",
+    "previewLabel": "{name} fait des essayages",
+    "name": "Nom",
+    "coat": "Pelage",
+    "bought": "{name} a reçu : {item}.",
+    "renamed": "Dites bonjour à {name}.",
+    "buy": "Acheter",
+    "wear": "Porter",
+    "takeOff": "Retirer",
+    "owned": "Acquis",
+    "wearing": "Porté",
+    "unlocksAt": "Niveau {level}",
+    "slots": {
+        "hat": "Chapeaux",
+        "neckwear": "Cous",
+        "toy": "Jouets",
+        "backdrop": "Décors"
+    },
+    "items": {
+        "party-hat": "Chapeau de fête",
+        "beanie": "Bonnet",
+        "frog-hat": "Chapeau grenouille",
+        "wizard-hat": "Chapeau de sorcier",
+        "crown": "Couronne",
+        "bell-collar": "Collier à grelot",
+        "bow-tie": "Nœud papillon",
+        "bandana": "Bandana",
+        "scarf": "Écharpe",
+        "yarn-ball": "Pelote de laine",
+        "fish": "Poisson",
+        "mouse": "Souris en peluche",
+        "laser-dot": "Point laser",
+        "rooftop": "Toits la nuit",
+        "library": "Bibliothèque",
+        "aquarium": "Aquarium",
+        "sakura": "Cerisiers en fleurs"
+    },
+    "coats": {
+        "ginger": "Roux",
+        "tuxedo": "Smoking",
+        "smoke": "Gris fumée",
+        "calico": "Calico",
+        "midnight": "Noir minuit",
+        "cream": "Crème"
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "title": "Projets",
+    "new": "Nouveau projet",
+    "none": "Aucun projet",
+    "edit": "Modifier le projet",
+    "delete": "Supprimer le projet",
+    "deleted": "« {name} » supprimé. Ses tâches sont dans la boîte de réception.",
+    "deleteMessage": "« {name} » sera supprimé. Ses tâches iront dans la boîte de réception.",
+    "left": "Rien en cours | 1 tâche en cours | {count} tâches en cours",
+    "composer": "Ajouter une tâche à {name}",
+    "done": "Faites récemment",
+    "empty": {
+        "title": "Pas encore de tâche",
+        "hint": "Ajoutez la première ci-dessus."
+    },
+    "none_yet": {
+        "title": "Pas encore de projet",
+        "hint": "Créez-en un pour regrouper vos tâches par thème."
+    },
+    "editor": {
+        "newTitle": "Nouveau projet",
+        "editTitle": "Modifier le projet",
+        "name": "Nom",
+        "color": "Couleur",
+        "create": "Créer le projet"
+    },
+    "colors": {
+        "coral": "Corail",
+        "lamp": "Jaune lampe",
+        "catnip": "Vert herbe à chat",
+        "sky": "Bleu ciel",
+        "lavender": "Lavande",
+        "yarn": "Rose pelote",
+        "mint": "Menthe",
+        "ginger": "Roux"
+    }
+}

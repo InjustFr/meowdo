@@ -1,0 +1,48 @@
+{
+    "title": "Dress up {name}",
+    "subtitle": "Spend coins earned by finishing tasks. Hover an item to try it on.",
+    "previewLabel": "{name} trying things on",
+    "name": "Name",
+    "coat": "Coat",
+    "bought": "{name} got the {item}.",
+    "renamed": "Say hello to {name}.",
+    "buy": "Buy",
+    "wear": "Wear",
+    "takeOff": "Take off",
+    "owned": "Owned",
+    "wearing": "Wearing",
+    "unlocksAt": "Level {level}",
+    "slots": {
+        "hat": "Hats",
+        "neckwear": "Neckwear",
+        "toy": "Toys",
+        "backdrop": "Backdrops"
+    },
+    "items": {
+        "party-hat": "Party hat",
+        "beanie": "Beanie",
+        "frog-hat": "Frog hat",
+        "wizard-hat": "Wizard hat",
+        "crown": "Crown",
+        "bell-collar": "Bell collar",
+        "bow-tie": "Bow tie",
+        "bandana": "Bandana",
+        "scarf": "Scarf",
+        "yarn-ball": "Ball of yarn",
+        "fish": "Fish",
+        "mouse": "Toy mouse",
+        "laser-dot": "Laser dot",
+        "rooftop": "Rooftop at night",
+        "library": "Library",
+        "aquarium": "Aquarium",
+        "sakura": "Cherry blossoms"
+    },
+    "coats": {
+        "ginger": "Ginger",
+        "tuxedo": "Tuxedo",
+        "smoke": "Smoke grey",
+        "calico": "Calico",
+        "midnight": "Midnight black",
+        "cream": "Cream"
+    }
+}

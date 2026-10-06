@@ -1,0 +1,32 @@
+{
+    "title": "Matrice",
+    "subtitle": "Glissez les tâches dans un quadrant. Toutes les listes suivent cet ordre.",
+    "unsorted": "À trier",
+    "unsortedHint": "Glissez-les dans un quadrant pour les classer.",
+    "urgent": "Urgent",
+    "notUrgent": "Pas urgent",
+    "important": "Important",
+    "notImportant": "Pas important",
+    "quadrants": {
+        "do_first": {
+            "name": "Bondir",
+            "plain": "Urgent et important",
+            "advice": "à faire tout de suite"
+        },
+        "schedule": {
+            "name": "Guetter",
+            "plain": "Important, pas urgent",
+            "advice": "à planifier"
+        },
+        "delegate": {
+            "name": "Chasser d’un coup de patte",
+            "plain": "Urgent, pas important",
+            "advice": "à déléguer ou expédier"
+        },
+        "eliminate": {
+            "name": "Faire la sieste",
+            "plain": "Ni l’un ni l’autre",
+            "advice": "à abandonner ou garder pour la fin"
+        }
+    }
+}

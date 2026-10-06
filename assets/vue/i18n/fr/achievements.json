@@ -1,0 +1,58 @@
+{
+    "title": "Succès",
+    "progress": "{unlocked} sur {total} débloqués",
+    "bestStreak": "Meilleure série : aucune | Meilleure série : 1 jour | Meilleure série : {count} jours",
+    "unlockedOn": "Débloqué le {date}",
+    "first_paw": {
+        "title": "Première patte",
+        "description": "Terminez votre première tâche."
+    },
+    "ten_tasks": {
+        "title": "Échauffement",
+        "description": "Terminez 10 tâches."
+    },
+    "hundred_tasks": {
+        "title": "Club des cent pattes",
+        "description": "Terminez 100 tâches."
+    },
+    "five_hundred_tasks": {
+        "title": "Chasseur légendaire",
+        "description": "Terminez 500 tâches."
+    },
+    "streak_3": {
+        "title": "Trois jours de ronron",
+        "description": "Terminez quelque chose 3 jours de suite."
+    },
+    "streak_7": {
+        "title": "Une semaine de moustaches",
+        "description": "Terminez quelque chose 7 jours de suite."
+    },
+    "streak_30": {
+        "title": "Neuf vies de concentration",
+        "description": "Terminez quelque chose 30 jours de suite."
+    },
+    "pounce_10": {
+        "title": "Bond rapide",
+        "description": "Terminez 10 tâches Bondir (urgentes et importantes)."
+    },
+    "stalk_25": {
+        "title": "Chasseur patient",
+        "description": "Terminez 25 tâches Guetter (importantes, pas urgentes)."
+    },
+    "matrix_sorter": {
+        "title": "Chat bien rangé",
+        "description": "Placez 20 tâches dans la matrice."
+    },
+    "first_purchase": {
+        "title": "Petit plaisir",
+        "description": "Achetez votre premier objet à la boutique."
+    },
+    "level_5": {
+        "title": "Chat aguerri",
+        "description": "Atteignez le niveau 5."
+    },
+    "level_10": {
+        "title": "Chat suprême",
+        "description": "Atteignez le niveau 10."
+    }
+}

@@ -23,7 +23,7 @@ final readonly class Streak
     public function record(\DateTimeImmutable $day): self
     {
         $day = Day::normalize($day);
-        if (null !== $this->lastActiveOn && $this->lastActiveOn >= $day) {
+        if (null !== $this->lastActiveOn && Day::normalize($this->lastActiveOn) >= $day) {
             return $this;
         }
         $current = null !== $this->lastActiveOn && 1 === Day::daysBetween($this->lastActiveOn, $day) ? $this->current + 1 : 1;

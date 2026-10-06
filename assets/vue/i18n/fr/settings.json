@@ -1,0 +1,12 @@
+{
+    "title": "Réglages",
+    "preferences": "Préférences",
+    "timezone": "Fuseau horaire",
+    "timezoneHint": "Décide quand votre journée commence et se termine.",
+    "timezoneSaved": "Fuseau horaire enregistré.",
+    "language": "Langue",
+    "sound": "Son de bongo quand une tâche est faite",
+    "account": "Compte",
+    "logout": "Se déconnecter",
+    "credits": "Crédits et licences"
+}

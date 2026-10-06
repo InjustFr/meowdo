@@ -1,0 +1,37 @@
+{
+    "title": "Projects",
+    "new": "New project",
+    "none": "No project",
+    "edit": "Edit project",
+    "delete": "Delete project",
+    "deleted": "“{name}” deleted. Its tasks moved to the inbox.",
+    "deleteMessage": "“{name}” will be deleted. Its tasks move to the inbox.",
+    "left": "Nothing open | 1 open task | {count} open tasks",
+    "composer": "Add a task to {name}",
+    "done": "Done recently",
+    "empty": {
+        "title": "No tasks yet",
+        "hint": "Add the first one above."
+    },
+    "none_yet": {
+        "title": "No projects yet",
+        "hint": "Create one to group tasks by theme."
+    },
+    "editor": {
+        "newTitle": "New project",
+        "editTitle": "Edit project",
+        "name": "Name",
+        "color": "Colour",
+        "create": "Create project"
+    },
+    "colors": {
+        "coral": "Coral",
+        "lamp": "Lamp yellow",
+        "catnip": "Catnip green",
+        "sky": "Sky blue",
+        "lavender": "Lavender",
+        "yarn": "Yarn pink",
+        "mint": "Mint",
+        "ginger": "Ginger"
+    }
+}

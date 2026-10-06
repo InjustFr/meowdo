@@ -1,0 +1,42 @@
+{
+    "complete": "Complete “{title}”",
+    "reopen": "Reopen “{title}”",
+    "addToToday": "Add to today",
+    "removeFromToday": "Remove from today",
+    "due": "Due {day}",
+    "hasNotes": "Has notes",
+    "deleted": "“{title}” deleted.",
+    "days": {
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "yesterday": "Yesterday"
+    },
+    "composer": {
+        "label": "New task",
+        "placeholder": "Add a task",
+        "submit": "Add"
+    },
+    "plan": {
+        "open": "Plan",
+        "title": "Do it…",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "next_week": "Next week",
+        "pick": "Pick a date",
+        "none": "Not planned"
+    },
+    "menu": {
+        "open": "More for “{title}”",
+        "edit": "Edit"
+    },
+    "editor": {
+        "title": "Edit task",
+        "name": "Title",
+        "notes": "Notes",
+        "project": "Project",
+        "deadline": "Deadline",
+        "matrix": "Matrix",
+        "delete": "Delete task",
+        "deleteMessage": "“{title}” will be deleted. XP already earned is kept."
+    }
+}

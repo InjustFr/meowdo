@@ -1,0 +1,42 @@
+{
+    "complete": "Terminer « {title} »",
+    "reopen": "Rouvrir « {title} »",
+    "addToToday": "Ajouter à aujourd’hui",
+    "removeFromToday": "Retirer d’aujourd’hui",
+    "due": "Échéance {day}",
+    "hasNotes": "Contient des notes",
+    "deleted": "« {title} » supprimée.",
+    "days": {
+        "today": "Aujourd’hui",
+        "tomorrow": "Demain",
+        "yesterday": "Hier"
+    },
+    "composer": {
+        "label": "Nouvelle tâche",
+        "placeholder": "Ajouter une tâche",
+        "submit": "Ajouter"
+    },
+    "plan": {
+        "open": "Planifier",
+        "title": "À faire…",
+        "today": "Aujourd’hui",
+        "tomorrow": "Demain",
+        "next_week": "La semaine prochaine",
+        "pick": "Choisir une date",
+        "none": "Non planifiée"
+    },
+    "menu": {
+        "open": "Plus d’options pour « {title} »",
+        "edit": "Modifier"
+    },
+    "editor": {
+        "title": "Modifier la tâche",
+        "name": "Titre",
+        "notes": "Notes",
+        "project": "Projet",
+        "deadline": "Échéance",
+        "matrix": "Matrice",
+        "delete": "Supprimer la tâche",
+        "deleteMessage": "« {title} » sera supprimée. L’XP déjà gagnée est conservée."
+    }
+}

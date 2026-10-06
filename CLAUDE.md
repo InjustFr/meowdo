@@ -64,7 +64,7 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 - `vue/layouts/AppShell.vue` keeps the rail/tab bar and the **CatDesk** mounted across routes. Pages are thin orchestrators.
 - Data goes through `composables/useApi.js` (`load` = stale-while-revalidate, writes send `X-Refresh`, see MossyTrunk). Task ordering on the client uses `vue/tasks/compareTasks.js`, which must match `DoctrineTaskQueries::ordered()` (Vitest covers it).
 - Interactive widgets on **Reka UI**; icons **Lucide** (`size` in rem); no native select/checkbox/date inputs.
-- CSS: BEM, `<style scoped>`, tokens in `assets/styles/tokens.css`, **rem only**. Dark theme first ("midnight desk": blue-violet night, warm lamp light). Fonts: Bagel Fat One (display), Atkinson Hyperlegible Next (text), self-hosted via `@fontsource`.
+- CSS: BEM, `<style scoped>`, tokens in `assets/styles/tokens.css`, **rem only** (except inside SVG drawings such as `CatSvg.vue`, whose transforms and font sizes are in viewBox user units). Dark theme first ("midnight desk": blue-violet night, warm lamp light). Fonts: Bagel Fat One (display), Atkinson Hyperlegible Next (text), self-hosted via `@fontsource`.
 - **Never hardcode a user-visible string**: vue-i18n keys from `assets/vue/i18n/<locale>/<namespace>.json` (same keys in every locale).
 - Motion: one bold moment — the cat slapping the bongo on completion. `prefers-reduced-motion` disables it.
 - Assets: hand-built SVG only (cat, cosmetics), no AI-generated images; every third-party asset is listed with its licence in `docs/assets.md` and on `/credits`.

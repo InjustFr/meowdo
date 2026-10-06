@@ -1,0 +1,17 @@
+{
+    "deskLabel": "{name} at your desk",
+    "level": "Level {level}",
+    "xpProgress": "Progress to the next level",
+    "toNextLevel": "{xp} XP to level {level}",
+    "coins": "Coins",
+    "streak": "Streak",
+    "days": "no streak | 1 day | {count} days",
+    "dressUp": "Dress up {name}",
+    "burstXp": "+{xp} XP",
+    "burstCoins": "+{coins} coins",
+    "mood": {
+        "purring": "{name} is purring",
+        "idle": "{name} is waiting for a task",
+        "sleepy": "{name} is dozing off"
+    }
+}

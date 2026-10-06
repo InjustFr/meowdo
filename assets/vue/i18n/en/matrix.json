@@ -1,0 +1,32 @@
+{
+    "title": "Matrix",
+    "subtitle": "Drag tasks into a quadrant. Every list follows this order.",
+    "unsorted": "Unsorted",
+    "unsortedHint": "Drag these into a quadrant to rank them.",
+    "urgent": "Urgent",
+    "notUrgent": "Not urgent",
+    "important": "Important",
+    "notImportant": "Not important",
+    "quadrants": {
+        "do_first": {
+            "name": "Pounce",
+            "plain": "Urgent and important",
+            "advice": "do it now"
+        },
+        "schedule": {
+            "name": "Stalk",
+            "plain": "Important, not urgent",
+            "advice": "plan it"
+        },
+        "delegate": {
+            "name": "Swat away",
+            "plain": "Urgent, not important",
+            "advice": "hand it off or keep it short"
+        },
+        "eliminate": {
+            "name": "Nap on it",
+            "plain": "Neither",
+            "advice": "drop it or do it last"
+        }
+    }
+}

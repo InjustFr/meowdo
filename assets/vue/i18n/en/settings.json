@@ -1,0 +1,12 @@
+{
+    "title": "Settings",
+    "preferences": "Preferences",
+    "timezone": "Time zone",
+    "timezoneHint": "Decides when your day starts and ends.",
+    "timezoneSaved": "Time zone saved.",
+    "language": "Language",
+    "sound": "Bongo sound when a task is done",
+    "account": "Account",
+    "logout": "Sign out",
+    "credits": "Credits and licences"
+}

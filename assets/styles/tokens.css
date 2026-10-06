@@ -1,0 +1,79 @@
+:root {
+    --night: #1d1a33;
+    --night-deep: #16142a;
+    --slate: #2a2747;
+    --slate-raised: #353159;
+    --moonmilk: #eee8f7;
+    --dusk: #b9b0d0;
+    --dusk-dim: #8a82a8;
+    --lamp: #ffc857;
+    --lamp-deep: #e9a92c;
+    --catnip: #7bd389;
+    --yarn: #ff8fa3;
+    --coral: #ff6b6b;
+    --sky: #6ec5ff;
+    --lavender: #9a8fbf;
+
+    --color-bg: var(--night);
+    --color-rail: var(--night-deep);
+    --color-surface: var(--slate);
+    --color-raised: var(--slate-raised);
+    --color-text: var(--moonmilk);
+    --color-muted: var(--dusk);
+    --color-subtle: var(--dusk-dim);
+    --color-line: color-mix(in oklch, var(--moonmilk) 10%, transparent);
+    --color-line-strong: color-mix(in oklch, var(--moonmilk) 20%, transparent);
+    --color-hover: color-mix(in oklch, var(--moonmilk) 5%, transparent);
+    --color-accent: var(--lamp);
+    --color-accent-strong: var(--lamp-deep);
+    --color-accent-soft: color-mix(in oklch, var(--lamp) 16%, transparent);
+    --color-on-accent: var(--night);
+    --color-success: var(--catnip);
+    --color-success-soft: color-mix(in oklch, var(--catnip) 16%, transparent);
+    --color-danger: var(--coral);
+    --color-danger-soft: color-mix(in oklch, var(--coral) 16%, transparent);
+    --color-backdrop: rgb(10 8 24 / 65%);
+
+    --quadrant-do-first: var(--coral);
+    --quadrant-schedule: var(--lamp);
+    --quadrant-delegate: var(--sky);
+    --quadrant-eliminate: var(--lavender);
+    --quadrant-unsorted: #4a4570;
+
+    --project-coral: #ff7a6b;
+    --project-lamp: #ffc857;
+    --project-catnip: #7bd389;
+    --project-sky: #6ec5ff;
+    --project-lavender: #a99ce0;
+    --project-yarn: #ff8fa3;
+    --project-mint: #5fd4c4;
+    --project-ginger: #f2994a;
+
+    --lamp-glow: radial-gradient(circle at 70% 0%, color-mix(in oklch, var(--lamp) 22%, transparent), transparent 60%);
+
+    --radius-row: 0.625rem;
+    --radius-panel: 1.25rem;
+    --radius-control: 0.75rem;
+    --radius-pill: 62.4375rem;
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+
+    --font-body: "Atkinson Hyperlegible Next Variable", "Atkinson Hyperlegible Next", system-ui, sans-serif;
+    --font-display: "Bagel Fat One", "Cooper Black", Georgia, serif;
+    --font-size: 1rem;
+    --font-size-md: 0.9375rem;
+    --font-size-sm: 0.8125rem;
+    --font-size-xs: 0.75rem;
+
+    --rail-width: 15rem;
+    --desk-width: 21rem;
+    --shadow: 0 0.75rem 2rem rgb(6 4 18 / 45%);
+    --transition: 160ms ease;
+    --focus-ring: 0 0 0 0.1875rem color-mix(in oklch, var(--lamp) 45%, transparent);
+}

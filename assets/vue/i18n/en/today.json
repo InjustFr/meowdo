@@ -1,0 +1,12 @@
+{
+    "title": "Today",
+    "composer": "Add a task for today",
+    "left": "Nothing left | 1 task left | {count} tasks left",
+    "earlier": "From earlier",
+    "moveAll": "Move all to today",
+    "done": "Done today",
+    "empty": {
+        "title": "Nothing planned today",
+        "hint": "Add a task above, or use the sun on any task to bring it here."
+    }
+}

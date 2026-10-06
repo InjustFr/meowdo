@@ -1,0 +1,16 @@
+{
+    "name": "Meowdo",
+    "short_name": "Meowdo",
+    "description": "A cat-themed task manager: plan your day, sort tasks in the Eisenhower matrix and keep your cat purring.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#1d1a33",
+    "theme_color": "#1d1a33",
+    "icons": [
+        { "src": "/icons/meowdo.svg", "sizes": "any", "type": "image/svg+xml" },
+        { "src": "/icons/meowdo-192.png", "sizes": "192x192", "type": "image/png" },
+        { "src": "/icons/meowdo-512.png", "sizes": "512x512", "type": "image/png" },
+        { "src": "/icons/meowdo-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ]
+}

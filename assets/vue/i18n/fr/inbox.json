@@ -1,0 +1,8 @@
+{
+    "title": "Boîte de réception",
+    "subtitle": "Les tâches sans projet.",
+    "empty": {
+        "title": "Boîte vide",
+        "hint": "Les nouvelles tâches sans projet arrivent ici."
+    }
+}
