@@ -52,4 +52,3 @@ const date = computed({
     </DatePickerRoot>
 </template>
 
-<style src="../../../styles/calendar.css"></style>

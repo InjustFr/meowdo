@@ -97,4 +97,3 @@ const SHORTCUTS = [
 .plan-menu__calendar { padding: var(--space-2); }
 </style>
 
-<style src="../../../styles/calendar.css"></style>
