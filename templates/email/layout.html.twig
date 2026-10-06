@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="{{ locale }}">
+<body style="margin:0;padding:2rem;background:#1D1A33;font-family:'Atkinson Hyperlegible Next',Arial,sans-serif;color:#EEE8F7;">
+    <div style="max-width:32rem;margin:0 auto;background:#2A2747;border-radius:1rem;padding:2rem;">
+        <p style="font-family:'Bagel Fat One',Georgia,serif;font-size:1.75rem;margin:0 0 1.5rem;color:#FFC857;">Meowdo</p>
+        {% block content %}{% endblock %}
+        <p style="margin:2rem 0 0;font-size:0.8rem;color:#B9B0D0;">
+            {{ 'layout.copy_link'|trans({}, 'emails') }}<br>
+            <a href="{{ url }}" style="color:#FFC857;word-break:break-all;">{{ url }}</a>
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+greeting: 'Bonjour {name},'
+expiry_format: 'd/m/Y à H:i'
+layout:
+    copy_link: 'Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :'
+invitation:
+    subject: 'Votre chat vous attend sur Meowdo'
+    intro: 'Un compte a été créé pour vous sur Meowdo. Un chat s’est déjà installé à votre bureau.'
+    instructions: 'Choisissez votre mot de passe pour vous connecter :'
+    button: 'Choisir mon mot de passe'
+    expiry: 'Ce lien est valable jusqu’au {expiresAt}.'
+password_reset:
+    subject: 'Réinitialisation de votre mot de passe Meowdo'
+    intro: 'Vous avez demandé à réinitialiser votre mot de passe Meowdo.'
+    button: 'Choisir un nouveau mot de passe'
+    expiry: 'Ce lien est valable une heure, jusqu’au {expiresAt}. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail : votre mot de passe reste inchangé.'

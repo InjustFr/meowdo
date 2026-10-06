@@ -1,0 +1,21 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+
+    session:
+        handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+
+    csrf_protection: true
+
+    rate_limiter:
+        forgot_password:
+            policy: sliding_window
+            limit: 3
+            interval: '15 minutes'
+
+when@test:
+    framework:
+        test: true
+        cache:
+            app: cache.adapter.array
+        session:
+            storage_factory_id: App\Tests\Support\EndToEndSessionStorageFactory

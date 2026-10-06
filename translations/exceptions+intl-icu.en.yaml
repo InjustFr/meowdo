@@ -1,0 +1,30 @@
+shared:
+    not_found: 'This {subject, select, task {task} project {project} player {player} cat {cat} other {item}} no longer exists.'
+    invalid_day: '“{day}” is not a valid date.'
+user:
+    invalid_email: '“{email}” is not a valid email address.'
+    empty_display_name: 'Tell us what to call you.'
+    unknown_timezone: 'Unknown time zone “{timezone}”.'
+    email_taken: 'An account already uses {email}. Sign in instead.'
+project:
+    empty_name: 'Give the project a name.'
+    duplicate_name: 'You already have a project called “{name}”.'
+task:
+    empty_title: 'Give the task a title.'
+    already_done: '“{title}” is already done.'
+    not_done: '“{title}” is not done yet.'
+    not_open: '“{title}” is done: reopen it before moving it in the matrix.'
+    foreign_project: 'This project belongs to someone else.'
+    missing_plan_date: 'Pick a date on the calendar.'
+game:
+    not_enough_coins: 'You need {price} coins for this, you have {coins}.'
+    level_too_low: 'Reach level {level} to unlock this.'
+    unknown_cosmetic: 'This item is not in the shop.'
+    already_owned: 'Your cat already owns this.'
+    not_owned: 'Buy this item in the shop first.'
+    empty_cat_name: 'Your cat needs a name.'
+identity:
+    password_token_already_used: 'This link has already been used.'
+    password_token_expired: 'This link has expired. Request a new one from “Forgot your password?”.'
+    password_too_short: 'The password must contain at least {min} characters.'
+    unknown_password_token: 'This link is not valid.'

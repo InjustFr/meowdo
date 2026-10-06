@@ -1,0 +1,30 @@
+shared:
+    not_found: '{subject, select, task {Cette tâche n’existe} project {Ce projet n’existe} player {Ce profil de joueur n’existe} cat {Ce chat n’existe} other {Cet élément n’existe}} plus.'
+    invalid_day: '« {day} » n’est pas une date valide.'
+user:
+    invalid_email: '« {email} » n’est pas une adresse e-mail valide.'
+    empty_display_name: 'Dites-nous comment vous appeler.'
+    unknown_timezone: 'Fuseau horaire inconnu « {timezone} ».'
+    email_taken: 'Un compte utilise déjà {email}. Connectez-vous plutôt.'
+project:
+    empty_name: 'Donnez un nom au projet.'
+    duplicate_name: 'Vous avez déjà un projet « {name} ».'
+task:
+    empty_title: 'Donnez un titre à la tâche.'
+    already_done: '« {title} » est déjà faite.'
+    not_done: '« {title} » n’est pas encore faite.'
+    not_open: '« {title} » est faite : rouvrez-la avant de la déplacer dans la matrice.'
+    foreign_project: 'Ce projet appartient à quelqu’un d’autre.'
+    missing_plan_date: 'Choisissez une date dans le calendrier.'
+game:
+    not_enough_coins: 'Il vous faut {price} pièces, vous en avez {coins}.'
+    level_too_low: 'Atteignez le niveau {level} pour débloquer cet objet.'
+    unknown_cosmetic: 'Cet objet n’est pas dans la boutique.'
+    already_owned: 'Votre chat possède déjà cet objet.'
+    not_owned: 'Achetez d’abord cet objet dans la boutique.'
+    empty_cat_name: 'Votre chat a besoin d’un nom.'
+identity:
+    password_token_already_used: 'Ce lien a déjà été utilisé.'
+    password_token_expired: 'Ce lien a expiré. Demandez-en un nouveau depuis « Mot de passe oublié ? ».'
+    password_too_short: 'Le mot de passe doit contenir au moins {min} caractères.'
+    unknown_password_token: 'Ce lien n’est pas valide.'
