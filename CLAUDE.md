@@ -32,6 +32,7 @@ make test-js         # Vitest
 make deptrac / make cs / make cs-fix / make phpstan   # keep all at 0
 make e2e             # Playwright against php-e2e (APP_ENV=test)
 docker compose exec php php bin/console app:user:create <email> --name=<name> --cat=<cat name> --coat=<coat> --timezone=Europe/Paris
+docker compose exec php php bin/console app:user:invite <email>   # resend the invitation
 ```
 
 ## Backend architecture (Onion) — `src/`

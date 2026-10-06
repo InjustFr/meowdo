@@ -6,6 +6,8 @@ user:
     empty_display_name: 'Tell us what to call you.'
     unknown_timezone: 'Unknown time zone “{timezone}”.'
     email_taken: 'An account already uses {email}. Sign in instead.'
+    unknown_account: 'No account uses {email}.'
+    already_active: '{email} has already chosen a password: use “Forgot your password?” instead.'
 project:
     empty_name: 'Give the project a name.'
     duplicate_name: 'You already have a project called “{name}”.'

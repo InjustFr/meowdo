@@ -9,13 +9,16 @@ use App\Application\Identity\ChooseLanguage\ChooseLanguageHandler;
 use App\Application\Identity\CreateUser\CreateUser;
 use App\Application\Identity\CreateUser\CreateUserHandler;
 use App\Application\Identity\RequestPasswordReset\RequestPasswordResetHandler;
+use App\Application\Identity\ResendInvitation\ResendInvitationHandler;
 use App\Application\Identity\SetPassword\SetPasswordHandler;
 use App\Domain\Gamification\CatRepository;
 use App\Domain\Gamification\Coat;
 use App\Domain\Gamification\PlayerRepository;
+use App\Domain\Identity\Exception\AccountAlreadyActive;
 use App\Domain\Identity\Exception\EmailAlreadyTaken;
 use App\Domain\Identity\Exception\PasswordTokenExpired;
 use App\Domain\Identity\Exception\PasswordTooShort;
+use App\Domain\Identity\Exception\UnknownAccount;
 use App\Domain\Identity\Exception\UnknownPasswordToken;
 use App\Domain\Identity\Exception\UnknownTimezone;
 use App\Domain\Identity\Language;
@@ -134,6 +137,36 @@ final class AccountUseCasesTest extends KernelTestCase
         self::getContainer()->get(ChooseLanguageHandler::class)(Language::French);
 
         self::assertSame(['Asia/Tokyo', Language::French], [$user->timezone(), $user->language()]);
+    }
+
+    public function testResendingAnInvitationReplacesTheEarlierLink(): void
+    {
+        $this->createAccount('louis@example.com');
+        $firstToken = $this->tokenFromLastEmail();
+
+        self::getContainer()->get(ResendInvitationHandler::class)('Louis@Example.com');
+
+        self::assertEmailCount(2);
+        $secondToken = $this->tokenFromLastEmail();
+        self::assertNotSame($firstToken, $secondToken);
+        $this->expectException(UnknownPasswordToken::class);
+        self::getContainer()->get(SetPasswordHandler::class)($firstToken, 'a long enough password');
+    }
+
+    public function testAnInvitationCannotBeResentToAnUnknownEmail(): void
+    {
+        $this->expectException(UnknownAccount::class);
+
+        self::getContainer()->get(ResendInvitationHandler::class)('nobody@example.com');
+    }
+
+    public function testAnInvitationCannotBeResentOnceThePasswordIsChosen(): void
+    {
+        $this->createAccount('louis@example.com');
+        self::getContainer()->get(SetPasswordHandler::class)($this->tokenFromLastEmail(), 'a long enough password');
+
+        $this->expectException(AccountAlreadyActive::class);
+        self::getContainer()->get(ResendInvitationHandler::class)('louis@example.com');
     }
 
     private function createAccount(string $email): User

@@ -48,6 +48,7 @@ There is no sign-up page. Create an account (it gets its player profile and cat)
 
 ```bash
 docker compose exec app php bin/console app:user:create you@example.com --name=You --cat=Mochi --coat=ginger --timezone=Europe/Paris
+docker compose exec app php bin/console app:user:invite you@example.com   # resend a fresh invitation (earlier link stops working)
 ```
 
 ## Reverse proxy
