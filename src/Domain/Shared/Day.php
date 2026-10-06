@@ -37,7 +37,7 @@ final class Day
 
     public static function startOf(\DateTimeImmutable $day, \DateTimeZone $zone): \DateTimeImmutable
     {
-        return new \DateTimeImmutable($day->format(self::FORMAT).' 00:00:00', $zone);
+        return new \DateTimeImmutable($day->format(self::FORMAT).' 00:00:00', $zone)->setTimezone(new \DateTimeZone(date_default_timezone_get()));
     }
 
     public static function daysBetween(\DateTimeImmutable $from, \DateTimeImmutable $to): int

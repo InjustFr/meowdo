@@ -12,6 +12,7 @@ use App\Infrastructure\Persistence\Doctrine\OwnerScope;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Component\Uid\Ulid;
 
 final readonly class DoctrineTaskQueries implements TaskQueries
 {
@@ -81,7 +82,7 @@ final readonly class DoctrineTaskQueries implements TaskQueries
         $counts = [];
         foreach ($rows as $row) {
             if (\is_array($row) && isset($row['project'], $row['open']) && \is_scalar($row['project']) && is_numeric($row['open'])) {
-                $counts[(string) $row['project']] = (int) $row['open'];
+                $counts[(string) Ulid::fromString((string) $row['project'])] = (int) $row['open'];
             }
         }
 
