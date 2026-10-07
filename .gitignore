@@ -40,3 +40,5 @@ phpstan.neon
 /e2e/shots/
 ###< e2e ###
 /ci-build.tgz
+
+/.claude/worktrees/
