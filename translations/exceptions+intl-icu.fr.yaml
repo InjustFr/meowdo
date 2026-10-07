@@ -18,6 +18,8 @@ task:
     not_open: '« {title} » est faite : rouvrez-la avant de la déplacer dans la matrice.'
     foreign_project: 'Ce projet appartient à quelqu’un d’autre.'
     missing_plan_date: 'Choisissez une date dans le calendrier.'
+    invalid_recurrence: 'Une tâche se répète tous les 1 à 365 jours, semaines, mois ou années, pas tous les {interval}.'
+    done_cannot_repeat: '« {title} » est faite : rouvrez-la avant de la faire se répéter.'
 game:
     not_enough_coins: 'Il vous faut {price} pièces, vous en avez {coins}.'
     level_too_low: 'Atteignez le niveau {level} pour débloquer cet objet.'

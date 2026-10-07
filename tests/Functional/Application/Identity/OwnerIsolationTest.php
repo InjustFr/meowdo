@@ -79,7 +79,7 @@ final class OwnerIsolationTest extends KernelTestCase
     {
         yield 'complete task' => [static fn (Ulid $task): mixed => self::getContainer()->get(CompleteTaskHandler::class)($task), 'task'];
         yield 'reopen task' => [static fn (Ulid $task): mixed => self::getContainer()->get(ReopenTaskHandler::class)($task), 'task'];
-        yield 'edit task' => [static fn (Ulid $task): mixed => self::getContainer()->get(EditTaskHandler::class)(new EditTask($task, 'Mine now', null, null, null)), 'task'];
+        yield 'edit task' => [static fn (Ulid $task): mixed => self::getContainer()->get(EditTaskHandler::class)(new EditTask($task, 'Mine now', null, null, null, null)), 'task'];
         yield 'plan task' => [static fn (Ulid $task): mixed => self::getContainer()->get(PlanTaskHandler::class)(new PlanTask($task, PlanShortcut::Today)), 'task'];
         yield 'classify task' => [static fn (Ulid $task): mixed => self::getContainer()->get(ClassifyTaskHandler::class)(new ClassifyTask($task, Quadrant::Eliminate)), 'task'];
         yield 'reorder task' => [static function (Ulid $task): void {

@@ -37,6 +37,24 @@
         "deadline": "Échéance",
         "matrix": "Matrice",
         "delete": "Supprimer la tâche",
-        "deleteMessage": "« {title} » sera supprimée. L’XP déjà gagnée est conservée."
+        "deleteMessage": "« {title} » sera supprimée. L’XP déjà gagnée est conservée.",
+        "repeat": "Répéter"
+    },
+    "repeat": {
+        "never": "Jamais",
+        "interval": "Nombre de jours, semaines, mois ou années",
+        "invalid": "Choisissez un nombre entre 1 et 365.",
+        "units": {
+            "day": "jour | jours",
+            "week": "semaine | semaines",
+            "month": "mois | mois",
+            "year": "an | ans"
+        },
+        "every": {
+            "day": "Chaque jour | Tous les {n} jours",
+            "week": "Chaque semaine | Toutes les {n} semaines",
+            "month": "Chaque mois | Tous les {n} mois",
+            "year": "Chaque année | Tous les {n} ans"
+        }
     }
 }

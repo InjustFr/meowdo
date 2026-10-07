@@ -6,6 +6,7 @@ namespace App\Fixtures\Factory;
 
 use App\Domain\Planning\Project;
 use App\Domain\Planning\Quadrant;
+use App\Domain\Planning\Recurrence;
 use App\Domain\Planning\Task;
 use Zenstruck\Foundry\Object\Instantiator;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
@@ -36,6 +37,11 @@ final class TaskFactory extends PersistentObjectFactory
     public function classified(Quadrant $quadrant, int $rank = 0): static
     {
         return $this->afterInstantiate(static fn (Task $task) => $task->classify($quadrant, $rank));
+    }
+
+    public function repeating(Recurrence $recurrence): static
+    {
+        return $this->afterInstantiate(static fn (Task $task) => $task->repeat($recurrence));
     }
 
     protected function defaults(): array

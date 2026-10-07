@@ -19,6 +19,6 @@ final class EditTaskController extends AbstractController
 {
     public function __invoke(Ulid $id, #[MapRequestPayload] EditTaskPayload $payload, EditTaskHandler $editTask): JsonResponse
     {
-        return $this->json($editTask(new EditTask($id, $payload->title, $payload->notes, $payload->projectId, DayParameter::of($payload->dueOn))));
+        return $this->json($editTask(new EditTask($id, $payload->title, $payload->notes, $payload->projectId, DayParameter::of($payload->dueOn), $payload->recurrence?->toRecurrence())));
     }
 }

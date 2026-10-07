@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Planning\EditTask;
 
+use App\Domain\Planning\Recurrence;
 use Symfony\Component\Uid\Ulid;
 
 final readonly class EditTask
@@ -14,6 +15,7 @@ final readonly class EditTask
         public ?string $notes,
         public ?Ulid $projectId,
         public ?\DateTimeImmutable $dueOn,
+        public ?Recurrence $recurrence,
     ) {
     }
 }

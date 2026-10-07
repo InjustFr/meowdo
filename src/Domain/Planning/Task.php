@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Planning;
 
 use App\Domain\Identity\User;
+use App\Domain\Planning\Exception\DoneTaskCannotRepeat;
 use App\Domain\Planning\Exception\EmptyTaskTitle;
 use App\Domain\Planning\Exception\ProjectOfAnotherOwner;
 use App\Domain\Planning\Exception\TaskAlreadyDone;
@@ -52,6 +53,12 @@ class Task
 
     #[ORM\Column]
     private int $rank = 0;
+
+    #[ORM\Column(length: 8, nullable: true, enumType: RecurrenceUnit::class)]
+    private ?RecurrenceUnit $recurrenceUnit = null;
+
+    #[ORM\Column(type: 'smallint', nullable: true)]
+    private ?int $recurrenceInterval = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $completedAt = null;
@@ -128,6 +135,51 @@ class Task
     {
         $this->quadrant = null;
         $this->rank = 0;
+    }
+
+    public function repeat(?Recurrence $recurrence): void
+    {
+        if (null !== $recurrence && $this->isDone()) {
+            throw new DoneTaskCannotRepeat($this->title);
+        }
+        $this->recurrenceUnit = $recurrence?->unit;
+        $this->recurrenceInterval = $recurrence?->interval;
+    }
+
+    public function nextOccurrence(\DateTimeImmutable $today, \DateTimeImmutable $now): ?self
+    {
+        $recurrence = $this->recurrence();
+        if (null === $recurrence) {
+            return null;
+        }
+        if (!$this->isDone()) {
+            throw new TaskNotDone($this->title);
+        }
+
+        $today = Day::normalize($today);
+        $plannedOn = $this->plannedOn();
+        $dueOn = $this->dueOn();
+        $anchor = $plannedOn ?? $dueOn ?? $today;
+        $nextDay = $anchor;
+        do {
+            $nextDay = $recurrence->next($nextDay);
+        } while ($nextDay <= $today);
+
+        $occurrence = new self($this->owner, $this->title, $now);
+        $occurrence->notes = $this->notes;
+        $occurrence->project = $this->project;
+        $occurrence->quadrant = $this->quadrant;
+        $occurrence->rank = $this->rank;
+        if (null !== $plannedOn || null === $dueOn) {
+            $occurrence->plannedOn = $nextDay;
+        }
+        if (null !== $dueOn) {
+            $occurrence->dueOn = $dueOn->modify(\sprintf('%+d days', Day::daysBetween($anchor, $nextDay)));
+        }
+        $occurrence->repeat($recurrence);
+        $this->repeat(null);
+
+        return $occurrence;
     }
 
     public function complete(\DateTimeImmutable $now): void
@@ -209,6 +261,15 @@ class Task
     public function rank(): int
     {
         return $this->rank;
+    }
+
+    public function recurrence(): ?Recurrence
+    {
+        if (null === $this->recurrenceUnit || null === $this->recurrenceInterval) {
+            return null;
+        }
+
+        return new Recurrence($this->recurrenceInterval, $this->recurrenceUnit);
     }
 
     public function completedAt(): ?\DateTimeImmutable

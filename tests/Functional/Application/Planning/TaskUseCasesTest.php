@@ -14,12 +14,15 @@ use App\Application\Planning\PlanTask\PlanTaskHandler;
 use App\Application\Planning\ReopenTask\ReopenTaskHandler;
 use App\Application\Planning\ShowMatrix\ShowMatrixHandler;
 use App\Application\Planning\TaskView;
+use App\Domain\Planning\Exception\DoneTaskCannotRepeat;
 use App\Domain\Planning\Exception\EmptyTaskTitle;
 use App\Domain\Planning\Exception\MissingPlanDate;
 use App\Domain\Planning\Exception\TaskAlreadyDone;
 use App\Domain\Planning\Exception\TaskNotDone;
 use App\Domain\Planning\PlanShortcut;
 use App\Domain\Planning\Quadrant;
+use App\Domain\Planning\Recurrence;
+use App\Domain\Planning\RecurrenceUnit;
 use App\Domain\Shared\Day;
 use App\Tests\Support\ActsAsUser;
 use App\Tests\Support\FreezesClock;
@@ -125,6 +128,27 @@ final class TaskUseCasesTest extends KernelTestCase
         self::assertSame([null, null, null], [$cleared->notes, $cleared->projectId, $cleared->dueOn]);
     }
 
+    public function testEditTaskRecurrence(): void
+    {
+        $task = self::createTask('Water the ferns', PlanShortcut::Today);
+
+        $repeating = $this->edit($task, 'Water the ferns', null, null, null, new Recurrence(2, RecurrenceUnit::Week));
+        self::assertSame([2, 'week'], [$repeating->recurrence?->interval, $repeating->recurrence?->unit]);
+        self::assertSame('week', self::getContainer()->get(ShowMatrixHandler::class)()[0]->recurrence?->unit);
+
+        self::assertNull($this->edit($task, 'Water the ferns', null, null, null)->recurrence);
+    }
+
+    public function testADoneTaskCannotStartRepeating(): void
+    {
+        $task = self::createTask('Water the ferns');
+        self::completeTask($task);
+
+        $this->expectExceptionObject(new DoneTaskCannotRepeat('Water the ferns'));
+
+        $this->edit($task, 'Water the ferns', null, null, null, new Recurrence(1, RecurrenceUnit::Week));
+    }
+
     public function testCompleteReopenAndDelete(): void
     {
         $task = self::createTask('Vet');
@@ -164,7 +188,7 @@ final class TaskUseCasesTest extends KernelTestCase
         return self::getContainer()->get(PlanTaskHandler::class)(new PlanTask(Ulid::fromString($task->id), $when, null === $date ? null : Day::of($date)));
     }
 
-    private function edit(TaskView $task, string $title, ?string $notes, ?string $projectId, ?string $dueOn): TaskView
+    private function edit(TaskView $task, string $title, ?string $notes, ?string $projectId, ?string $dueOn, ?Recurrence $recurrence = null): TaskView
     {
         return self::getContainer()->get(EditTaskHandler::class)(new EditTask(
             Ulid::fromString($task->id),
@@ -172,6 +196,7 @@ final class TaskUseCasesTest extends KernelTestCase
             $notes,
             null === $projectId ? null : Ulid::fromString($projectId),
             null === $dueOn ? null : Day::of($dueOn),
+            $recurrence,
         ));
     }
 }

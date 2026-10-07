@@ -18,6 +18,8 @@ task:
     not_open: '“{title}” is done: reopen it before moving it in the matrix.'
     foreign_project: 'This project belongs to someone else.'
     missing_plan_date: 'Pick a date on the calendar.'
+    invalid_recurrence: 'A task repeats every 1 to 365 days, weeks, months or years, not every {interval}.'
+    done_cannot_repeat: '“{title}” is done: reopen it before making it repeat.'
 game:
     not_enough_coins: 'You need {price} coins for this, you have {coins}.'
     level_too_low: 'Reach level {level} to unlock this.'

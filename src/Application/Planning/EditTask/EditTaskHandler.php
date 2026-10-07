@@ -25,6 +25,7 @@ final readonly class EditTaskHandler
         $task->describe($command->notes);
         null === $command->projectId ? $task->detach() : $task->fileUnder($this->projects->get($command->projectId));
         null === $command->dueOn ? $task->clearDeadline() : $task->dueBy($command->dueOn);
+        $task->repeat($command->recurrence);
         $this->transaction->commit();
 
         return TaskView::of($task);

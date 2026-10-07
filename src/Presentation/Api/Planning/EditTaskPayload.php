@@ -18,6 +18,8 @@ final readonly class EditTaskPayload
         public ?Ulid $projectId = null,
         #[Assert\Date(message: 'date.invalid')]
         public ?string $dueOn = null,
+        #[Assert\Valid]
+        public ?RecurrencePayload $recurrence = null,
     ) {
     }
 }

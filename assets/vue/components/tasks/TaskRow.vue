@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { AlignLeft, Sun } from '@lucide/vue';
+import { AlignLeft, Repeat, Sun } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import IconButton from '../ui/IconButton.vue';
 import DropCheck from './DropCheck.vue';
@@ -11,6 +11,7 @@ import { useProjects } from '../../composables/useProjects.js';
 import { useTaskActions } from '../../composables/useTaskActions.js';
 import { useTaskEditor } from '../../composables/useTaskEditor.js';
 import { isOverdue, isPlannedFor } from '../../tasks/days.js';
+import { recurrenceLabel } from '../../tasks/recurrence.js';
 
 const props = defineProps({
     task: { type: Object, required: true },
@@ -41,6 +42,8 @@ const plannedLabel = computed(() => {
     if (!props.showPlanned || !props.task.plannedOn || props.task.done) return null;
     return dayLabel(props.task.plannedOn);
 });
+
+const repeatLabel = computed(() => recurrenceLabel(props.task.recurrence, t));
 
 const dueLabel = computed(() => (props.task.dueOn ? t('tasks.due', { day: dayLabel(props.task.dueOn) }) : null));
 
@@ -80,10 +83,11 @@ function onKeydown(event) {
         <DropCheck :done="task.done" :label="t(task.done ? 'tasks.reopen' : 'tasks.complete', { title: task.title })" @toggle="toggle" />
         <div class="task-row__main">
             <button type="button" class="task-row__title" @click="editor.edit(task)">{{ task.title }}</button>
-            <p v-if="(showProject && project) || plannedLabel || dueLabel || task.notes" class="task-row__meta">
+            <p v-if="(showProject && project) || plannedLabel || dueLabel || repeatLabel || task.notes" class="task-row__meta">
                 <span v-if="showProject && project" class="task-row__project" :style="{ '--project': `var(--project-${project.color})` }">{{ project.name }}</span>
                 <span v-if="plannedLabel" class="task-row__planned">{{ plannedLabel }}</span>
                 <span v-if="dueLabel" :class="['task-row__due', { 'task-row__due--overdue': overdue }]">{{ dueLabel }}</span>
+                <span v-if="repeatLabel" class="task-row__repeat"><Repeat size="0.875rem" aria-hidden="true" />{{ repeatLabel }}</span>
                 <AlignLeft v-if="task.notes" size="0.875rem" class="task-row__notes" :aria-label="t('tasks.hasNotes')" role="img" />
             </p>
         </div>
@@ -134,6 +138,7 @@ function onKeydown(event) {
 .task-row__project { display: inline-flex; align-items: center; gap: var(--space-1); }
 .task-row__project::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--project); }
 .task-row__due--overdue { color: var(--color-danger); font-weight: 600; }
+.task-row__repeat { display: inline-flex; align-items: center; gap: var(--space-1); }
 .task-row__notes { color: var(--color-subtle); }
 .task-row__actions { display: flex; align-items: center; flex-shrink: 0; }
 .task-row__sun[aria-pressed="true"] { color: var(--color-warning); }

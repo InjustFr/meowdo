@@ -26,6 +26,7 @@ final readonly class CompleteTaskHandler
         private Transaction $transaction,
         private AchievementCheck $achievements,
         private ShowPlayerHandler $showPlayer,
+        private ContinueSeries $continueSeries,
     ) {
     }
 
@@ -34,6 +35,7 @@ final readonly class CompleteTaskHandler
         $task = $this->tasks->get($id);
         $today = $this->today->date();
         $task->complete($this->today->now());
+        ($this->continueSeries)($task);
 
         $reward = null;
         $leveledUpTo = null;

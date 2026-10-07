@@ -72,6 +72,48 @@ final class TaskApiTest extends WebTestCase
         }
     }
 
+    public function testRecurrence(): void
+    {
+        $client = self::signedInClient();
+        $id = self::create($client, 'Water the ferns', ['plan' => 'today']);
+        self::assertNull(Json::at(self::body($client), 'recurrence'));
+
+        $client->jsonRequest('PATCH', "/api/tasks/$id", ['title' => 'Water the ferns', 'recurrence' => ['interval' => 2, 'unit' => 'week']]);
+        self::assertResponseIsSuccessful();
+        self::assertSame(['interval' => 2, 'unit' => 'week'], Json::array(self::body($client), 'recurrence'));
+
+        $client->jsonRequest('POST', "/api/tasks/$id/complete");
+        self::assertResponseIsSuccessful();
+        self::assertNull(Json::at(self::body($client), 'task', 'recurrence'));
+
+        $client->jsonRequest('GET', '/api/tasks/upcoming?from=2026-10-20');
+        self::assertSame(['Water the ferns', '2026-10-20', ['interval' => 2, 'unit' => 'week']], [Json::string(self::body($client), 'tasks', 0, 'title'), Json::string(self::body($client), 'tasks', 0, 'plannedOn'), Json::array(self::body($client), 'tasks', 0, 'recurrence')]);
+
+        $next = Json::string(self::body($client), 'tasks', 0, 'id');
+        $client->jsonRequest('PATCH', "/api/tasks/$next", ['title' => 'Water the ferns', 'recurrence' => null]);
+        self::assertResponseIsSuccessful();
+        self::assertNull(Json::at(self::body($client), 'recurrence'));
+    }
+
+    public function testInvalidRecurrencesAre422(): void
+    {
+        $client = self::signedInClient();
+        $id = self::create($client, 'Water the ferns');
+
+        foreach ([['interval' => 0, 'unit' => 'week'], ['interval' => 366, 'unit' => 'day'], ['interval' => 1, 'unit' => 'fortnight'], ['interval' => 'often', 'unit' => 'week'], ['unit' => 'week']] as $recurrence) {
+            $client->jsonRequest('PATCH', "/api/tasks/$id", ['title' => 'Water the ferns', 'recurrence' => $recurrence]);
+            self::assertResponseStatusCodeSame(422, (string) json_encode($recurrence));
+        }
+
+        $client->jsonRequest('PATCH', "/api/tasks/$id", ['title' => 'Water the ferns', 'recurrence' => ['interval' => 400, 'unit' => 'day']]);
+        self::assertSame('recurrence.interval', Json::string(self::body($client), 'violations', 0, 'propertyPath'));
+
+        $client->jsonRequest('POST', "/api/tasks/$id/complete");
+        $client->jsonRequest('PATCH', "/api/tasks/$id", ['title' => 'Water the ferns', 'recurrence' => ['interval' => 1, 'unit' => 'week']]);
+        self::assertResponseStatusCodeSame(422);
+        self::assertResponseHeaderSame('Content-Type', 'application/problem+json');
+    }
+
     public function testCompletingTwiceIs422(): void
     {
         $client = self::signedInClient();

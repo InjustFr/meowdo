@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Domain\Planning;
 
 use App\Domain\Identity\User;
+use App\Domain\Planning\Exception\DoneTaskCannotRepeat;
 use App\Domain\Planning\Exception\EmptyTaskTitle;
 use App\Domain\Planning\Exception\ProjectOfAnotherOwner;
 use App\Domain\Planning\Exception\TaskAlreadyDone;
@@ -12,6 +13,8 @@ use App\Domain\Planning\Exception\TaskNotDone;
 use App\Domain\Planning\Project;
 use App\Domain\Planning\ProjectColor;
 use App\Domain\Planning\Quadrant;
+use App\Domain\Planning\Recurrence;
+use App\Domain\Planning\RecurrenceUnit;
 use App\Domain\Planning\Task;
 use App\Domain\Shared\Day;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -174,6 +177,103 @@ final class TaskTest extends TestCase
         $this->expectExceptionObject(new ProjectOfAnotherOwner());
 
         $task->fileUnder($project);
+    }
+
+    public function testRepeatAndStopRepeating(): void
+    {
+        $task = $this->task('Water the ferns');
+        self::assertNull($task->recurrence());
+
+        $task->repeat(new Recurrence(2, RecurrenceUnit::Week));
+        self::assertEquals(new Recurrence(2, RecurrenceUnit::Week), $task->recurrence());
+
+        $task->repeat(null);
+        self::assertNull($task->recurrence());
+    }
+
+    public function testOnlyOpenTasksCanRepeat(): void
+    {
+        $task = $this->task('Water the ferns');
+        $task->complete(new \DateTimeImmutable(self::NOW));
+        $task->repeat(null);
+
+        $this->expectExceptionObject(new DoneTaskCannotRepeat('Water the ferns'));
+
+        $task->repeat(new Recurrence(1, RecurrenceUnit::Week));
+    }
+
+    public function testATaskThatDoesNotRepeatHasNoNextOccurrence(): void
+    {
+        $task = $this->task('Vet');
+        $task->complete(new \DateTimeImmutable(self::NOW));
+
+        self::assertNull($task->nextOccurrence(Day::of('2026-10-06'), new \DateTimeImmutable(self::NOW)));
+    }
+
+    public function testAnOpenTaskHasNoNextOccurrenceYet(): void
+    {
+        $task = $this->task('Water the ferns');
+        $task->repeat(new Recurrence(1, RecurrenceUnit::Week));
+
+        $this->expectExceptionObject(new TaskNotDone('Water the ferns'));
+
+        $task->nextOccurrence(Day::of('2026-10-06'), new \DateTimeImmutable(self::NOW));
+    }
+
+    #[DataProvider('occurrences')]
+    public function testNextOccurrenceDates(?string $plannedOn, ?string $dueOn, Recurrence $recurrence, ?string $nextPlannedOn, ?string $nextDueOn): void
+    {
+        $task = $this->task('Water the ferns');
+        if (null !== $plannedOn) {
+            $task->planFor(Day::of($plannedOn));
+        }
+        if (null !== $dueOn) {
+            $task->dueBy(Day::of($dueOn));
+        }
+        $task->repeat($recurrence);
+        $task->complete(new \DateTimeImmutable(self::NOW));
+
+        $next = $task->nextOccurrence(Day::of('2026-10-06'), new \DateTimeImmutable(self::NOW));
+
+        self::assertNotNull($next);
+        self::assertSame([$nextPlannedOn, $nextDueOn], [Day::format($next->plannedOn()), Day::format($next->dueOn())]);
+    }
+
+    /** @return iterable<array{?string, ?string, Recurrence, ?string, ?string}> */
+    public static function occurrences(): iterable
+    {
+        $weekly = new Recurrence(1, RecurrenceUnit::Week);
+
+        yield 'planned only' => ['2026-10-06', null, $weekly, '2026-10-13', null];
+        yield 'due only' => [null, '2026-10-08', new Recurrence(1, RecurrenceUnit::Month), null, '2026-11-08'];
+        yield 'planned and due keep their gap' => ['2026-10-06', '2026-10-09', $weekly, '2026-10-13', '2026-10-16'];
+        yield 'no date starts from today' => [null, null, new Recurrence(2, RecurrenceUnit::Week), '2026-10-20', null];
+        yield 'overdue anchor is advanced past today' => ['2026-09-01', '2026-09-03', $weekly, '2026-10-13', '2026-10-15'];
+        yield 'anchor on today moves to the next step' => ['2026-10-06', null, new Recurrence(1, RecurrenceUnit::Day), '2026-10-07', null];
+        yield 'future anchor moves one step' => ['2026-10-20', null, $weekly, '2026-10-27', null];
+        yield 'month end is clamped' => ['2026-10-31', null, new Recurrence(1, RecurrenceUnit::Month), '2026-11-30', null];
+    }
+
+    public function testTheNextOccurrenceCarriesTheSeries(): void
+    {
+        $owner = $this->user('louis@example.com');
+        $project = Project::create($owner, 'Home', ProjectColor::Moss, new \DateTimeImmutable(self::NOW));
+        $task = Task::create($owner, 'Water the ferns', new \DateTimeImmutable('2026-09-01 09:00'));
+        $task->describe('The big one too');
+        $task->fileUnder($project);
+        $task->classify(Quadrant::Schedule, 4);
+        $task->repeat(new Recurrence(1, RecurrenceUnit::Week));
+        $task->complete(new \DateTimeImmutable(self::NOW));
+
+        $next = $task->nextOccurrence(Day::of('2026-10-06'), new \DateTimeImmutable(self::NOW));
+
+        self::assertNotNull($next);
+        self::assertNotEquals($task->id(), $next->id());
+        self::assertSame([$owner, 'Water the ferns', 'The big one too', $project, Quadrant::Schedule, false], [$next->owner(), $next->title(), $next->notes(), $next->project(), $next->quadrant(), $next->isDone()]);
+        self::assertEquals(new \DateTimeImmutable(self::NOW), $next->createdAt());
+        self::assertEquals(new Recurrence(1, RecurrenceUnit::Week), $next->recurrence());
+        self::assertNull($task->recurrence());
+        self::assertNull($task->nextOccurrence(Day::of('2026-10-06'), new \DateTimeImmutable(self::NOW)));
     }
 
     private function task(string $title): Task

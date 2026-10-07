@@ -16,6 +16,8 @@ use App\Domain\Identity\User;
 use App\Domain\Planning\Project;
 use App\Domain\Planning\ProjectColor;
 use App\Domain\Planning\Quadrant;
+use App\Domain\Planning\Recurrence;
+use App\Domain\Planning\RecurrenceUnit;
 use App\Domain\Planning\Task;
 use App\Domain\Shared\Day;
 use App\Fixtures\Factory\CritterFactory;
@@ -89,6 +91,8 @@ final class DemoStory extends Story
         $this->task('Record the vocal takes', $music, Quadrant::Schedule, planned: 3, due: 5);
         $this->task('Vacuum the flat', $home, Quadrant::Eliminate, planned: 5);
         $this->task('Quarterly report', $work, Quadrant::Schedule, planned: (int) Day::daysBetween($this->today, $this->today->modify('next monday')), due: 10);
+        $this->task('Water the ferns', $home, Quadrant::Schedule, planned: 0, repeat: new Recurrence(1, RecurrenceUnit::Week));
+        $this->task('Pay the rent', null, Quadrant::DoFirst, due: 8, repeat: new Recurrence(1, RecurrenceUnit::Month));
         $this->task('Look into a new microphone', null, Quadrant::Eliminate);
         $this->task('Gift idea for Lea\'s birthday', null, due: 12);
         $this->task('Read "Deep Work"', null, Quadrant::Schedule);
@@ -114,7 +118,7 @@ final class DemoStory extends Story
         return ProjectFactory::createOne(['owner' => $this->user, 'name' => $name, 'color' => $color, 'now' => $this->now->modify('-3 weeks')]);
     }
 
-    private function task(string $title, ?Project $project, ?Quadrant $quadrant = null, ?int $planned = null, ?int $due = null, ?string $notes = null): Task
+    private function task(string $title, ?Project $project, ?Quadrant $quadrant = null, ?int $planned = null, ?int $due = null, ?string $notes = null, ?Recurrence $repeat = null): Task
     {
         $factory = TaskFactory::new();
         if (null !== $project) {
@@ -129,6 +133,9 @@ final class DemoStory extends Story
         }
         if (null !== $due) {
             $factory = $factory->dueOn($this->day($due));
+        }
+        if (null !== $repeat) {
+            $factory = $factory->repeating($repeat);
         }
         $task = $factory->create([
             'owner' => $this->user,
