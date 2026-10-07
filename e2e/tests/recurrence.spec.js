@@ -17,7 +17,9 @@ test('completing a weekly task plans its next occurrence a week later', async ({
     await expect(editor).toBeHidden();
     await expect(row(page, task)).toContainText('Every week');
 
+    const completed = page.waitForResponse((response) => response.url().endsWith('/complete') && response.ok());
     await row(page, task).getByRole('checkbox', { name: `Complete “${task}”` }).click();
+    await completed;
     await expect(row(page, task).getByRole('checkbox', { name: `Reopen “${task}”` })).toBeVisible();
 
     await page.locator('.shell__rail').getByRole('link', { name: 'Upcoming' }).click();

@@ -12,7 +12,9 @@ test('statistics count a newly completed task', async ({ page }) => {
     const task = unique('Sweep the porch');
     await page.getByLabel('New task').fill(task);
     await page.getByLabel('New task').press('Enter');
+    const completion = page.waitForResponse((response) => response.url().endsWith('/complete') && response.ok());
     await row(page, task).getByRole('checkbox', { name: `Complete “${task}”` }).click();
+    await completion;
     await expect(row(page, task).getByRole('checkbox', { name: `Reopen “${task}”` })).toBeVisible();
 
     await page.locator('.shell__rail').getByRole('link', { name: 'Statistics', exact: true }).click();
