@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Application\Planning;
 
+use App\Application\Planning\ChangeParent\ChangeParent;
+use App\Application\Planning\ChangeParent\ChangeParentHandler;
 use App\Application\Planning\DeleteTask\DeleteTaskHandler;
 use App\Application\Planning\EditTask\EditTask;
 use App\Application\Planning\EditTask\EditTaskHandler;
@@ -168,6 +170,35 @@ final class SubtasksTest extends KernelTestCase
         self::assertSame(['Empty the inbox'], self::titles(self::subtasksOf($next[0])));
     }
 
+    public function testAnExistingTaskIsNestedThenPromotedBack(): void
+    {
+        $project = self::createProject('Drawings');
+        $drawing = self::createTask('Fox drawing', projectId: $project->id);
+        $sketch = self::createTask('Sketch', planDate: '2026-10-07');
+        self::clear();
+
+        $nested = self::changeParent($sketch, $drawing->id);
+        self::clear();
+        self::assertSame([$drawing->id, $project->id, '2026-10-07'], [$nested->parentId, $nested->projectId, $nested->plannedOn]);
+        self::assertSame(['Sketch'], self::titles(self::subtasksOf($drawing)));
+
+        $promoted = self::changeParent($sketch, null);
+        self::clear();
+        self::assertSame([null, $project->id], [$promoted->parentId, $promoted->projectId]);
+        self::assertSame([], self::subtasksOf($drawing));
+    }
+
+    public function testATaskCannotBeNestedUnderAnotherUsersTask(): void
+    {
+        $drawing = self::createTask('Fox drawing');
+        self::actAsNewUser();
+        $sketch = self::createTask('Sketch');
+
+        $this->expectException(NotFound::class);
+
+        self::changeParent($sketch, $drawing->id);
+    }
+
     public function testAnotherUsersSubtasksAreNotFound(): void
     {
         $drawing = self::createTask('Fox drawing');
@@ -184,6 +215,11 @@ final class SubtasksTest extends KernelTestCase
     private static function subtasksOf(TaskView $task): array
     {
         return self::getContainer()->get(ListSubtasksHandler::class)(Ulid::fromString($task->id));
+    }
+
+    private static function changeParent(TaskView $task, ?string $parentId): TaskView
+    {
+        return self::getContainer()->get(ChangeParentHandler::class)(new ChangeParent(Ulid::fromString($task->id), null === $parentId ? null : Ulid::fromString($parentId)));
     }
 
     private static function find(TaskView $task): TaskView

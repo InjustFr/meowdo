@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { hasOpenSubtasks, nestSubtasks } from './subtasks.js';
+import { canNest, hasOpenSubtasks, nestSubtasks } from './subtasks.js';
 
 const task = (overrides) => ({
     id: overrides.id,
@@ -50,5 +50,21 @@ describe('hasOpenSubtasks', () => {
         expect(hasOpenSubtasks(task({ id: 'drawing', subtaskCount: 3, subtasksDone: 3 }))).toBe(false);
         expect(hasOpenSubtasks(task({ id: 'drawing', done: true, subtaskCount: 3, subtasksDone: 3 }))).toBe(false);
         expect(hasOpenSubtasks(task({ id: 'vet' }))).toBe(false);
+    });
+});
+
+describe('canNest', () => {
+    it('lets a plain task become a subtask of a top level task', () => {
+        expect(canNest(task({ id: 'sketch' }), task({ id: 'drawing' }))).toBe(true);
+        expect(canNest(task({ id: 'sketch', parentId: 'owl' }), task({ id: 'drawing' }))).toBe(true);
+    });
+
+    it('refuses what the server would refuse', () => {
+        expect(canNest(task({ id: 'drawing' }), task({ id: 'drawing' }))).toBe(false);
+        expect(canNest(task({ id: 'sketch', parentId: 'drawing' }), task({ id: 'drawing' }))).toBe(false);
+        expect(canNest(task({ id: 'pencils' }), task({ id: 'sketch', parentId: 'drawing' }))).toBe(false);
+        expect(canNest(task({ id: 'drawing', subtaskCount: 2 }), task({ id: 'sketchbook' }))).toBe(false);
+        expect(canNest(task({ id: 'ferns', recurrence: { interval: 1, unit: 'week' } }), task({ id: 'garden' }))).toBe(false);
+        expect(canNest(null, task({ id: 'garden' }))).toBe(false);
     });
 });

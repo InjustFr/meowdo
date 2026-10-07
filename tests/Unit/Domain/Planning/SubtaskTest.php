@@ -8,7 +8,9 @@ use App\Domain\Identity\User;
 use App\Domain\Planning\Exception\SubtaskCannotHaveSubtasks;
 use App\Domain\Planning\Exception\SubtaskCannotRepeat;
 use App\Domain\Planning\Exception\SubtaskFollowsParentProject;
+use App\Domain\Planning\Exception\TaskCannotNestUnderItself;
 use App\Domain\Planning\Exception\TaskHasOpenSubtasks;
+use App\Domain\Planning\Exception\TaskWithSubtasksCannotBeNested;
 use App\Domain\Planning\Project;
 use App\Domain\Planning\ProjectColor;
 use App\Domain\Planning\Recurrence;
@@ -169,6 +171,111 @@ final class SubtaskTest extends TestCase
             [['Empty the inbox', 'Mail too', false, $next], ['Plan the week', null, false, $next]],
             array_map(static fn (Task $subtask): array => [$subtask->title(), $subtask->notes(), $subtask->isDone(), $subtask->parent()], $next->subtasks()),
         );
+    }
+
+    public function testANewSubtaskStartsOnThePlannedDayOfItsParent(): void
+    {
+        $drawing = $this->task('Fox drawing');
+        $drawing->planFor(Day::of('2026-10-08'));
+
+        self::assertSame('2026-10-08', Day::format($drawing->addSubtask('Sketch', $this->now())->plannedOn()));
+    }
+
+    public function testATaskCanBeNestedUnderAnotherAndTakesItsProjectButKeepsItsDays(): void
+    {
+        $project = $this->project('Drawings');
+        $drawing = $this->task('Fox drawing');
+        $drawing->fileUnder($project);
+        $sketch = $this->task('Sketch');
+        $sketch->planFor(Day::of('2026-10-09'));
+
+        $sketch->nestUnder($drawing);
+
+        self::assertSame([$drawing, $project, '2026-10-09'], [$sketch->parent(), $sketch->project(), Day::format($sketch->plannedOn())]);
+        self::assertSame([$sketch], $drawing->subtasks());
+    }
+
+    public function testNestingAnOpenTaskUnderADoneParentReopensIt(): void
+    {
+        $drawing = $this->task('Fox drawing');
+        $drawing->complete($this->now());
+
+        $this->task('Sketch')->nestUnder($drawing);
+
+        self::assertFalse($drawing->isDone());
+    }
+
+    public function testNestingADoneTaskKeepsADoneParentDone(): void
+    {
+        $drawing = $this->task('Fox drawing');
+        $drawing->complete($this->now());
+        $sketch = $this->task('Sketch');
+        $sketch->complete($this->now());
+
+        $sketch->nestUnder($drawing);
+
+        self::assertTrue($drawing->isDone());
+    }
+
+    public function testASubtaskMovesFromOneParentToAnother(): void
+    {
+        $fox = $this->task('Fox drawing');
+        $owl = $this->task('Owl drawing');
+        $sketch = $fox->addSubtask('Sketch', $this->now());
+
+        $sketch->nestUnder($owl);
+
+        self::assertSame([[], [$sketch], $owl], [$fox->subtasks(), $owl->subtasks(), $sketch->parent()]);
+    }
+
+    public function testAPromotedSubtaskBecomesATaskInTheSameProject(): void
+    {
+        $project = $this->project('Drawings');
+        $drawing = $this->task('Fox drawing');
+        $drawing->fileUnder($project);
+        $sketch = $drawing->addSubtask('Sketch', $this->now());
+
+        $sketch->promote();
+
+        self::assertSame([null, $project, []], [$sketch->parent(), $sketch->project(), $drawing->subtasks()]);
+    }
+
+    public function testATaskCannotBeNestedUnderItself(): void
+    {
+        $drawing = $this->task('Fox drawing');
+
+        $this->expectExceptionObject(new TaskCannotNestUnderItself('Fox drawing'));
+
+        $drawing->nestUnder($drawing);
+    }
+
+    public function testATaskCannotBeNestedUnderASubtask(): void
+    {
+        $sketch = $this->task('Fox drawing')->addSubtask('Sketch', $this->now());
+
+        $this->expectExceptionObject(new SubtaskCannotHaveSubtasks('Sketch'));
+
+        $this->task('Pencils')->nestUnder($sketch);
+    }
+
+    public function testATaskWithSubtasksCannotBeNested(): void
+    {
+        $fox = $this->task('Fox drawing');
+        $fox->addSubtask('Sketch', $this->now());
+
+        $this->expectExceptionObject(new TaskWithSubtasksCannotBeNested('Fox drawing'));
+
+        $fox->nestUnder($this->task('Sketchbook'));
+    }
+
+    public function testARepeatingTaskCannotBeNested(): void
+    {
+        $ferns = $this->task('Water the ferns');
+        $ferns->repeat(new Recurrence(1, RecurrenceUnit::Week));
+
+        $this->expectExceptionObject(new SubtaskCannotRepeat('Water the ferns'));
+
+        $ferns->nestUnder($this->task('Garden'));
     }
 
     private function task(string $title): Task

@@ -57,7 +57,7 @@ async function showOlder() {
         <template v-if="first">
             <EmptyState v-if="!days.length" :title="t(older ? 'done.quiet.title' : 'done.empty.title')" :hint="t(older ? 'done.quiet.hint' : 'done.empty.hint')" />
             <PageSection v-for="day in days" :key="day.date" :title="heading(day.date)" :count="day.tasks.length">
-                <TaskList :tasks="day.tasks" :sorted="false" :show-planned="false" />
+                <TaskList :tasks="day.tasks" :sorted="false" :show-planned="false" :nestable="false" />
             </PageSection>
             <BaseButton v-if="older" class="done__older" variant="secondary" :loading="loadingOlder" @click="showOlder">{{ t('done.older') }}</BaseButton>
         </template>

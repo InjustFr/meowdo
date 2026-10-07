@@ -8,11 +8,14 @@ import PlanMenu from './PlanMenu.vue';
 import TaskMenu from './TaskMenu.vue';
 import { useDates } from '../../composables/useDates.js';
 import { useProjects } from '../../composables/useProjects.js';
+import { useSubtaskComposer } from '../../composables/useSubtaskComposer.js';
 import { useTaskActions } from '../../composables/useTaskActions.js';
+import { useTaskDrag } from '../../composables/useTaskDrag.js';
 import { useTaskEditor } from '../../composables/useTaskEditor.js';
+import { useToast } from '../../composables/useToast.js';
 import { isOverdue, isPlannedFor } from '../../tasks/days.js';
 import { recurrenceLabel } from '../../tasks/recurrence.js';
-import { hasOpenSubtasks } from '../../tasks/subtasks.js';
+import { canNest, hasOpenSubtasks } from '../../tasks/subtasks.js';
 
 const props = defineProps({
     task: { type: Object, required: true },
@@ -20,6 +23,7 @@ const props = defineProps({
     showPlanned: { type: Boolean, default: true },
     compact: { type: Boolean, default: false },
     nested: { type: Boolean, default: false },
+    nestable: { type: Boolean, default: false },
 });
 
 const { t } = useI18n();
@@ -27,7 +31,11 @@ const dates = useDates();
 const { byId } = useProjects();
 const actions = useTaskActions();
 const editor = useTaskEditor();
+const composer = useSubtaskComposer();
+const drag = useTaskDrag();
+const toast = useToast();
 const planOpen = ref(false);
+const dropping = ref(false);
 
 const project = computed(() => (props.task.projectId ? byId.value.get(props.task.projectId) : null));
 const inToday = computed(() => isPlannedFor(props.task, dates.today.value));
@@ -61,6 +69,46 @@ function toggle() {
     return props.task.done ? actions.reopen(props.task) : actions.complete(props.task);
 }
 
+function addSubtask() {
+    if (props.task.parentId) return;
+    if (props.nestable) composer.open(props.task);
+    else editor.edit(props.task);
+}
+
+async function promote() {
+    if (await actions.promote(props.task)) toast.success(t('tasks.subtasks.promoted', { title: props.task.title }));
+}
+
+const draggable = computed(() => props.nestable && !props.task.done);
+const dragged = computed(() => drag.state.task?.id === props.task.id);
+
+function onDragStart(event) {
+    if (!draggable.value) return;
+    drag.start(props.task);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', props.task.title);
+}
+
+function onDragOver(event) {
+    if (!props.nestable || !canNest(drag.state.task, props.task)) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    dropping.value = true;
+}
+
+function onDragLeave(event) {
+    if (!event.currentTarget.contains(event.relatedTarget)) dropping.value = false;
+}
+
+async function onDrop(event) {
+    dropping.value = false;
+    const task = drag.state.task;
+    if (!props.nestable || !canNest(task, props.task)) return;
+    event.preventDefault();
+    drag.end();
+    if (await actions.nest(task, props.task)) toast.success(t('tasks.subtasks.nested', { title: task.title, parent: props.task.title }));
+}
+
 function plan(when, date = null) {
     actions.plan(props.task, when, date);
 }
@@ -73,6 +121,7 @@ function onKeydown(event) {
         n: () => plan('next_week'),
         d: () => { planOpen.value = true; },
         e: () => editor.edit(props.task),
+        s: () => addSubtask(),
         Enter: () => editor.edit(props.task),
         ' ': () => toggle(),
     };
@@ -85,8 +134,14 @@ function onKeydown(event) {
 
 <template>
     <li
-        :class="['task-row', `task-row--${task.quadrant ?? 'unsorted'}`, { 'task-row--done': task.done, 'task-row--compact': compact, 'task-row--nested': nested }]"
+        :class="['task-row', `task-row--${task.quadrant ?? 'unsorted'}`, { 'task-row--done': task.done, 'task-row--compact': compact, 'task-row--nested': nested, 'task-row--drop': dropping, 'task-row--dragged': dragged }]"
         tabindex="0"
+        :draggable="draggable ? 'true' : undefined"
+        @dragstart="onDragStart"
+        @dragend="drag.end()"
+        @dragover="onDragOver"
+        @dragleave="onDragLeave"
+        @drop="onDrop"
         :data-task="task.id"
         @keydown="onKeydown"
     >
@@ -114,7 +169,7 @@ function onKeydown(event) {
                 @click="plan(inToday ? 'none' : 'today')"
             />
             <PlanMenu v-model:open="planOpen" :task="task" @plan="plan" />
-            <TaskMenu :task="task" @edit="editor.edit(task)" @classify="(quadrant) => actions.classify(task, quadrant)" />
+            <TaskMenu :task="task" @edit="editor.edit(task)" @classify="(quadrant) => actions.classify(task, quadrant)" @add-subtask="addSubtask" @promote="promote" />
         </div>
     </li>
 </template>
@@ -163,6 +218,9 @@ function onKeydown(event) {
 .task-row--done .task-row__title { color: var(--color-subtle); text-decoration: line-through; text-decoration-color: var(--color-border-strong); }
 
 .task-row--nested { min-height: 2.75rem; }
+.task-row[draggable="true"] { cursor: grab; }
+.task-row--dragged { opacity: 0.45; }
+.task-row--drop { border-color: var(--color-accent); background: var(--color-accent-soft); box-shadow: var(--focus-ring); }
 
 .task-row--compact { min-height: 3rem; gap: var(--space-2); padding-left: var(--space-3); cursor: grab; }
 .task-row--compact .task-row__title { font-size: var(--font-size-md); }

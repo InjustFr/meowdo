@@ -22,6 +22,8 @@ task:
     subtask_cannot_repeat: '“{title}” is a subtask: make its parent task repeat instead.'
     subtask_follows_parent_project: '“{title}” is a subtask: it stays in the project of its parent task.'
     open_subtasks: '“{title}” completes by itself once all its subtasks are done.'
+    cannot_nest_under_itself: '“{title}” cannot be a subtask of itself.'
+    with_subtasks_cannot_be_nested: '“{title}” has subtasks of its own: it cannot become a subtask.'
 game:
     not_enough_coins: 'You need {price} coins for this, you have {coins}.'
     level_too_low: 'Reach level {level} to unlock this.'

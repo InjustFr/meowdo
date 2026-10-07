@@ -87,6 +87,16 @@ final class TaskApiTest extends WebTestCase
         $client->jsonRequest('POST', "/api/tasks/$parent/subtasks", ['title' => ' ']);
         self::assertResponseStatusCodeSame(422);
 
+        $loose = self::create($client, 'Colouring');
+        $client->jsonRequest('POST', "/api/tasks/$loose/parent", ['parentId' => $parent]);
+        self::assertResponseIsSuccessful();
+        self::assertSame($parent, Json::string(self::body($client), 'parentId'));
+        $client->jsonRequest('POST', "/api/tasks/$parent/parent", ['parentId' => $parent]);
+        self::assertResponseStatusCodeSame(422);
+        $client->jsonRequest('POST', "/api/tasks/$loose/parent", ['parentId' => null]);
+        self::assertResponseIsSuccessful();
+        self::assertNull(Json::at(self::body($client), 'parentId'));
+
         $client->jsonRequest('POST', "/api/tasks/$id/complete");
         self::assertResponseIsSuccessful();
         self::assertSame([true, 1, 1], [Json::at(self::body($client), 'parent', 'done'), Json::at(self::body($client), 'parent', 'subtaskCount'), Json::at(self::body($client), 'parent', 'subtasksDone')]);
@@ -172,7 +182,7 @@ final class TaskApiTest extends WebTestCase
         $id = self::create($client, 'Secret');
         $client->loginUser(SecurityUser::fromUser(self::createUser()));
 
-        foreach ([['PATCH', "/api/tasks/$id", ['title' => 'Mine']], ['POST', "/api/tasks/$id/complete", []], ['POST', "/api/tasks/$id/plan", ['when' => 'today']], ['DELETE', "/api/tasks/$id", []], ['GET', "/api/tasks/$id/subtasks", []], ['POST', "/api/tasks/$id/subtasks", ['title' => 'Mine']]] as [$method, $url, $payload]) {
+        foreach ([['PATCH', "/api/tasks/$id", ['title' => 'Mine']], ['POST', "/api/tasks/$id/complete", []], ['POST', "/api/tasks/$id/plan", ['when' => 'today']], ['DELETE', "/api/tasks/$id", []], ['GET', "/api/tasks/$id/subtasks", []], ['POST', "/api/tasks/$id/subtasks", ['title' => 'Mine']], ['POST', "/api/tasks/$id/parent", ['parentId' => null]]] as [$method, $url, $payload]) {
             $client->jsonRequest($method, $url, $payload);
             self::assertResponseStatusCodeSame(404, "$method $url");
         }

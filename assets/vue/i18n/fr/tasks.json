@@ -27,7 +27,9 @@
     },
     "menu": {
         "open": "Plus d’options pour « {title} »",
-        "edit": "Modifier"
+        "edit": "Modifier",
+        "addSubtask": "Ajouter une sous-tâche",
+        "promote": "En faire une tâche"
     },
     "editor": {
         "title": "Modifier la tâche",
@@ -64,6 +66,10 @@
         "placeholder": "Ajouter une étape, p. ex. croquis",
         "of": "Sous-tâche de « {title} »",
         "progress": "{done} sous-tâches faites sur {total}",
-        "locked": "« {title} » se termine quand ses sous-tâches sont faites"
+        "locked": "« {title} » se termine quand ses sous-tâches sont faites",
+        "more": "Ajouter une sous-tâche",
+        "close": "Fermer",
+        "nested": "« {title} » est maintenant une sous-tâche de « {parent} ».",
+        "promoted": "« {title} » est de nouveau une tâche."
     }
 }

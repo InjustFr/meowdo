@@ -11,7 +11,7 @@ import { QUADRANTS } from '../../tasks/quadrants.js';
 const props = defineProps({
     task: { type: Object, required: true },
 });
-const emit = defineEmits(['edit', 'classify']);
+const emit = defineEmits(['edit', 'classify', 'addSubtask', 'promote']);
 
 const { t } = useI18n();
 const UNSORTED = 'unsorted';
@@ -30,6 +30,8 @@ const quadrant = computed({
         <DropdownMenuPortal>
             <DropdownMenuContent class="popover task-menu" :side-offset="4" align="end">
                 <DropdownMenuItem class="popover__item" @select="emit('edit')">{{ t('tasks.menu.edit') }}<kbd class="popover__hint">e</kbd></DropdownMenuItem>
+                <DropdownMenuItem v-if="!task.parentId" class="popover__item" @select="emit('addSubtask')">{{ t('tasks.menu.addSubtask') }}<kbd class="popover__hint">s</kbd></DropdownMenuItem>
+                <DropdownMenuItem v-else class="popover__item" @select="emit('promote')">{{ t('tasks.menu.promote') }}</DropdownMenuItem>
                 <DropdownMenuSeparator class="popover__separator" />
                 <DropdownMenuLabel class="popover__label">{{ t('matrix.title') }}</DropdownMenuLabel>
                 <DropdownMenuRadioGroup v-model="quadrant">

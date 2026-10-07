@@ -24,6 +24,9 @@ export function useTaskActions() {
         plan: (task, when, date = null) => attempt(() => api.post(`/api/tasks/${task.id}/plan`, { when, date })),
         classify: (task, quadrant) => attempt(() => api.post(`/api/tasks/${task.id}/classify`, { quadrant })),
         reorder: (quadrant, ids) => attempt(() => api.put(`/api/matrix/${quadrant}/order`, { ids })),
+        addSubtask: (parent, title) => attempt(() => api.post(`/api/tasks/${parent.id}/subtasks`, { title })),
+        nest: (task, parent) => attempt(() => api.post(`/api/tasks/${task.id}/parent`, { parentId: parent.id })),
+        promote: (task) => attempt(() => api.post(`/api/tasks/${task.id}/parent`, { parentId: null })),
         moveOverdueToToday: () => attempt(() => api.post('/api/tasks/overdue/plan-today')),
         async complete(task) {
             task.done = true;

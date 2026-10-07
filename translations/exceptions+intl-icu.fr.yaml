@@ -22,6 +22,8 @@ task:
     subtask_cannot_repeat: '« {title} » est une sous-tâche : faites plutôt se répéter sa tâche parente.'
     subtask_follows_parent_project: '« {title} » est une sous-tâche : elle reste dans le projet de sa tâche parente.'
     open_subtasks: '« {title} » sera terminée d’elle-même une fois toutes ses sous-tâches faites.'
+    cannot_nest_under_itself: '« {title} » ne peut pas être sa propre sous-tâche.'
+    with_subtasks_cannot_be_nested: '« {title} » a ses propres sous-tâches : elle ne peut pas devenir une sous-tâche.'
 game:
     not_enough_coins: 'Il vous faut {price} pièces, vous en avez {coins}.'
     level_too_low: 'Atteignez le niveau {level} pour débloquer cet objet.'

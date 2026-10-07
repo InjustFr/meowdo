@@ -12,8 +12,10 @@ use App\Domain\Planning\Exception\SubtaskCannotHaveSubtasks;
 use App\Domain\Planning\Exception\SubtaskCannotRepeat;
 use App\Domain\Planning\Exception\SubtaskFollowsParentProject;
 use App\Domain\Planning\Exception\TaskAlreadyDone;
+use App\Domain\Planning\Exception\TaskCannotNestUnderItself;
 use App\Domain\Planning\Exception\TaskHasOpenSubtasks;
 use App\Domain\Planning\Exception\TaskNotDone;
+use App\Domain\Planning\Exception\TaskWithSubtasksCannotBeNested;
 use App\Domain\Shared\Day;
 use App\Domain\Shared\OptionalText;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -101,16 +103,40 @@ class Task
 
     public function addSubtask(string $title, \DateTimeImmutable $now): self
     {
-        if (null !== $this->parent) {
-            throw new SubtaskCannotHaveSubtasks($this->title);
-        }
         $subtask = new self($this->owner, $title, $now);
-        $subtask->parent = $this;
-        $subtask->project = $this->project;
-        $this->subtasks->add($subtask);
-        $this->completedAt = null;
+        $subtask->plannedOn = $this->plannedOn;
+        $subtask->nestUnder($this);
 
         return $subtask;
+    }
+
+    public function nestUnder(self $parent): void
+    {
+        if ($parent->id->equals($this->id)) {
+            throw new TaskCannotNestUnderItself($this->title);
+        }
+        if (null !== $parent->parent) {
+            throw new SubtaskCannotHaveSubtasks($parent->title);
+        }
+        if (!$this->subtasks->isEmpty()) {
+            throw new TaskWithSubtasksCannotBeNested($this->title);
+        }
+        if (null !== $this->recurrence()) {
+            throw new SubtaskCannotRepeat($this->title);
+        }
+        $this->parent?->subtasks->removeElement($this);
+        $this->parent = $parent;
+        $this->project = $parent->project;
+        $parent->subtasks->add($this);
+        if (!$this->isDone()) {
+            $parent->completedAt = null;
+        }
+    }
+
+    public function promote(): void
+    {
+        $this->parent?->subtasks->removeElement($this);
+        $this->parent = null;
     }
 
     public function rename(string $title): void

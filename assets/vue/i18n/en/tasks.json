@@ -27,7 +27,9 @@
     },
     "menu": {
         "open": "More for “{title}”",
-        "edit": "Edit"
+        "edit": "Edit",
+        "addSubtask": "Add a subtask",
+        "promote": "Make it a task"
     },
     "editor": {
         "title": "Edit task",
@@ -64,6 +66,10 @@
         "placeholder": "Add a step, e.g. sketch",
         "of": "Subtask of “{title}”",
         "progress": "{done} of {total} subtasks done",
-        "locked": "“{title}” completes once its subtasks are done"
+        "locked": "“{title}” completes once its subtasks are done",
+        "more": "Add a subtask",
+        "close": "Close",
+        "nested": "“{title}” is now a subtask of “{parent}”.",
+        "promoted": "“{title}” is a task again."
     }
 }

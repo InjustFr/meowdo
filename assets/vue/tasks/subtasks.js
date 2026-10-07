@@ -16,3 +16,9 @@ export function nestSubtasks(tasks) {
         .filter((task) => !isNested(task))
         .map((task) => ({ task, subtasks: (children.get(task.id) ?? []).sort(byCreation) }));
 }
+
+export function canNest(dragged, target) {
+    if (!dragged || !target || dragged.id === target.id) return false;
+    if (dragged.parentId === target.id) return false;
+    return !target.parentId && !dragged.subtaskCount && !dragged.recurrence;
+}
