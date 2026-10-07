@@ -40,14 +40,18 @@ function publish(url, data) {
     targets.get(url)?.forEach((target) => { target.value = data; });
 }
 
+function unfollow(url, target) {
+    targets.get(url)?.delete(target);
+    if (targets.get(url)?.size === 0) targets.delete(url);
+}
+
 function follow(url, target) {
+    [...targets.keys()].filter((followed) => followed !== url).forEach((followed) => unfollow(followed, target));
     if (!targets.has(url)) targets.set(url, new Set());
+    if (targets.get(url).has(target)) return;
     targets.get(url).add(target);
     if (getCurrentScope()) {
-        onScopeDispose(() => {
-            targets.get(url)?.delete(target);
-            if (targets.get(url)?.size === 0) targets.delete(url);
-        });
+        onScopeDispose(() => unfollow(url, target));
     }
 }
 

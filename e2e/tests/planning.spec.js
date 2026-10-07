@@ -27,6 +27,37 @@ test('a project task added to today stays in its project', async ({ page }) => {
     await expect(row(page, task)).toBeVisible();
 });
 
+test('adding a task after switching projects keeps the current project list', async ({ page }) => {
+    const first = unique('Art');
+    const second = unique('Home');
+    const firstTask = unique('Sketch');
+    const secondTask = unique('Vacuum');
+
+    for (const [project, task] of [[first, firstTask], [second, secondTask]]) {
+        await page.locator('.shell__rail').getByRole('button', { name: 'New project' }).click();
+        await page.getByRole('dialog').getByLabel('Name').fill(project);
+        await page.getByRole('button', { name: 'Create project' }).click();
+        await expect(page.getByRole('heading', { level: 1, name: project })).toBeVisible();
+        await page.getByLabel('New task').fill(task);
+        await page.getByLabel('New task').press('Enter');
+        await expect(row(page, task)).toBeVisible();
+    }
+
+    await page.reload();
+    await expect(row(page, secondTask)).toBeVisible();
+    await page.locator('.shell__rail').getByRole('link', { name: first }).click();
+    await expect(row(page, firstTask)).toBeVisible();
+    await page.locator('.shell__rail').getByRole('link', { name: second }).click();
+    await expect(row(page, secondTask)).toBeVisible();
+
+    const added = unique('Dust');
+    await page.getByLabel('New task').fill(added);
+    await page.getByLabel('New task').press('Enter');
+    await expect(row(page, added)).toBeVisible();
+    await expect(row(page, secondTask)).toBeVisible();
+    await expect(row(page, firstTask)).toHaveCount(0);
+});
+
 test('planning a task for tomorrow moves it from today to upcoming', async ({ page }) => {
     const task = unique('Call grandma');
     await page.getByLabel('New task').fill(task);
