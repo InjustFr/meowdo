@@ -6,8 +6,6 @@ user:
     empty_display_name: 'Tell us what to call you.'
     unknown_timezone: 'Unknown time zone “{timezone}”.'
     email_taken: 'An account already uses {email}. Sign in instead.'
-    unknown_account: 'No account uses {email}.'
-    already_active: '{email} has already chosen a password: use “Forgot your password?” instead.'
 project:
     empty_name: 'Give the project a name.'
     duplicate_name: 'You already have a project called “{name}”.'
@@ -28,8 +26,4 @@ game:
     not_owned: 'Buy this item in the shop first.'
     empty_critter_name: 'Give your critter a name.'
 identity:
-    password_token_already_used: 'This link has already been used.'
-    password_token_expired: 'This link has expired. Request a new one from “Forgot your password?”.'
-    password_too_short: 'The password must contain at least {min} characters.'
-    unknown_password_token: 'This link is not valid.'
     invalid_theme_color: 'Invalid colour “{color}”: use a hexadecimal code such as #5b7f3a.'

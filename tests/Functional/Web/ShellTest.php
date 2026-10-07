@@ -12,13 +12,13 @@ final class ShellTest extends WebTestCase
 {
     use SignsInClient;
 
-    public function testLoginPageIsPublic(): void
+    public function testSignedInUsersSkipTheLogin(): void
     {
-        $client = self::createClient();
+        $client = self::signedInClient();
 
         $client->request('GET', '/login');
 
-        self::assertResponseIsSuccessful();
+        self::assertResponseRedirects('/');
     }
 
     public function testSignedOutVisitorsAreSentToLogin(): void
@@ -32,7 +32,7 @@ final class ShellTest extends WebTestCase
 
     public function testSignedInUsersGetTheShell(): void
     {
-        $client = self::signedInClient();
+        $client = self::signedInClient('louis@mossydew.test');
 
         $crawler = $client->request('GET', '/today');
 
@@ -40,5 +40,7 @@ final class ShellTest extends WebTestCase
         $preloaded = Json::decode($crawler->filter('#app-preload')->text());
         self::assertSame(['/api/projects', '/api/player', '/api/tasks/today'], array_keys($preloaded));
         self::assertSame('Pip', Json::string($preloaded, '/api/player', 'critter', 'name'));
+        $session = Json::decode($crawler->filter('#app-session')->text());
+        self::assertSame(['louis@mossydew.test', 'https://accounts.test'], [Json::string($session, 'email'), Json::string($session, 'accountsUrl')]);
     }
 }

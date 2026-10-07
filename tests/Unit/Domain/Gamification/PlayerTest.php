@@ -87,6 +87,6 @@ final class PlayerTest extends TestCase
 
     private function player(): Player
     {
-        return Player::start(User::invite('louis@example.com', 'Louis', 'Europe/Paris', new \DateTimeImmutable('2026-10-06 09:00')));
+        return Player::start(User::join('account', 'louis@example.com', 'Louis', 'Europe/Paris', new \DateTimeImmutable('2026-10-06 09:00')));
     }
 }

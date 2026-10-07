@@ -6,8 +6,6 @@ user:
     empty_display_name: 'Dites-nous comment vous appeler.'
     unknown_timezone: 'Fuseau horaire inconnu « {timezone} ».'
     email_taken: 'Un compte utilise déjà {email}. Connectez-vous plutôt.'
-    unknown_account: 'Aucun compte n’utilise {email}.'
-    already_active: '{email} a déjà choisi un mot de passe : utilisez « Mot de passe oublié ? ».'
 project:
     empty_name: 'Donnez un nom au projet.'
     duplicate_name: 'Vous avez déjà un projet « {name} ».'
@@ -28,8 +26,4 @@ game:
     not_owned: 'Achetez d’abord cet objet dans la boutique.'
     empty_critter_name: 'Donnez un nom à votre bestiole.'
 identity:
-    password_token_already_used: 'Ce lien a déjà été utilisé.'
-    password_token_expired: 'Ce lien a expiré. Demandez-en un nouveau depuis « Mot de passe oublié ? ».'
-    password_too_short: 'Le mot de passe doit contenir au moins {min} caractères.'
-    unknown_password_token: 'Ce lien n’est pas valide.'
     invalid_theme_color: 'Couleur invalide « {color} » : utilisez un code hexadécimal comme #5b7f3a.'

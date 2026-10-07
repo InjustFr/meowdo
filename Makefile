@@ -20,8 +20,8 @@ BUILD = docker buildx build --platform $(PLATFORM) --target prod -t $(IMAGE):$(T
 
 .PHONY: up down build install assets assets-e2e db db-test fixtures migration test test-unit test-functional test-js deptrac phpstan cs cs-fix e2e e2e-run qa ci ci-up ci-build ci-bundle ci-unbundle ci-warmup ci-checks ci-e2e image push deploy deploy-files
 
-up: ## Start the stack (app on http://localhost:8090, Vite on :5174, Mailpit on :8026)
-	$(DC) up -d --wait php database node mailpit
+up: ## Start the stack (app on http://localhost:8090, Vite on :5174, mock mossyleaf accounts on :8091)
+	$(DC) up -d --wait php database node oidc
 
 down:
 	$(DC) down
@@ -95,7 +95,7 @@ ci: ci-build ## Full suite from a fresh checkout (GitHub Actions runs ci-build o
 	$(MAKE) ci-e2e
 
 ci-up:
-	$(DC) up -d --wait php database mailpit
+	$(DC) up -d --wait php database oidc
 
 ci-build: ci-up ## Install PHP and JS dependencies and build the production assets
 	$(PHP) composer install --no-interaction --no-progress

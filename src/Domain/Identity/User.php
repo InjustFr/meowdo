@@ -23,8 +23,8 @@ class User
     #[ORM\Column(length: 180, unique: true)]
     private string $email;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $passwordHash = null;
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
+    private ?string $accountId = null;
 
     #[ORM\Column(length: 60)]
     private string $displayName;
@@ -53,9 +53,12 @@ class User
         $this->createdAt = $now;
     }
 
-    public static function invite(string $email, string $displayName, string $timezone, \DateTimeImmutable $now): self
+    public static function join(string $accountId, string $email, string $displayName, string $timezone, \DateTimeImmutable $now): self
     {
-        return new self($email, $displayName, $timezone, $now);
+        $user = new self($email, $displayName, $timezone, $now);
+        $user->linkAccount($accountId);
+
+        return $user;
     }
 
     public static function normalizeEmail(string $email): string
@@ -68,9 +71,14 @@ class User
         return $email;
     }
 
-    public function changePassword(string $passwordHash): void
+    public function linkAccount(string $accountId): void
     {
-        $this->passwordHash = $passwordHash;
+        $this->accountId = $accountId;
+    }
+
+    public function changeEmail(string $email): void
+    {
+        $this->email = self::normalizeEmail($email);
     }
 
     public function rename(string $displayName): void
@@ -123,9 +131,9 @@ class User
         return $this->email;
     }
 
-    public function passwordHash(): ?string
+    public function accountId(): ?string
     {
-        return $this->passwordHash;
+        return $this->accountId;
     }
 
     public function displayName(): string

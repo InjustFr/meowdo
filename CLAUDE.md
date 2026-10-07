@@ -17,13 +17,13 @@ Generic Symfony conventions: see `AGENTS.md` (this file wins when they disagree)
 ## Stack
 
 - Symfony 8.1, PHP 8.5 (FrankenPHP), Doctrine ORM 3, PostgreSQL 18, ULIDs.
-- Vue 3 SPA (vue-router) mounted in one Twig shell, bundled by **Vite** through `pentatrion/vite-bundle` (`vite_entry_script_tags('app')`). Login/password pages are a second entry (`auth`).
+- Vue 3 SPA (vue-router) mounted in one Twig shell, bundled by **Vite** through `pentatrion/vite-bundle` (`vite_entry_script_tags('app')`). The sign-in error page is a second entry (`auth`).
 - Tests: PHPUnit 13 (unit + functional, DAMA rollback), Vitest (pure JS modules), Playwright (e2e).
 
 ## Running things (always in Docker)
 
 ```bash
-make up              # php + database + node (Vite dev server :5174) + mailpit (:8026) → http://localhost:8090
+make up              # php + database + node (Vite dev server :5174) + mock mossyleaf accounts (:8091) → http://localhost:8090
 make db              # create + migrate dev DB
 make fixtures        # demo data (fixtures/Story)
 make migration       # doctrine:migrations:diff after mapping changes
@@ -31,8 +31,6 @@ make test            # PHPUnit; make test-unit / test-functional
 make test-js         # Vitest
 make deptrac / make cs / make cs-fix / make phpstan   # keep all at 0
 make e2e             # Playwright against php-e2e (APP_ENV=test)
-docker compose exec php php bin/console app:user:create <email> --name=<name> --critter=<critter name> --tint=<tint> --timezone=Europe/Paris
-docker compose exec php php bin/console app:user:invite <email>   # resend the invitation
 ```
 
 ## Backend architecture (Onion) — `src/`
@@ -40,8 +38,8 @@ docker compose exec php php bin/console app:user:invite <email>   # resend the i
 | Layer | Contains | May depend on |
 |---|---|---|
 | `Domain/` | Entities (rich, **no setters**), value objects, domain services (`RewardPolicy`, `AchievementReferee`), repository **interfaces**, exceptions | nothing |
-| `Application/` | Use cases `<Context>/<UseCase>/{Command, Handler}`, views (`TaskView`, `PlayerView`), ports (`TaskQueries`, `PlayerStatsLedger`, `CurrentUser`, `Transaction`, `AccountMailer`) | Domain |
-| `Infrastructure/` | Doctrine repositories and read ports, security adapters, mailer, console | Domain, Application |
+| `Application/` | Use cases `<Context>/<UseCase>/{Command, Handler}`, views (`TaskView`, `PlayerView`), ports (`TaskQueries`, `PlayerStatsLedger`, `CurrentUser`, `Transaction`, `SingleSignOn`) | Domain |
+| `Infrastructure/` | Doctrine repositories and read ports, security adapters (mossyleaf accounts OIDC client), console | Domain, Application |
 | `Presentation/` | `Api/` JSON controllers + payload DTOs, `Web/` Twig shells and auth pages | Application, Domain |
 
 Contexts: `Identity`, `Planning`, `Gamification`.
@@ -55,8 +53,9 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 
 ## Accounts & security
 
-- **No registration page**: `app:user:create` creates the user, their player profile and critter, and emails an invitation link (Mailpit: http://localhost:8026) to choose a password (`/password/set`). Forgot password: `/password/forgot`. Same flow as MossyTrunk.
-- Session firewall with `form_login` (`/login`), sessions in PostgreSQL (`PdoSessionHandler`), remember-me always on (so phones stay signed in), CSRF logout. The JSON API uses the session cookie; `SameOriginGuard` rejects cross-site writes.
+- **Sign-in = mossyleaf accounts** (Authentik at `accounts.mossyleaf.studio`, project `~/Sites/mossyleaf-accounts`, shared with MossyTrunk): no password, sign-up or invitation code here. Accounts are invited in Authentik and need its `mossydew` group. `/login` redirects there (OIDC code flow + PKCE, `OidcSingleSignOn`), `/login/check` (`AccountsAuthenticator`) exchanges the code, reads userinfo and runs `SignInHandler`: user found by `accountId` (OIDC `sub`), else an existing user with the same email is linked, else a new user + player + critter is created. Config: `ACCOUNTS_URL`, `OIDC_*` env vars.
+- Dev and e2e use a mock OIDC server (`oidc` service, http://localhost:8091): type `demo` (fixture account) or any name plus claims `{"email": "…", "name": "…"}` for a new account. PHPUnit uses `Tests\Support\FakeAccounts` (`https://accounts.test`).
+- Session firewall with the `AccountsAuthenticator`, sessions in PostgreSQL (`PdoSessionHandler`), remember-me always on (so phones stay signed in), CSRF logout that also ends the mossyleaf session. The JSON API uses the session cookie; `SameOriginGuard` rejects cross-site writes.
 - Sync between devices = same account; the server is the source of truth, the SPA refetches on focus and every minute while visible.
 
 ## Frontend — `assets/`

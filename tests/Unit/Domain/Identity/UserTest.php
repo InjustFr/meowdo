@@ -46,7 +46,7 @@ final class UserTest extends TestCase
     {
         $this->expectExceptionObject(new EmptyDisplayName());
 
-        User::invite('louis@example.com', '  ', 'UTC', new \DateTimeImmutable());
+        User::join('account', 'louis@example.com', '  ', 'UTC', new \DateTimeImmutable());
     }
 
     #[DataProvider('todays')]
@@ -65,22 +65,40 @@ final class UserTest extends TestCase
         yield 'los angeles evening' => ['America/Los_Angeles', '2026-10-07 05:00 UTC', '2026-10-06'];
     }
 
-    public function testInvitedUserHasNoPasswordNorLanguageUntilChosen(): void
+    public function testNewUserHasNoLanguageUntilChosen(): void
     {
         $user = $this->user();
-        self::assertNull($user->passwordHash());
         self::assertNull($user->language());
 
-        $user->changePassword('hash');
         $user->speak(Language::French);
         $user->moveTo('Asia/Tokyo');
         $user->rename(' Lou ');
 
-        self::assertSame(['hash', Language::French, 'Asia/Tokyo', 'Lou'], [$user->passwordHash(), $user->language(), $user->timezone(), $user->displayName()]);
+        self::assertSame([Language::French, 'Asia/Tokyo', 'Lou'], [$user->language(), $user->timezone(), $user->displayName()]);
+    }
+
+    public function testFollowsItsMossyleafAccount(): void
+    {
+        $user = $this->user();
+        self::assertSame('account', $user->accountId());
+
+        $user->linkAccount('another-account');
+        $user->changeEmail(' Lou@Example.com ');
+
+        self::assertSame(['another-account', 'lou@example.com'], [$user->accountId(), $user->email()]);
+    }
+
+    public function testChangedEmailMustBeValid(): void
+    {
+        $user = $this->user();
+
+        $this->expectExceptionObject(new InvalidEmail('lou'));
+
+        $user->changeEmail('lou');
     }
 
     private function user(string $email = 'louis@example.com', string $timezone = 'Europe/Paris'): User
     {
-        return User::invite($email, 'Louis', $timezone, new \DateTimeImmutable('2026-10-06 09:00'));
+        return User::join('account', $email, 'Louis', $timezone, new \DateTimeImmutable('2026-10-06 09:00'));
     }
 }

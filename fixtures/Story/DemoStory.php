@@ -52,7 +52,8 @@ final class DemoStory extends Story
     public function build(): void
     {
         $this->now = $this->clock->now();
-        $this->user = UserFactory::new()->withPassword('mossydewmossydew')->create([
+        $this->user = UserFactory::createOne([
+            'accountId' => 'demo',
             'email' => 'demo@mossydew.local',
             'displayName' => 'Demo',
             'timezone' => 'Europe/Paris',

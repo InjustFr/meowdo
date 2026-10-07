@@ -38,7 +38,7 @@ self.addEventListener('fetch', (event) => {
 
     if (url.pathname.startsWith('/build/assets/') || url.pathname.startsWith('/icons/')) {
         event.respondWith(cacheFirst(request));
-    } else if (request.mode === 'navigate' && !url.pathname.startsWith('/login') && !url.pathname.startsWith('/password')) {
+    } else if (request.mode === 'navigate' && !url.pathname.startsWith('/login')) {
         event.respondWith(networkFirst(request));
     }
 });

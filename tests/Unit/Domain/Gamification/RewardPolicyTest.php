@@ -21,7 +21,7 @@ final class RewardPolicyTest extends TestCase
     public function testRewardTable(?Quadrant $quadrant, ?string $dueOn, int $streak, int $xp, int $coins): void
     {
         $now = new \DateTimeImmutable(self::TODAY.' 09:00');
-        $task = Task::create(User::invite('louis@example.com', 'Louis', 'Europe/Paris', $now), 'Vet', $now);
+        $task = Task::create(User::join('account', 'louis@example.com', 'Louis', 'Europe/Paris', $now), 'Vet', $now);
         if (null !== $quadrant) {
             $task->classify($quadrant, 0);
         }

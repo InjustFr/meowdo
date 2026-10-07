@@ -7,16 +7,14 @@ namespace App\Infrastructure\Security;
 use App\Domain\Identity\Language;
 use App\Domain\Identity\Theme;
 use App\Domain\Identity\User;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Ulid;
 
-final class SecurityUser implements UserInterface, PasswordAuthenticatedUserInterface
+final class SecurityUser implements UserInterface
 {
     private function __construct(
         public readonly Ulid $id,
         public readonly string $email,
-        private readonly ?string $passwordHash,
         public readonly string $displayName,
         public readonly ?Language $language,
         public readonly ?Theme $theme,
@@ -25,16 +23,12 @@ final class SecurityUser implements UserInterface, PasswordAuthenticatedUserInte
 
     public static function fromUser(User $user): self
     {
-        return new self($user->id(), $user->email(), $user->passwordHash(), $user->displayName(), $user->language(), $user->theme());
+        return new self($user->id(), $user->email(), $user->displayName(), $user->language(), $user->theme());
     }
 
     public function getUserIdentifier(): string
     {
-        if ('' === $this->email) {
-            throw new \LogicException('A signed-in user always has an email address.');
-        }
-
-        return $this->email;
+        return $this->id->toBase32();
     }
 
     public function getRoles(): array
@@ -42,29 +36,22 @@ final class SecurityUser implements UserInterface, PasswordAuthenticatedUserInte
         return ['ROLE_USER'];
     }
 
-    public function getPassword(): ?string
-    {
-        return $this->passwordHash;
-    }
-
     public function __serialize(): array
     {
         return [
             'id' => (string) $this->id,
             'email' => $this->email,
-            'password' => null === $this->passwordHash ? null : hash('crc32c', $this->passwordHash),
             'displayName' => $this->displayName,
             'language' => $this->language?->value,
             'theme' => null === $this->theme ? null : [$this->theme->background, $this->theme->accent],
         ];
     }
 
-    /** @param array{id: string, email: string, password: ?string, displayName: string, language?: ?string, theme?: ?array{string, string}} $data */
+    /** @param array{id: string, email: string, displayName: string, language?: ?string, theme?: ?array{string, string}} $data */
     public function __unserialize(array $data): void
     {
         $this->id = Ulid::fromString($data['id']);
         $this->email = $data['email'];
-        $this->passwordHash = $data['password'];
         $this->displayName = $data['displayName'];
         $this->language = Language::tryFrom($data['language'] ?? '');
         $this->theme = isset($data['theme']) ? Theme::of(...$data['theme']) : null;

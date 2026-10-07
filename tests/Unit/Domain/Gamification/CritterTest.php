@@ -19,7 +19,7 @@ final class CritterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->owner = User::invite('louis@example.com', 'Louis', 'Europe/Paris', new \DateTimeImmutable('2026-10-06 09:00'));
+        $this->owner = User::join('account', 'louis@example.com', 'Louis', 'Europe/Paris', new \DateTimeImmutable('2026-10-06 09:00'));
     }
 
     public function testAdoptedCritterWearsNothing(): void

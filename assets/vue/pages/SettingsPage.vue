@@ -74,10 +74,13 @@ function toggleSound(value) {
             <AppearanceSettings />
         </PageSection>
         <PageSection :title="t('settings.account')">
-            <form method="post" action="/logout" class="settings__logout">
-                <input type="hidden" name="_csrf_token" :value="session?.logoutToken">
-                <BaseButton type="submit" variant="secondary">{{ t('settings.logout') }}</BaseButton>
-            </form>
+            <div class="settings__account">
+                <BaseButton v-if="session?.accountsUrl" :href="session.accountsUrl" variant="secondary">{{ t('settings.manageAccount') }}</BaseButton>
+                <form method="post" action="/logout">
+                    <input type="hidden" name="_csrf_token" :value="session?.logoutToken">
+                    <BaseButton type="submit" variant="secondary">{{ t('settings.logout') }}</BaseButton>
+                </form>
+            </div>
         </PageSection>
         <RouterLink to="/credits" class="settings__credits">{{ t('settings.credits') }}</RouterLink>
     </div>
@@ -91,5 +94,6 @@ function toggleSound(value) {
 .switch__thumb { display: block; width: 1.125rem; height: 1.125rem; border-radius: 50%; background: var(--color-surface); box-shadow: var(--shadow); transform: translateX(0.1875rem); transition: transform var(--transition); }
 .switch__thumb[data-state="checked"] { transform: translateX(1.1875rem); }
 .settings__intro { max-width: 36rem; color: var(--color-muted); font-size: var(--font-size-md); }
+.settings__account { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .settings__credits { color: var(--color-muted); font-size: var(--font-size-sm); }
 </style>

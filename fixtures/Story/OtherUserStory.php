@@ -24,7 +24,8 @@ final class OtherUserStory extends Story
     public function build(): void
     {
         $now = $this->clock->now();
-        $user = UserFactory::new()->withPassword('mossydewmossydew')->create([
+        $user = UserFactory::createOne([
+            'accountId' => 'other',
             'email' => 'other@mossydew.local',
             'displayName' => 'Other',
             'timezone' => 'America/New_York',

@@ -5,7 +5,7 @@ This folder is all a server needs: `compose.yaml` runs the app image (FrankenPHP
 ## Prerequisites
 
 - Docker Engine with the Compose plugin (`docker compose version`).
-- An SMTP account to send invitation and password emails.
+- A [mossyleaf accounts](../../mossyleaf-accounts/deploy/README.md) server (Authentik) with the `mossydew` OIDC application: people sign in there.
 - A reverse proxy (Caddy, nginx, Traefik…) that terminates HTTPS and forwards to the port you choose below.
 
 ## First install
@@ -28,7 +28,8 @@ Fill `.env`:
 | `DEFAULT_URI` | Public URL, e.g. `https://mossydew.example.com` (used in email links) |
 | `APP_SECRET` | `openssl rand -hex 32` |
 | `POSTGRES_PASSWORD` | `openssl rand -hex 24` (`POSTGRES_DB` / `POSTGRES_USER` can stay `app`) |
-| `MAILER_DSN` / `MAILER_FROM` | SMTP DSN (`smtp://user:pass@smtp.example.com:587`) and sender address |
+| `OIDC_CLIENT_SECRET` | Client secret of the `mossydew` application in mossyleaf accounts (`MOSSYDEW_CLIENT_SECRET` in its `.env`) |
+| `ACCOUNTS_URL` | Optional, defaults to `https://accounts.mossyleaf.studio`; the `OIDC_*_URL` endpoints derive from it (override `OIDC_TOKEN_URL`/`OIDC_USERINFO_URL` to reach Authentik through an internal URL) |
 
 Never change `APP_SECRET` or `POSTGRES_PASSWORD` after the first start: sessions, remember-me cookies and the database depend on them. Keep a copy of `.env` with your backups.
 
@@ -42,14 +43,11 @@ docker compose logs -f app
 
 On every start the app waits for the database, runs pending migrations, warms the cache, then serves HTTP on `APP_PORT`.
 
-## First user
+## Accounts
 
-There is no sign-up page. Create an account (it gets its player profile and cat); it receives an email to choose its password:
+There is no sign-up, password or invitation in MossyDew: people sign in with their mossyleaf account. To let someone in, invite them in mossyleaf accounts with the `mossydew` group (`make invite EMAIL=… NAME=… GROUPS=mossydew` in `mossyleaf-accounts`). Their first sign-in creates their MossyDew profile and critter.
 
-```bash
-docker compose exec app php bin/console app:user:create you@example.com --name=You --cat=Mochi --coat=ginger --timezone=Europe/Paris
-docker compose exec app php bin/console app:user:invite you@example.com   # resend a fresh invitation (earlier link stops working)
-```
+Users created before mossyleaf accounts keep all their data: the first time they sign in with an account that has **the same email**, MossyDew links it to them. So invite every existing user with the email they already use here (`docker compose exec -T database psql -U app app -c 'select email from app_user where account_id is null'` lists those not linked yet).
 
 ## Reverse proxy
 
@@ -111,7 +109,7 @@ docker compose down -v         # stop and DELETE the database
 
 ## duprat.cloud setup
 
-On `debian@duprat.cloud` the app does not publish a port: `compose.override.yaml` (server only) joins the shared nginx network `docker-onlyoffice-nextcloud_default` with the alias `mossydew`, and the `mossydew.duprat.cloud` server block in `/mnt/docker-onlyoffice-nextcloud/data/nginx/default.conf` proxies to `http://mossydew`. The TLS certificate is the shared `duprat.cloud` Let's Encrypt certificate (certbot `--expand` with `-d mossydew.duprat.cloud` added).
+On `debian@duprat.cloud` the app does not publish a port: `compose.override.yaml` (server only) joins the shared nginx network `docker-onlyoffice-nextcloud_default` with the alias `mossydew`, and the `mossydew.mossyleaf.studio` server block in `/mnt/docker-onlyoffice-nextcloud/data/nginx/default.conf` proxies to `http://mossydew`. The TLS certificate is the shared `duprat.cloud` Let's Encrypt certificate (certbot `--expand` with `-d mossydew.mossyleaf.studio` added).
 
 ```yaml
 services:

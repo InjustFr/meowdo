@@ -19,12 +19,22 @@ trait ActsAsUser
     protected static function createUser(?string $email = null, string $timezone = 'Europe/Paris', string $critterName = 'Pip'): User
     {
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
-        $user = User::invite($email ?? \sprintf('%s@mossydew.test', strtolower((string) new Ulid())), 'Louis', $timezone, Clock::get()->now());
-        $user->changePassword('not-a-real-hash');
+        $id = strtolower((string) new Ulid());
+        $user = User::join($id, $email ?? \sprintf('%s@mossydew.test', $id), 'Louis', $timezone, Clock::get()->now());
         $entityManager->persist($user);
         $entityManager->persist(Player::start($user));
         $entityManager->persist(Critter::adopt($user, $critterName, Tint::Sprout));
         $entityManager->flush();
+
+        return $user;
+    }
+
+    protected static function createUserFromBeforeAccounts(string $email): User
+    {
+        $user = self::createUser($email);
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->getConnection()->executeStatement('UPDATE app_user SET account_id = NULL WHERE id = ?', [$user->id()->toRfc4122()]);
+        $entityManager->clear();
 
         return $user;
     }

@@ -41,6 +41,6 @@ final class ProjectTest extends TestCase
     {
         $now = new \DateTimeImmutable('2026-10-06 09:00');
 
-        return Project::create(User::invite('louis@example.com', 'Louis', 'Europe/Paris', $now), $name, ProjectColor::Berry, $now);
+        return Project::create(User::join('account', 'louis@example.com', 'Louis', 'Europe/Paris', $now), $name, ProjectColor::Berry, $now);
     }
 }

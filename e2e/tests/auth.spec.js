@@ -1,24 +1,29 @@
 import { expect, test } from '@playwright/test';
-import { DEMO, signIn } from './support/session.js';
+import { signIn, signInWithAccount, unique } from './support/session.js';
 
-test('a wrong password is refused', async ({ page }) => {
+test('signed-out visitors sign in with their mossyleaf account', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveURL(/\/login$/);
-    await page.getByLabel('Email').fill(DEMO.email);
-    await page.getByLabel('Password').fill('not-the-password');
-    await page.getByRole('button', { name: 'Sign in' }).click();
-    await expect(page.getByRole('alert')).toHaveText('Incorrect email or password.');
-});
-
-test('signing in opens today with the critter in its moss', async ({ page }) => {
-    await signIn(page);
+    await expect(page).toHaveURL(/\/authorize\?/);
+    await signInWithAccount(page, 'demo');
+    await page.waitForURL('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
     await expect(page.locator('.shell__desk .critter-desk__name')).toHaveText('Pip');
 });
 
-test('forgot password always answers the same way', async ({ page }) => {
-    await page.goto('/password/forgot');
-    await page.getByLabel('Email').fill('nobody@mossydew.local');
-    await page.getByRole('button', { name: 'Send the link' }).click();
-    await expect(page.getByRole('status')).toContainText('If an account exists for nobody@mossydew.local');
+test('a new mossyleaf account finds a critter waiting in its moss', async ({ page }) => {
+    const account = unique('fern').replace(' ', '-');
+    await page.goto('/login');
+    await signInWithAccount(page, account, { email: `${account}@mossyleaf.test`, name: 'Fern' });
+    await page.waitForURL('/');
+    await expect(page.locator('.shell__desk .critter-desk__name')).toHaveText('Pip');
+    await page.goto('/settings');
+    await expect(page.getByText(`${account}@mossyleaf.test`)).toBeVisible();
+});
+
+test('signing out also signs out of the mossyleaf account', async ({ page }) => {
+    await signIn(page);
+    await page.goto('/settings');
+    await page.getByRole('button', { name: 'Sign out' }).click();
+    await expect(page.locator('input[name="username"]')).toBeVisible();
+    await expect(page).toHaveURL(/\/authorize\?/);
 });

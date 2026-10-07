@@ -283,6 +283,6 @@ final class TaskTest extends TestCase
 
     private function user(string $email): User
     {
-        return User::invite($email, 'Louis', 'Europe/Paris', new \DateTimeImmutable(self::NOW));
+        return User::join('account', $email, 'Louis', 'Europe/Paris', new \DateTimeImmutable(self::NOW));
     }
 }
