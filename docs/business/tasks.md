@@ -7,10 +7,10 @@
 - **T5** **Upcoming** shows open tasks planned over 7 days, starting today (or a chosen day). — `ListUpcomingTasksHandler`
 - **T6** **Inbox** = open tasks without a project. — `ListInboxTasksHandler`
 - **T7** Deleting a project keeps its tasks, which move to the inbox. — `Task.project` `onDelete: SET NULL`
-- **T8** Project names are unique per user (case-insensitive), ≤ 60 chars, with one of 8 colours. — `CreateProjectHandler`, `EditProjectHandler`, `ProjectColor`
+- **T8** Project names are unique per user (case-insensitive), ≤ 60 chars, with one of 8 colours (berry, honey, moss, fjord, heather, blossom, lichen, rust). — `CreateProjectHandler`, `EditProjectHandler`, `ProjectColor`
 
 ## Eisenhower matrix
 
-- **M1** Quadrants: Pounce = urgent & important (`DoFirst`), Stalk = important, not urgent (`Schedule`), Swat away = urgent, not important (`Delegate`), Nap on it = neither (`Eliminate`). A task may be unsorted.
+- **M1** Quadrants: Water = urgent & important (`DoFirst`), Plant = important, not urgent (`Schedule`), Trim = urgent, not important (`Delegate`), Compost = neither (`Eliminate`). A task may be unsorted.
 - **M2** Inside a quadrant, tasks have a rank set by drag and drop; a task newly put in a quadrant goes last. Done tasks cannot be reordered. — `ReorderQuadrantHandler`, `ClassifyTaskHandler`
-- **M3** **Ordering rule of every list**: open before done → Pounce, Stalk, Swat away, Nap on it, unsorted → rank → deadline (none last) → creation. — `DoctrineTaskQueries::ordered()`, mirrored by `assets/vue/tasks/compareTasks.js`
+- **M3** **Ordering rule of every list**: open before done → Water, Plant, Trim, Compost, unsorted → rank → deadline (none last) → creation. — `DoctrineTaskQueries::ordered()`, mirrored by `assets/vue/tasks/compareTasks.js`

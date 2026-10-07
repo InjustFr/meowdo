@@ -16,7 +16,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-    <AuthLayout :title="t('auth.login.title')" :mood="notice ? 'purring' : 'sleepy'">
+    <AuthLayout :title="t('auth.login.title')" :mood="notice ? 'lively' : 'dormant'">
         <AuthMessage v-if="notice" variant="success">{{ notice }}</AuthMessage>
         <AuthMessage v-if="error">{{ error }}</AuthMessage>
         <form class="auth-form" method="post" action="/login">

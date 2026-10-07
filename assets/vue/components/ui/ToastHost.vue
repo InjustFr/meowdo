@@ -28,10 +28,11 @@ const { toasts, dismiss } = useToast();
 
 <style>
 .toast-host { position: fixed; right: var(--space-4); bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); z-index: 100; display: flex; flex-direction: column; gap: var(--space-2); width: min(24rem, calc(100vw - 2 * var(--space-4))); margin: 0; padding: 0; list-style: none; outline: none; }
-.toast { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-control); background: var(--moonmilk); color: var(--night); font-weight: 600; box-shadow: var(--shadow); }
-.toast--error { background: var(--coral); }
+.toast { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-left: 0.25rem solid var(--color-accent); border-radius: var(--radius); background: var(--color-surface); color: var(--color-ink); box-shadow: var(--shadow); }
+.toast--error { border-left-color: var(--color-danger); }
 .toast__message { flex: 1; }
-.toast__close { display: inline-flex; border: none; background: none; color: inherit; opacity: 0.7; cursor: pointer; }
+.toast__close { display: inline-flex; border: none; background: none; color: var(--color-muted); cursor: pointer; }
+.toast__close:hover { color: var(--color-ink); }
 .toast[data-state="open"] { animation: toast-in var(--transition); }
 .toast[data-state="closed"] { animation: toast-out var(--transition); }
 .toast[data-swipe="move"] { transform: translateX(var(--reka-toast-swipe-move-x)); }

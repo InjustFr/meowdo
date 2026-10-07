@@ -1,15 +1,15 @@
 import { reactive } from 'vue';
 import { useSound } from './useSound.js';
 
-const state = reactive({ slaps: 0, bursts: [], levelUp: null, achievements: [] });
+const state = reactive({ drops: 0, bursts: [], levelUp: null, achievements: [] });
 let nextId = 1;
 
 export function useCelebration() {
-    const { bongo } = useSound();
+    const { drip } = useSound();
 
     function reward({ reward, leveledUpTo }) {
-        state.slaps += 1;
-        bongo();
+        state.drops += 1;
+        drip();
         if (reward) {
             const burst = { id: nextId++, xp: reward.xp, coins: reward.coins };
             state.bursts.push(burst);

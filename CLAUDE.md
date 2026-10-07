@@ -1,6 +1,6 @@
-# Meowdo — project guide for Claude
+# MossyDew — project guide for Claude
 
-Cat-themed, gamified task manager. Tasks (with a planned day and an optional deadline) live in projects or in the inbox; **Today** is a work context that gathers tasks from every project; the **Eisenhower matrix** orders every list; completing tasks earns XP, coins and streaks that feed a cat companion, a cosmetic shop and achievements.
+Gamified task manager from the MossyTrunk ecosystem, with a moss piglet (tardigrade) companion. Tasks (with a planned day and an optional deadline) live in projects or in the inbox; **Today** is a work context that gathers tasks from every project; the **Eisenhower matrix** orders every list; completing tasks earns XP, coins and streaks that feed the critter companion, a cosmetic shop and achievements.
 UI languages: **English and French**. URLs, code, commits: **English**.
 
 **Business rules live in [`docs/business/`](docs/business/README.md)** — read the relevant page before touching a domain concept, and update it in the same commit when a rule changes.
@@ -31,7 +31,7 @@ make test            # PHPUnit; make test-unit / test-functional
 make test-js         # Vitest
 make deptrac / make cs / make cs-fix / make phpstan   # keep all at 0
 make e2e             # Playwright against php-e2e (APP_ENV=test)
-docker compose exec php php bin/console app:user:create <email> --name=<name> --cat=<cat name> --coat=<coat> --timezone=Europe/Paris
+docker compose exec php php bin/console app:user:create <email> --name=<name> --critter=<critter name> --tint=<tint> --timezone=Europe/Paris
 docker compose exec php php bin/console app:user:invite <email>   # resend the invitation
 ```
 
@@ -55,20 +55,20 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 
 ## Accounts & security
 
-- **No registration page**: `app:user:create` creates the user, their player profile and cat, and emails an invitation link (Mailpit: http://localhost:8026) to choose a password (`/password/set`). Forgot password: `/password/forgot`. Same flow as MossyTrunk.
+- **No registration page**: `app:user:create` creates the user, their player profile and critter, and emails an invitation link (Mailpit: http://localhost:8026) to choose a password (`/password/set`). Forgot password: `/password/forgot`. Same flow as MossyTrunk.
 - Session firewall with `form_login` (`/login`), sessions in PostgreSQL (`PdoSessionHandler`), remember-me always on (so phones stay signed in), CSRF logout. The JSON API uses the session cookie; `SameOriginGuard` rejects cross-site writes.
 - Sync between devices = same account; the server is the source of truth, the SPA refetches on focus and every minute while visible.
 
 ## Frontend — `assets/`
 
 - `app.js` mounts the SPA in `templates/app.html.twig` (`#app-session`, `#app-preload` filled by `AppShellController` through `ApiPreload`). A new page that loads data on mount adds its URL to `AppShellController::pageUrls()`.
-- `vue/layouts/AppShell.vue` keeps the rail/tab bar and the **CatDesk** mounted across routes. Pages are thin orchestrators.
+- `vue/layouts/AppShell.vue` keeps the rail/tab bar and the **CritterDesk** mounted across routes. Pages are thin orchestrators.
 - Data goes through `composables/useApi.js` (`load` = stale-while-revalidate, writes send `X-Refresh`, see MossyTrunk). Task ordering on the client uses `vue/tasks/compareTasks.js`, which must match `DoctrineTaskQueries::ordered()` (Vitest covers it).
 - Interactive widgets on **Reka UI**; icons **Lucide** (`size` in rem); no native select/checkbox/date inputs.
-- CSS: BEM, `<style scoped>`, tokens in `assets/styles/tokens.css`, **rem only** (except inside SVG drawings such as `CatSvg.vue`, whose transforms and font sizes are in viewBox user units). Dark theme first ("midnight desk": blue-violet night, warm lamp light). Fonts: Bagel Fat One (display), Atkinson Hyperlegible Next (text), self-hosted via `@fontsource`.
+- CSS: BEM, `<style scoped>`, tokens in `assets/styles/tokens.css`, **rem only** (except inside SVG drawings such as `CritterSvg.vue`, whose transforms and font sizes are in viewBox user units). Same look as MossyTrunk: tokens derived from the user's theme (`--theme-background`, `--theme-accent` on `<html>`, chosen in Settings › Appearance, same five presets as MossyTrunk, default mossy green on light grey): never hardcode a colour outside SVG drawings. White surfaces, thin borders, `--radius` 0.5rem. Fonts: Patua One (display, lowercase `mossydew` wordmark), Inter (text), self-hosted via `@fontsource`.
 - **Never hardcode a user-visible string**: vue-i18n keys from `assets/vue/i18n/<locale>/<namespace>.json` (same keys in every locale).
-- Motion: one bold moment — the cat slapping the bongo on completion. `prefers-reduced-motion` disables it.
-- Assets: hand-built SVG only (cat, cosmetics), no AI-generated images; every third-party asset is listed with its licence in `docs/assets.md` and on `/credits`.
+- Motion: one bold moment — a dewdrop falling on the critter on completion. `prefers-reduced-motion` disables it.
+- Assets: hand-built SVG only (critter, cosmetics), no AI-generated images; every third-party asset is listed with its licence in `docs/assets.md` and on `/credits`.
 
 ## Testing expectations
 
@@ -77,7 +77,7 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 
 ## Differences from MossyTrunk
 
-- Vite + vue-router SPA instead of Encore + UX Vue + Turbo (the cat companion stays mounted between pages).
+- Vite + vue-router SPA instead of Encore + UX Vue + Turbo (the critter companion stays mounted between pages).
 - Owner scoping instead of workspaces; every user has their own data.
 - Vitest for pure JS modules.
 

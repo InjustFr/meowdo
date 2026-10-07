@@ -9,7 +9,7 @@ defineProps({
 </template>
 
 <style scoped>
-.auth-message { padding: var(--space-3); border-radius: var(--radius-control); font-size: var(--font-size-md); }
-.auth-message--error { background: var(--color-danger-soft); color: var(--coral); }
-.auth-message--success { background: var(--color-success-soft); color: var(--catnip); }
+.auth-message { padding: var(--space-3); border-radius: var(--radius); font-size: var(--font-size-md); }
+.auth-message--error { background: var(--color-danger-soft); color: var(--color-danger); }
+.auth-message--success { background: var(--color-success-soft); color: var(--color-success); }
 </style>

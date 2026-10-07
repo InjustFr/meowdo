@@ -1,4 +1,4 @@
-# Meowdo — running on a server
+# MossyDew — running on a server
 
 This folder is all a server needs: `compose.yaml` runs the app image (FrankenPHP, assets built in) and a PostgreSQL 18 database. No source checkout, no PHP or Node on the host.
 
@@ -11,7 +11,7 @@ This folder is all a server needs: `compose.yaml` runs the app image (FrankenPHP
 ## First install
 
 ```bash
-mkdir -p ~/meowdo && cd ~/meowdo
+mkdir -p ~/mossydew && cd ~/mossydew
 # copy compose.yaml, .env.dist and README.md here (`make deploy-files DEPLOY_HOST=user@server` from a dev machine does it)
 cp .env.dist .env
 chmod 600 .env
@@ -21,11 +21,11 @@ Fill `.env`:
 
 | Variable | Value |
 |---|---|
-| `IMAGE` / `TAG` | Image to run, e.g. `docker.io/injust/meowdo` / `latest` or a commit tag |
+| `IMAGE` / `TAG` | Image to run, e.g. `docker.io/injust/mossydew` / `latest` or a commit tag |
 | `APP_PORT` | Host port the app listens on (the proxy targets it) |
 | `APP_BIND` | `0.0.0.0` when the proxy is on another machine, `127.0.0.1` when it runs on this server |
 | `TRUSTED_PROXIES` | Who may set `X-Forwarded-*`: the proxy IP/CIDR (e.g. `203.0.113.10`), `private_ranges`, or `REMOTE_ADDR` (trust whoever connects — only when a firewall lets nothing but the proxy reach `APP_PORT`) |
-| `DEFAULT_URI` | Public URL, e.g. `https://meowdo.example.com` (used in email links) |
+| `DEFAULT_URI` | Public URL, e.g. `https://mossydew.example.com` (used in email links) |
 | `APP_SECRET` | `openssl rand -hex 32` |
 | `POSTGRES_PASSWORD` | `openssl rand -hex 24` (`POSTGRES_DB` / `POSTGRES_USER` can stay `app`) |
 | `MAILER_DSN` / `MAILER_FROM` | SMTP DSN (`smtp://user:pass@smtp.example.com:587`) and sender address |
@@ -58,7 +58,7 @@ The app speaks plain HTTP. The proxy must forward `Host` and the `X-Forwarded-Fo
 Caddy:
 
 ```caddyfile
-meowdo.example.com {
+mossydew.example.com {
     reverse_proxy app-server:8080
 }
 ```
@@ -68,7 +68,7 @@ nginx:
 ```nginx
 server {
     listen 443 ssl;
-    server_name meowdo.example.com;
+    server_name mossydew.example.com;
 
     location / {
         proxy_pass http://app-server:8080;
@@ -82,12 +82,12 @@ server {
 
 ## Update / rollback
 
-Every push to `main` runs the full test suite (`make ci`) and, only if it passes, publishes `docker.io/injust/meowdo:<short sha>` and `:latest` (GitHub Actions, [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)). `make deploy` refuses a commit whose image is not published, so only tested commits reach the server. The image is public: the server pulls it without `docker login`.
+Every push to `main` runs the full test suite (`make ci`) and, only if it passes, publishes `docker.io/injust/mossydew:<short sha>` and `:latest` (GitHub Actions, [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)). `make deploy` refuses a commit whose image is not published, so only tested commits reach the server. The image is public: the server pulls it without `docker login`.
 
 From a dev machine, once the Actions run for the commit is green:
 
 ```bash
-make deploy      # defaults to DEPLOY_HOST=debian@duprat.cloud DEPLOY_DIR=/mnt/meowdo REMOTE_DOCKER="sudo -n docker"; override them for another server
+make deploy      # defaults to DEPLOY_HOST=debian@duprat.cloud DEPLOY_DIR=/mnt/mossydew REMOTE_DOCKER="sudo -n docker"; override them for another server
 ```
 
 It writes `IMAGE` and `TAG` (the current commit, override with `TAG=<sha>`) into the server `.env`, pulls the image and restarts the app. By hand on the server:
@@ -111,7 +111,7 @@ docker compose down -v         # stop and DELETE the database
 
 ## duprat.cloud setup
 
-On `debian@duprat.cloud` the app does not publish a port: `compose.override.yaml` (server only) joins the shared nginx network `docker-onlyoffice-nextcloud_default` with the alias `meowdo`, and the `meowdo.duprat.cloud` server block in `/mnt/docker-onlyoffice-nextcloud/data/nginx/default.conf` proxies to `http://meowdo`. The TLS certificate is the shared `duprat.cloud` Let's Encrypt certificate (certbot `--expand` with `-d meowdo.duprat.cloud` added).
+On `debian@duprat.cloud` the app does not publish a port: `compose.override.yaml` (server only) joins the shared nginx network `docker-onlyoffice-nextcloud_default` with the alias `mossydew`, and the `mossydew.duprat.cloud` server block in `/mnt/docker-onlyoffice-nextcloud/data/nginx/default.conf` proxies to `http://mossydew`. The TLS certificate is the shared `duprat.cloud` Let's Encrypt certificate (certbot `--expand` with `-d mossydew.duprat.cloud` added).
 
 ```yaml
 services:
@@ -121,7 +121,7 @@ services:
       default:
       proxy:
         aliases:
-          - meowdo
+          - mossydew
 networks:
   proxy:
     name: docker-onlyoffice-nextcloud_default

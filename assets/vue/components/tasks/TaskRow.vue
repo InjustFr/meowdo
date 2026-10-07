@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { AlignLeft, Sun } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import IconButton from '../ui/IconButton.vue';
-import PawCheck from './PawCheck.vue';
+import DropCheck from './DropCheck.vue';
 import PlanMenu from './PlanMenu.vue';
 import TaskMenu from './TaskMenu.vue';
 import { useDates } from '../../composables/useDates.js';
@@ -77,7 +77,7 @@ function onKeydown(event) {
         :data-task="task.id"
         @keydown="onKeydown"
     >
-        <PawCheck :done="task.done" :label="t(task.done ? 'tasks.reopen' : 'tasks.complete', { title: task.title })" @toggle="toggle" />
+        <DropCheck :done="task.done" :label="t(task.done ? 'tasks.reopen' : 'tasks.complete', { title: task.title })" @toggle="toggle" />
         <div class="task-row__main">
             <button type="button" class="task-row__title" @click="editor.edit(task)">{{ task.title }}</button>
             <p v-if="(showProject && project) || plannedLabel || dueLabel || task.notes" class="task-row__meta">
@@ -109,16 +109,17 @@ function onKeydown(event) {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    min-height: 3.5rem;
+    min-height: 3.25rem;
     padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
-    border-radius: var(--radius-row);
+    border: 0.0625rem solid var(--color-border);
+    border-radius: var(--radius);
     background: var(--color-surface);
     outline: none;
     transition: background var(--transition), opacity var(--transition);
 }
 
-.task-row::before { content: ""; position: absolute; top: 0.625rem; bottom: 0.625rem; left: 0; width: 0.25rem; border-radius: 0 0.25rem 0.25rem 0; background: var(--notch); }
-.task-row:hover, .task-row:focus-within { background: var(--color-raised); }
+.task-row::before { content: ""; position: absolute; top: 0.625rem; bottom: 0.625rem; left: -0.0625rem; width: 0.1875rem; border-radius: 0 0.125rem 0.125rem 0; background: var(--notch); }
+.task-row:hover, .task-row:focus-within { border-color: var(--color-border-strong); }
 .task-row:focus-visible { box-shadow: var(--focus-ring); }
 
 .task-row--do_first { --notch: var(--quadrant-do-first); }
@@ -127,19 +128,19 @@ function onKeydown(event) {
 .task-row--eliminate { --notch: var(--quadrant-eliminate); }
 
 .task-row__main { display: flex; flex: 1; flex-direction: column; min-width: 0; }
-.task-row__title { padding: 0; border: none; background: none; color: var(--color-text); font-size: var(--font-size); text-align: left; overflow-wrap: anywhere; cursor: pointer; }
-.task-row__title:hover { color: var(--color-accent); }
+.task-row__title { padding: 0; border: none; background: none; color: var(--color-ink); font-size: var(--font-size); text-align: left; overflow-wrap: anywhere; cursor: pointer; }
+.task-row__title:hover { color: var(--color-accent-strong); }
 .task-row__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3); color: var(--color-muted); font-size: var(--font-size-sm); }
 .task-row__project { display: inline-flex; align-items: center; gap: var(--space-1); }
 .task-row__project::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--project); }
-.task-row__due--overdue { color: var(--coral); font-weight: 700; }
+.task-row__due--overdue { color: var(--color-danger); font-weight: 600; }
 .task-row__notes { color: var(--color-subtle); }
 .task-row__actions { display: flex; align-items: center; flex-shrink: 0; }
-.task-row__sun[aria-pressed="true"] { color: var(--lamp); }
+.task-row__sun[aria-pressed="true"] { color: var(--color-warning); }
 
-.task-row--done { background: transparent; }
+.task-row--done { border-color: transparent; background: transparent; }
 .task-row--done::before { opacity: 0.3; }
-.task-row--done .task-row__title { color: var(--color-subtle); text-decoration: line-through; text-decoration-color: var(--color-line-strong); }
+.task-row--done .task-row__title { color: var(--color-subtle); text-decoration: line-through; text-decoration-color: var(--color-border-strong); }
 
 .task-row--compact { min-height: 3rem; gap: var(--space-2); padding-left: var(--space-3); cursor: grab; }
 .task-row--compact .task-row__title { font-size: var(--font-size-md); }

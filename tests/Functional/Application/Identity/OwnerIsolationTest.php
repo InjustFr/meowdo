@@ -89,7 +89,7 @@ final class OwnerIsolationTest extends KernelTestCase
             self::getContainer()->get(DeleteTaskHandler::class)($task);
         }, 'task'];
         yield 'list project tasks' => [static fn (Ulid $task, Ulid $project): mixed => self::getContainer()->get(ListProjectTasksHandler::class)($project), 'project'];
-        yield 'edit project' => [static fn (Ulid $task, Ulid $project): mixed => self::getContainer()->get(EditProjectHandler::class)(new EditProject($project, 'Mine now', ProjectColor::Sky)), 'project'];
+        yield 'edit project' => [static fn (Ulid $task, Ulid $project): mixed => self::getContainer()->get(EditProjectHandler::class)(new EditProject($project, 'Mine now', ProjectColor::Fjord)), 'project'];
         yield 'delete project' => [static function (Ulid $task, Ulid $project): void {
             self::getContainer()->get(DeleteProjectHandler::class)($project);
         }, 'project'];

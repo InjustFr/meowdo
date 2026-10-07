@@ -39,9 +39,9 @@ const creating = ref(false);
 
 <style scoped>
 .projects { display: flex; flex-direction: column; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
-.projects__link { --project: var(--color-line-strong); display: flex; align-items: center; gap: var(--space-3); min-height: 3.5rem; padding: var(--space-2) var(--space-4); border-radius: var(--radius-row); background: var(--color-surface); color: var(--color-text); text-decoration: none; }
+.projects__link { --project: var(--color-border-strong); display: flex; align-items: center; gap: var(--space-3); min-height: 3.5rem; padding: var(--space-2) var(--space-4); border-radius: var(--radius); background: var(--color-surface); color: var(--color-text); text-decoration: none; }
 .projects__link::before { content: ""; width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--project); }
-.projects__link:hover { background: var(--color-raised); }
+.projects__link:hover { background: var(--color-surface); }
 .projects__name { flex: 1; font-weight: 700; }
 .projects__count { color: var(--color-muted); }
 </style>

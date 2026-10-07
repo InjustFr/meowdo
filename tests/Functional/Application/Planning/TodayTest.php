@@ -54,12 +54,12 @@ final class TodayTest extends KernelTestCase
     {
         self::actAsNewUser();
         self::createTask('Unsorted', PlanShortcut::Today);
-        self::createTask('Nap', PlanShortcut::Today, quadrant: Quadrant::Eliminate);
-        self::createTask('Pounce', PlanShortcut::Today, quadrant: Quadrant::DoFirst);
-        self::createTask('Stalk', PlanShortcut::Today, quadrant: Quadrant::Schedule);
-        self::createTask('Swat', PlanShortcut::Today, quadrant: Quadrant::Delegate);
+        self::createTask('Compost', PlanShortcut::Today, quadrant: Quadrant::Eliminate);
+        self::createTask('Water', PlanShortcut::Today, quadrant: Quadrant::DoFirst);
+        self::createTask('Plant', PlanShortcut::Today, quadrant: Quadrant::Schedule);
+        self::createTask('Trim', PlanShortcut::Today, quadrant: Quadrant::Delegate);
 
-        self::assertSame(['Pounce', 'Stalk', 'Swat', 'Nap', 'Unsorted'], self::titles($this->listToday()->today));
+        self::assertSame(['Water', 'Plant', 'Trim', 'Compost', 'Unsorted'], self::titles($this->listToday()->today));
     }
 
     public function testTodayStartsAtMidnightInTheUsersTimezone(): void

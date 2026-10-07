@@ -6,11 +6,11 @@ PHP = $(EXEC) php
 CONSOLE = $(PHP) php bin/console
 PLAYWRIGHT_ARGS ?=
 
-IMAGE ?= docker.io/injust/meowdo
+IMAGE ?= docker.io/injust/mossydew
 TAG ?= $(shell git rev-parse --short=7 HEAD)
 PLATFORM ?= linux/amd64
 DEPLOY_HOST ?= debian@duprat.cloud
-DEPLOY_DIR ?= /mnt/meowdo
+DEPLOY_DIR ?= /mnt/mossydew
 REMOTE_DOCKER ?= sudo -n docker
 E2E_ASSETS_DIR ?= build-e2e
 CI_BUNDLE ?= ci-build.tgz

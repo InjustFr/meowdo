@@ -7,7 +7,7 @@ test('a task added on one device shows up on another when it comes back', async 
     await signIn(phone);
     await signIn(laptop);
 
-    const task = unique('Buy cat food');
+    const task = unique('Water the ferns');
     await phone.getByLabel('New task').fill(task);
     await phone.getByLabel('New task').press('Enter');
     await expect(row(phone, task)).toBeVisible();

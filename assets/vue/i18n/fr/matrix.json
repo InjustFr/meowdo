@@ -9,22 +9,22 @@
     "notImportant": "Pas important",
     "quadrants": {
         "do_first": {
-            "name": "Bondir",
+            "name": "Arroser",
             "plain": "Urgent et important",
             "advice": "à faire tout de suite"
         },
         "schedule": {
-            "name": "Guetter",
+            "name": "Planter",
             "plain": "Important, pas urgent",
             "advice": "à planifier"
         },
         "delegate": {
-            "name": "Chasser d’un coup de patte",
+            "name": "Tailler",
             "plain": "Urgent, pas important",
             "advice": "à déléguer ou expédier"
         },
         "eliminate": {
-            "name": "Faire la sieste",
+            "name": "Composter",
             "plain": "Ni l’un ni l’autre",
             "advice": "à abandonner ou garder pour la fin"
         }

@@ -25,13 +25,13 @@
         "create": "Créer le projet"
     },
     "colors": {
-        "coral": "Corail",
-        "lamp": "Jaune lampe",
-        "catnip": "Vert herbe à chat",
-        "sky": "Bleu ciel",
-        "lavender": "Lavande",
-        "yarn": "Rose pelote",
-        "mint": "Menthe",
-        "ginger": "Roux"
+        "moss": "Mousse",
+        "lichen": "Lichen",
+        "fjord": "Fjord",
+        "heather": "Bruyère",
+        "blossom": "Fleur",
+        "berry": "Baie",
+        "rust": "Rouille",
+        "honey": "Miel"
     }
 }

@@ -10,15 +10,15 @@ test('a wrong password is refused', async ({ page }) => {
     await expect(page.getByRole('alert')).toHaveText('Incorrect email or password.');
 });
 
-test('signing in opens today with the cat at the desk', async ({ page }) => {
+test('signing in opens today with the critter in its moss', async ({ page }) => {
     await signIn(page);
     await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
-    await expect(page.locator('.shell__desk .cat-desk__name')).toHaveText('Mochi');
+    await expect(page.locator('.shell__desk .critter-desk__name')).toHaveText('Pip');
 });
 
 test('forgot password always answers the same way', async ({ page }) => {
     await page.goto('/password/forgot');
-    await page.getByLabel('Email').fill('nobody@meowdo.local');
+    await page.getByLabel('Email').fill('nobody@mossydew.local');
     await page.getByRole('button', { name: 'Send the link' }).click();
-    await expect(page.getByRole('status')).toContainText('If an account exists for nobody@meowdo.local');
+    await expect(page.getByRole('status')).toContainText('If an account exists for nobody@mossydew.local');
 });

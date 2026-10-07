@@ -32,15 +32,15 @@ final class ProjectTest extends TestCase
     {
         $project = $this->project('Home');
 
-        $project->recolor(ProjectColor::Mint);
+        $project->recolor(ProjectColor::Lichen);
 
-        self::assertSame(ProjectColor::Mint, $project->color());
+        self::assertSame(ProjectColor::Lichen, $project->color());
     }
 
     private function project(string $name): Project
     {
         $now = new \DateTimeImmutable('2026-10-06 09:00');
 
-        return Project::create(User::invite('louis@example.com', 'Louis', 'Europe/Paris', $now), $name, ProjectColor::Coral, $now);
+        return Project::create(User::invite('louis@example.com', 'Louis', 'Europe/Paris', $now), $name, ProjectColor::Berry, $now);
     }
 }

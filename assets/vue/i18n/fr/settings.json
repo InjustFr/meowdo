@@ -5,8 +5,21 @@
     "timezoneHint": "Décide quand votre journée commence et se termine.",
     "timezoneSaved": "Fuseau horaire enregistré.",
     "language": "Langue",
-    "sound": "Son de bongo quand une tâche est faite",
+    "sound": "Son de goutte quand une tâche est faite",
     "account": "Compte",
     "logout": "Se déconnecter",
-    "credits": "Crédits et licences"
+    "credits": "Crédits et licences",
+    "appearance": {
+        "title": "Apparence",
+        "intro": "Choisissez les couleurs de l’application, rien que pour vous. MossyDew reprend les thèmes de MossyTrunk.",
+        "themesLabel": "Thème",
+        "saved": "Apparence enregistrée.",
+        "themes": {
+            "moss": "Mousse",
+            "terracotta": "Terre cuite",
+            "fjord": "Fjord",
+            "plum": "Prune",
+            "night": "Nuit"
+        }
+    }
 }

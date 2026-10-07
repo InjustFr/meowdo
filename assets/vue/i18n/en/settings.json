@@ -5,8 +5,21 @@
     "timezoneHint": "Decides when your day starts and ends.",
     "timezoneSaved": "Time zone saved.",
     "language": "Language",
-    "sound": "Bongo sound when a task is done",
+    "sound": "Dewdrop sound when a task is done",
     "account": "Account",
     "logout": "Sign out",
-    "credits": "Credits and licences"
+    "credits": "Credits and licences",
+    "appearance": {
+        "title": "Appearance",
+        "intro": "Choose the app’s colours, just for you. MossyDew uses the same themes as MossyTrunk.",
+        "themesLabel": "Theme",
+        "saved": "Appearance saved.",
+        "themes": {
+            "moss": "Moss",
+            "terracotta": "Terracotta",
+            "fjord": "Fjord",
+            "plum": "Plum",
+            "night": "Night"
+        }
+    }
 }

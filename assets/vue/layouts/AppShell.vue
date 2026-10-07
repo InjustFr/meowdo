@@ -4,8 +4,8 @@ import { RouterLink, RouterView } from 'vue-router';
 import { CalendarDays, FolderOpen, Grid2x2, Inbox, Plus, Settings, Shirt, Sun, Trophy } from '@lucide/vue';
 import { ConfigProvider, TooltipProvider } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
-import CatDesk from '../components/cat/CatDesk.vue';
-import CelebrationLayer from '../components/cat/CelebrationLayer.vue';
+import CritterDesk from '../components/critter/CritterDesk.vue';
+import CelebrationLayer from '../components/critter/CelebrationLayer.vue';
 import IconButton from '../components/ui/IconButton.vue';
 import ProjectEditor from '../components/projects/ProjectEditor.vue';
 import TaskEditor from '../components/tasks/TaskEditor.vue';
@@ -44,7 +44,7 @@ const TABS = [
     { to: '/upcoming', icon: CalendarDays, label: 'nav.upcoming' },
     { to: '/matrix', icon: Grid2x2, label: 'nav.matrix' },
     { to: '/projects', icon: FolderOpen, label: 'nav.projects' },
-    { to: '/shop', icon: Shirt, label: 'nav.cat' },
+    { to: '/shop', icon: Shirt, label: 'nav.critter' },
 ];
 
 function focusComposer(event) {
@@ -67,11 +67,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
             <div class="shell">
                 <a class="shell__skip" href="#main">{{ t('nav.skip') }}</a>
                 <nav class="shell__rail" :aria-label="t('nav.label')">
-                    <RouterLink to="/" class="shell__brand">Meowdo</RouterLink>
+                    <RouterLink to="/" class="shell__brand">mossydew</RouterLink>
                     <ul class="shell__links">
                         <li v-for="link in MAIN" :key="link.to">
                             <RouterLink :to="link.to" class="shell__link" exact-active-class="shell__link--active">
-                                <component :is="link.icon" size="1.125rem" aria-hidden="true" />{{ t(link.label) }}
+                                <component :is="link.icon" class="shell__icon" size="1.125rem" :stroke-width="1.75" aria-hidden="true" />{{ t(link.label) }}
                             </RouterLink>
                         </li>
                     </ul>
@@ -93,22 +93,22 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
                     <ul class="shell__links shell__links--secondary">
                         <li v-for="link in SECONDARY" :key="link.to">
                             <RouterLink :to="link.to" class="shell__link" active-class="shell__link--active">
-                                <component :is="link.icon" size="1.125rem" aria-hidden="true" />{{ t(link.label) }}
+                                <component :is="link.icon" class="shell__icon" size="1.125rem" :stroke-width="1.75" aria-hidden="true" />{{ t(link.label) }}
                             </RouterLink>
                         </li>
                     </ul>
                 </nav>
 
                 <main id="main" class="shell__main">
-                    <div class="shell__strip"><CatDesk compact /></div>
+                    <div class="shell__strip"><CritterDesk compact /></div>
                     <RouterView />
                 </main>
 
-                <div class="shell__desk"><CatDesk /></div>
+                <div class="shell__desk"><CritterDesk /></div>
 
                 <nav class="shell__tabs" :aria-label="t('nav.label')">
                     <RouterLink v-for="tab in TABS" :key="tab.to" :to="tab.to" class="shell__tab" :exact-active-class="tab.to === '/' ? 'shell__tab--active' : undefined" :active-class="tab.to === '/' ? undefined : 'shell__tab--active'">
-                        <component :is="tab.icon" size="1.25rem" aria-hidden="true" />
+                        <component :is="tab.icon" size="1.25rem" :stroke-width="1.75" aria-hidden="true" />
                         <span>{{ t(tab.label) }}</span>
                     </RouterLink>
                 </nav>
@@ -129,7 +129,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
     min-height: 100vh;
 }
 
-.shell__skip { position: absolute; top: -10rem; left: var(--space-4); z-index: 100; padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); background: var(--lamp); color: var(--night); font-weight: 700; }
+.shell__skip { position: absolute; top: -10rem; left: var(--space-4); z-index: 100; padding: var(--space-2) var(--space-4); border-radius: var(--radius); background: var(--color-ink); color: var(--color-surface); font-weight: 600; }
 .shell__skip:focus { top: var(--space-4); }
 
 .shell__rail {
@@ -137,45 +137,48 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
     top: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-6);
     height: 100vh;
     overflow-y: auto;
-    padding: var(--space-5) var(--space-3);
-    background: var(--color-rail);
+    padding: var(--space-6) var(--space-4);
+    border-right: 0.0625rem solid var(--color-border);
+    background: var(--color-sidebar);
 }
 
-.shell__brand { padding: 0 var(--space-3); color: var(--lamp); font-family: var(--font-display); font-size: 2rem; line-height: 1; text-decoration: none; }
-.shell__links { display: flex; flex-direction: column; gap: 0.125rem; margin: 0; padding: 0; list-style: none; }
+.shell__brand { padding: 0 var(--space-3); color: var(--color-ink); font-family: var(--font-display); font-size: 1.6rem; line-height: 1; text-decoration: none; }
+.shell__links { display: flex; flex-direction: column; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
 .shell__links--secondary { margin-top: auto; }
 
 .shell__link {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    min-height: 2.5rem;
     padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-control);
+    border-left: 0.125rem solid transparent;
     color: var(--color-muted);
-    font-weight: 700;
+    font-weight: 500;
     text-decoration: none;
-    transition: color var(--transition), background var(--transition);
+    white-space: nowrap;
+    transition: color var(--transition), background var(--transition), border-color var(--transition);
 }
 
-.shell__link:hover { color: var(--color-text); background: var(--color-hover); }
-.shell__link--active { color: var(--color-text); background: var(--color-surface); }
-.shell__link--active svg { color: var(--lamp); }
+.shell__link:hover { color: var(--color-ink); background: var(--color-bg); }
+.shell__link--active { color: var(--color-ink); background: var(--color-accent-soft); border-left-color: var(--color-accent); }
+.shell__icon { flex-shrink: 0; color: var(--color-subtle); transition: color var(--transition); }
+.shell__link:hover .shell__icon { color: var(--color-ink); }
+.shell__link--active .shell__icon { color: var(--color-accent); }
 
-.shell__link--project { --project: var(--color-line-strong); font-weight: 400; }
-.shell__link--project::before { content: ""; flex-shrink: 0; width: 0.625rem; height: 0.625rem; margin: 0 0.25rem; border-radius: 50%; background: var(--project); }
+.shell__link--project { --project: var(--color-border-strong); }
+.shell__link--project::before { content: ""; flex-shrink: 0; width: 0.5rem; height: 0.5rem; margin: 0 0.3125rem; border-radius: 50%; background: var(--project); }
 .shell__project-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .shell__count { color: var(--color-subtle); font-size: var(--font-size-sm); }
 
 .shell__projects { display: flex; flex-direction: column; gap: var(--space-1); }
 .shell__projects-header { display: flex; align-items: center; justify-content: space-between; padding-left: var(--space-3); }
-.shell__projects-title { color: var(--color-subtle); font-size: var(--font-size-sm); }
+.shell__projects-title { color: var(--color-subtle); font-size: var(--font-size-xs); font-weight: 600; }
 .shell__hint { padding: 0 var(--space-3); color: var(--color-subtle); font-size: var(--font-size-sm); }
 
-.shell__main { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; padding: var(--space-6) var(--space-6) var(--space-7); }
+.shell__main { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; padding: var(--space-6) var(--space-7) var(--space-7); }
 .shell__main :deep(.page) { display: flex; flex-direction: column; gap: var(--space-5); width: 100%; max-width: 46rem; }
 .shell__main :deep(.page--wide) { max-width: none; }
 
@@ -187,7 +190,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
     height: 100vh;
     overflow-y: auto;
     padding: var(--space-6) var(--space-5);
-    background: var(--lamp-glow);
+    border-left: 0.0625rem solid var(--color-border);
 }
 
 .shell__tabs { display: none; }
@@ -195,14 +198,15 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
 @media (max-width: 72rem) {
     .shell { grid-template-columns: var(--rail-width) minmax(0, 1fr); }
     .shell__desk { display: none; }
-    .shell__strip { display: block; }
+    .shell__strip { display: block; padding-bottom: var(--space-4); border-bottom: 0.0625rem solid var(--color-border); }
+    .shell__main { padding-inline: var(--space-6); }
 }
 
 @media (max-width: 48rem) {
     .shell { grid-template-columns: minmax(0, 1fr); }
     .shell__rail { display: none; }
     .shell__main { gap: var(--space-4); padding: var(--space-4) var(--space-4) calc(6rem + env(safe-area-inset-bottom)); }
-    .shell__main :deep(h1) { font-size: 1.875rem; }
+    .shell__main :deep(h1) { font-size: 1.6rem; }
 
     .shell__tabs {
         position: fixed;
@@ -213,12 +217,13 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         padding: var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
-        border-top: 0.0625rem solid var(--color-line);
-        background: color-mix(in oklch, var(--night-deep) 92%, transparent);
+        border-top: 0.0625rem solid var(--color-border);
+        background: color-mix(in oklch, var(--color-surface) 94%, transparent);
         backdrop-filter: blur(0.75rem);
     }
 
-    .shell__tab { display: flex; flex-direction: column; align-items: center; gap: 0.125rem; padding: var(--space-2) 0; border-radius: var(--radius-control); color: var(--color-subtle); font-size: var(--font-size-xs); font-weight: 700; text-decoration: none; }
-    .shell__tab--active { color: var(--lamp); }
+    .shell__tab { display: flex; flex-direction: column; align-items: center; gap: 0.125rem; padding: var(--space-2) 0; border-top: 0.125rem solid transparent; color: var(--color-subtle); font-size: var(--font-size-xs); font-weight: 500; text-decoration: none; }
+    .shell__tab--active { border-top-color: var(--color-accent); color: var(--color-ink); }
+    .shell__tab--active svg { color: var(--color-accent); }
 }
 </style>

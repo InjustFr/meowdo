@@ -25,13 +25,13 @@
         "create": "Create project"
     },
     "colors": {
-        "coral": "Coral",
-        "lamp": "Lamp yellow",
-        "catnip": "Catnip green",
-        "sky": "Sky blue",
-        "lavender": "Lavender",
-        "yarn": "Yarn pink",
-        "mint": "Mint",
-        "ginger": "Ginger"
+        "moss": "Moss",
+        "lichen": "Lichen",
+        "fjord": "Fjord",
+        "heather": "Heather",
+        "blossom": "Blossom",
+        "berry": "Berry",
+        "rust": "Rust",
+        "honey": "Honey"
     }
 }

@@ -1,5 +1,5 @@
 shared:
-    not_found: 'This {subject, select, task {task} project {project} player {player} cat {cat} other {item}} no longer exists.'
+    not_found: 'This {subject, select, task {task} project {project} player {player} critter {critter} other {item}} no longer exists.'
     invalid_day: '“{day}” is not a valid date.'
 user:
     invalid_email: '“{email}” is not a valid email address.'
@@ -22,11 +22,12 @@ game:
     not_enough_coins: 'You need {price} coins for this, you have {coins}.'
     level_too_low: 'Reach level {level} to unlock this.'
     unknown_cosmetic: 'This item is not in the shop.'
-    already_owned: 'Your cat already owns this.'
+    already_owned: 'Your critter already owns this.'
     not_owned: 'Buy this item in the shop first.'
-    empty_cat_name: 'Your cat needs a name.'
+    empty_critter_name: 'Give your critter a name.'
 identity:
     password_token_already_used: 'This link has already been used.'
     password_token_expired: 'This link has expired. Request a new one from “Forgot your password?”.'
     password_too_short: 'The password must contain at least {min} characters.'
     unknown_password_token: 'This link is not valid.'
+    invalid_theme_color: 'Invalid colour “{color}”: use a hexadecimal code such as #5b7f3a.'

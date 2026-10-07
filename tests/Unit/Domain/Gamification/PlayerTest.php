@@ -48,10 +48,10 @@ final class PlayerTest extends TestCase
         $player = $this->player();
         $player->earn(new Reward(0, 50));
 
-        $ownership = $player->buy(CosmeticCatalog::get('party-hat'), new \DateTimeImmutable('2026-10-06 10:00'));
+        $ownership = $player->buy(CosmeticCatalog::get('acorn-cap'), new \DateTimeImmutable('2026-10-06 10:00'));
 
         self::assertSame(20, $player->coins());
-        self::assertSame('party-hat', $ownership->slug());
+        self::assertSame('acorn-cap', $ownership->slug());
         self::assertSame($player->owner(), $ownership->owner());
     }
 
@@ -60,9 +60,9 @@ final class PlayerTest extends TestCase
         $player = $this->player();
         $player->earn(new Reward(0, 1_000));
 
-        $this->expectExceptionObject(new LevelTooLow('crown', 8));
+        $this->expectExceptionObject(new LevelTooLow('flower-crown', 8));
 
-        $player->buy(CosmeticCatalog::get('crown'), new \DateTimeImmutable());
+        $player->buy(CosmeticCatalog::get('flower-crown'), new \DateTimeImmutable());
     }
 
     public function testCannotBuyWithoutEnoughCoins(): void
@@ -70,9 +70,9 @@ final class PlayerTest extends TestCase
         $player = $this->player();
         $player->earn(new Reward(0, 29));
 
-        $this->expectExceptionObject(new NotEnoughCoins('party-hat', 30, 29));
+        $this->expectExceptionObject(new NotEnoughCoins('acorn-cap', 30, 29));
 
-        $player->buy(CosmeticCatalog::get('party-hat'), new \DateTimeImmutable());
+        $player->buy(CosmeticCatalog::get('acorn-cap'), new \DateTimeImmutable());
     }
 
     public function testExactCoinsAreEnough(): void
@@ -80,7 +80,7 @@ final class PlayerTest extends TestCase
         $player = $this->player();
         $player->earn(new Reward(0, 30));
 
-        $player->buy(CosmeticCatalog::get('party-hat'), new \DateTimeImmutable());
+        $player->buy(CosmeticCatalog::get('acorn-cap'), new \DateTimeImmutable());
 
         self::assertSame(0, $player->coins());
     }

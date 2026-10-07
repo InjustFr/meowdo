@@ -32,23 +32,23 @@ defineProps({
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border: none;
-    border-radius: var(--radius-pill);
+    width: 2rem;
+    height: 2rem;
+    border: 0.0625rem solid transparent;
+    border-radius: var(--radius);
     background: none;
     color: var(--color-muted);
     cursor: pointer;
-    transition: color var(--transition), background var(--transition);
+    transition: color var(--transition), background var(--transition), border-color var(--transition);
 }
 
-.icon-button:hover { color: var(--color-text); background: var(--color-hover); }
+.icon-button:hover { color: var(--color-ink); background: var(--color-bg); border-color: var(--color-border); }
 .icon-button[aria-pressed="true"] { color: var(--color-accent); }
-.icon-button--danger:hover { color: var(--color-danger); background: var(--color-danger-soft); }
+.icon-button--danger:hover { color: var(--color-danger); background: var(--color-danger-soft); border-color: transparent; }
 .icon-button:disabled { opacity: 0.35; pointer-events: none; }
 </style>
 
 <style>
-.icon-button__tooltip { z-index: 70; padding: var(--space-1) var(--space-2); border-radius: 0.375rem; background: var(--moonmilk); color: var(--night); font-size: var(--font-size-sm); font-weight: 600; animation: fade-in var(--transition); }
-.icon-button__arrow { fill: var(--moonmilk); }
+.icon-button__tooltip { z-index: 70; padding: var(--space-1) var(--space-2); border-radius: var(--radius-inner); background: var(--color-ink); color: var(--color-surface); font-size: var(--font-size-sm); animation: fade-in var(--transition); }
+.icon-button__arrow { fill: var(--color-ink); }
 </style>

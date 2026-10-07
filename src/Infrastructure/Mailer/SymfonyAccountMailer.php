@@ -42,7 +42,7 @@ final readonly class SymfonyAccountMailer implements AccountMailer
         $locale = $user->language()->value ?? $this->locales->getLocale();
 
         $this->mailer->send((new TemplatedEmail())
-            ->from(new Address($this->from, 'Meowdo'))
+            ->from(new Address($this->from, 'MossyDew'))
             ->to($user->email())
             ->locale($locale)
             ->subject($this->translator->trans($subjectKey, domain: 'emails', locale: $locale))

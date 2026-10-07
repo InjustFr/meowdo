@@ -35,10 +35,10 @@ final class RewardPolicyTest extends TestCase
     /** @return iterable<array{?Quadrant, ?string, int, int, int}> */
     public static function rewards(): iterable
     {
-        yield 'stalk pays most' => [Quadrant::Schedule, null, 0, 25, 7];
-        yield 'pounce' => [Quadrant::DoFirst, null, 0, 20, 5];
-        yield 'swat away' => [Quadrant::Delegate, null, 0, 10, 3];
-        yield 'nap on it' => [Quadrant::Eliminate, null, 0, 5, 2];
+        yield 'plant pays most' => [Quadrant::Schedule, null, 0, 25, 7];
+        yield 'water now' => [Quadrant::DoFirst, null, 0, 20, 5];
+        yield 'trim' => [Quadrant::Delegate, null, 0, 10, 3];
+        yield 'compost' => [Quadrant::Eliminate, null, 0, 5, 2];
         yield 'unsorted' => [null, null, 0, 8, 2];
         yield 'on time on the deadline' => [Quadrant::DoFirst, self::TODAY, 0, 25, 7];
         yield 'on time before the deadline' => [null, '2026-10-20', 0, 13, 4];

@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/cat/take-off/{slot}', name: 'api_cat_take_off', methods: ['POST'], format: 'json')]
+#[Route('/api/critter/take-off/{slot}', name: 'api_critter_take_off', methods: ['POST'], format: 'json')]
 final class TakeOffCosmeticController extends AbstractController
 {
     public function __invoke(Slot $slot, TakeOffCosmeticHandler $takeOff): Response

@@ -38,6 +38,12 @@ class User
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $themeBackground = null;
+
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $themeAccent = null;
+
     private function __construct(string $email, string $displayName, string $timezone, \DateTimeImmutable $now)
     {
         $this->id = new Ulid();
@@ -80,6 +86,21 @@ class User
     public function speak(Language $language): void
     {
         $this->language = $language;
+    }
+
+    public function wear(Theme $theme): void
+    {
+        $this->themeBackground = $theme->background;
+        $this->themeAccent = $theme->accent;
+    }
+
+    public function theme(): ?Theme
+    {
+        if (null === $this->themeBackground || null === $this->themeAccent) {
+            return null;
+        }
+
+        return Theme::of($this->themeBackground, $this->themeAccent);
     }
 
     public function today(\DateTimeImmutable $now): \DateTimeImmutable

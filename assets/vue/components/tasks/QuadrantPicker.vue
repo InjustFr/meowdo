@@ -34,9 +34,9 @@ const UNSORTED = 'unsorted';
     align-items: flex-start;
     gap: 0.125rem;
     padding: var(--space-2) var(--space-3);
-    border: 0.125rem solid var(--color-line);
-    border-radius: var(--radius-control);
-    background: none;
+    border: 0.0625rem solid var(--color-border-strong);
+    border-radius: var(--radius);
+    background: var(--color-surface);
     text-align: left;
     cursor: pointer;
 }
@@ -46,8 +46,8 @@ const UNSORTED = 'unsorted';
 .quadrant-picker__option--eliminate { --tone: var(--quadrant-eliminate); }
 .quadrant-picker__option--unsorted { grid-column: 1 / -1; }
 .quadrant-picker__option:hover { border-color: var(--tone); }
-.quadrant-picker__option[data-state="checked"] { border-color: var(--tone); background: color-mix(in oklch, var(--tone) 14%, transparent); }
-.quadrant-picker__name { font-weight: 700; }
+.quadrant-picker__option[data-state="checked"] { border-color: var(--tone); background: color-mix(in oklch, var(--tone) 10%, var(--color-surface)); box-shadow: inset 0 0 0 0.0625rem var(--tone); }
+.quadrant-picker__name { color: var(--color-ink); font-weight: 600; }
 .quadrant-picker__option[data-state="checked"] .quadrant-picker__name { color: var(--tone); }
 .quadrant-picker__plain { color: var(--color-muted); font-size: var(--font-size-xs); }
 </style>

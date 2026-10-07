@@ -34,7 +34,7 @@ const id = `form-field-${Math.random().toString(36).slice(2, 9)}`;
 <style scoped>
 .form-field { display: flex; flex-direction: column; gap: var(--space-1); }
 .form-field__control { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
-.form-field__label { color: var(--color-muted); font-size: var(--font-size-sm); font-weight: 700; }
+.form-field__label { color: var(--color-muted); font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
 .form-field__hint { color: var(--color-subtle); font-size: var(--font-size-sm); }
 .form-field--invalid :deep(:is(.control, .form-field__control > input)) { border-color: var(--color-danger); }
 </style>

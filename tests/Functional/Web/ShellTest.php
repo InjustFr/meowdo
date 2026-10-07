@@ -39,6 +39,6 @@ final class ShellTest extends WebTestCase
         self::assertResponseIsSuccessful();
         $preloaded = Json::decode($crawler->filter('#app-preload')->text());
         self::assertSame(['/api/projects', '/api/player', '/api/tasks/today'], array_keys($preloaded));
-        self::assertSame('Mochi', Json::string($preloaded, '/api/player', 'cat', 'name'));
+        self::assertSame('Pip', Json::string($preloaded, '/api/player', 'critter', 'name'));
     }
 }

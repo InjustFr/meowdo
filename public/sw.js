@@ -1,5 +1,5 @@
-const STATIC_CACHE = 'meowdo-static-v1';
-const SHELL_CACHE = 'meowdo-shell-v1';
+const STATIC_CACHE = 'mossydew-static-v1';
+const SHELL_CACHE = 'mossydew-shell-v1';
 
 self.addEventListener('install', () => self.skipWaiting());
 

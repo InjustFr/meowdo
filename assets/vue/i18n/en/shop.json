@@ -3,7 +3,7 @@
     "subtitle": "Spend coins earned by finishing tasks. Hover an item to try it on.",
     "previewLabel": "{name} trying things on",
     "name": "Name",
-    "coat": "Coat",
+    "tint": "Colour",
     "bought": "{name} got the {item}.",
     "renamed": "Say hello to {name}.",
     "buy": "Buy",
@@ -15,34 +15,34 @@
     "slots": {
         "hat": "Hats",
         "neckwear": "Neckwear",
-        "toy": "Toys",
-        "backdrop": "Backdrops"
+        "toy": "Companions",
+        "backdrop": "Scenes"
     },
     "items": {
-        "party-hat": "Party hat",
+        "acorn-cap": "Acorn cap",
         "beanie": "Beanie",
-        "frog-hat": "Frog hat",
+        "toadstool": "Toadstool",
         "wizard-hat": "Wizard hat",
-        "crown": "Crown",
-        "bell-collar": "Bell collar",
+        "flower-crown": "Flower crown",
+        "leaf-collar": "Leaf collar",
         "bow-tie": "Bow tie",
         "bandana": "Bandana",
         "scarf": "Scarf",
-        "yarn-ball": "Ball of yarn",
-        "fish": "Fish",
-        "mouse": "Toy mouse",
-        "laser-dot": "Laser dot",
-        "rooftop": "Rooftop at night",
-        "library": "Library",
-        "aquarium": "Aquarium",
-        "sakura": "Cherry blossoms"
+        "pebble": "Smooth pebble",
+        "dewdrop": "Dewdrop",
+        "snail": "Snail friend",
+        "firefly": "Firefly",
+        "pond": "Pond",
+        "terrarium": "Terrarium",
+        "rainfall": "Rainy day",
+        "autumn": "Autumn leaves"
     },
-    "coats": {
-        "ginger": "Ginger",
-        "tuxedo": "Tuxedo",
-        "smoke": "Smoke grey",
-        "calico": "Calico",
-        "midnight": "Midnight black",
-        "cream": "Cream"
+    "tints": {
+        "sprout": "Sprout",
+        "lichen": "Lichen",
+        "peat": "Peat",
+        "rust": "Rust",
+        "frost": "Frost",
+        "plum": "Plum"
     }
 }

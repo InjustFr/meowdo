@@ -18,7 +18,7 @@ final readonly class PlayerView
         public int $nextLevelXp,
         public int $streak,
         public int $bestStreak,
-        public CatView $cat,
+        public CritterView $critter,
         public array $newAchievements,
     ) {
     }

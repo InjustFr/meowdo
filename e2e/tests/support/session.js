@@ -1,4 +1,4 @@
-export const DEMO = { email: 'demo@meowdo.local', password: 'meowdomeowdo' };
+export const DEMO = { email: 'demo@mossydew.local', password: 'mossydewmossydew' };
 
 export async function signIn(page, account = DEMO) {
     await page.goto('/login');

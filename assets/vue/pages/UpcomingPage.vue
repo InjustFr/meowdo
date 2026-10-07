@@ -87,15 +87,15 @@ function heading(day) {
 
 <style scoped>
 .upcoming { display: flex; flex-direction: column; gap: var(--space-2); }
-.upcoming__day { display: grid; grid-template-columns: 9rem minmax(0, 1fr); align-items: start; gap: var(--space-4); padding: var(--space-3); border-radius: var(--radius-panel); }
-.upcoming__day--today { background: color-mix(in oklch, var(--slate) 55%, transparent); box-shadow: inset 0.1875rem 0 0 var(--lamp); }
+.upcoming__day { display: grid; grid-template-columns: 9rem minmax(0, 1fr); align-items: start; gap: var(--space-4); padding: var(--space-3); border-radius: var(--radius); }
+.upcoming__day--today { background: var(--color-accent-soft); box-shadow: inset 0.125rem 0 0 var(--color-accent); }
 .upcoming__header { display: flex; flex-direction: column; padding-top: var(--space-2); }
-.upcoming__weekday { font-family: var(--font-display); font-size: 1.375rem; font-weight: 400; text-transform: capitalize; }
-.upcoming__day--today .upcoming__weekday { color: var(--lamp); }
+.upcoming__weekday { color: var(--color-ink); font-family: var(--font-display); font-size: 1.25rem; font-weight: 400; text-transform: capitalize; }
+.upcoming__day--today .upcoming__weekday { color: var(--color-accent-strong); }
 .upcoming__date { color: var(--color-subtle); font-size: var(--font-size-sm); }
 .upcoming__body { position: relative; min-width: 0; }
-.upcoming__tasks { display: flex; flex-direction: column; gap: var(--space-2); min-height: 3.5rem; margin: 0; padding: 0; list-style: none; border-radius: var(--radius-row); }
-.upcoming__free { position: absolute; inset: 0; display: flex; align-items: center; padding-left: var(--space-4); border: 0.125rem dashed var(--color-line); border-radius: var(--radius-row); color: var(--color-subtle); font-size: var(--font-size-sm); pointer-events: none; }
+.upcoming__tasks { display: flex; flex-direction: column; gap: var(--space-2); min-height: 3.5rem; margin: 0; padding: 0; list-style: none; border-radius: var(--radius); }
+.upcoming__free { position: absolute; inset: 0; display: flex; align-items: center; padding-left: var(--space-4); border: 0.0625rem dashed var(--color-border-strong); border-radius: var(--radius); color: var(--color-subtle); font-size: var(--font-size-sm); pointer-events: none; }
 :deep(.upcoming__ghost) { opacity: 0.4; }
 
 @media (max-width: 40rem) {

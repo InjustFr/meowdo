@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE: docker.io/injust/meowdo
+  IMAGE: docker.io/injust/mossydew
 
 jobs:
   build:

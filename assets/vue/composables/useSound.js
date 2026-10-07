@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue';
 
-const KEY = 'meowdo.sound';
+const KEY = 'mossydew.sound';
 
 function stored() {
     try {
@@ -21,29 +21,28 @@ watch(enabled, (value) => {
     }
 });
 
-function hit(at, pitch) {
+function plip(at, pitch) {
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(pitch, at);
-    oscillator.frequency.exponentialRampToValueAtTime(pitch * 0.55, at + 0.16);
+    oscillator.frequency.exponentialRampToValueAtTime(pitch * 2.4, at + 0.08);
     gain.gain.setValueAtTime(0.0001, at);
-    gain.gain.exponentialRampToValueAtTime(0.5, at + 0.005);
-    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
+    gain.gain.exponentialRampToValueAtTime(0.35, at + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.18);
     oscillator.connect(gain).connect(context.destination);
     oscillator.start(at);
-    oscillator.stop(at + 0.25);
+    oscillator.stop(at + 0.2);
 }
 
 export function useSound() {
-    function bongo(hits = 4) {
+    function drip() {
         if (!enabled.value) return;
         context ??= new (window.AudioContext ?? window.webkitAudioContext)();
-        const start = context.currentTime + 0.01;
-        for (let index = 0; index < hits; index += 1) {
-            hit(start + index * 0.22, index % 2 === 0 ? 220 : 300);
-        }
+        const start = context.currentTime + 0.4;
+        plip(start, 520);
+        plip(start + 0.14, 780);
     }
 
-    return { enabled, bongo };
+    return { enabled, drip };
 }

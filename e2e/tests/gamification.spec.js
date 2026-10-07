@@ -11,7 +11,7 @@ test('completing a task earns xp and coins once', async ({ page }) => {
     const before = Number(await coins.textContent());
 
     await row(page, task).getByRole('checkbox', { name: `Complete “${task}”` }).click();
-    await expect(page.locator('.shell__desk .cat-desk__burst').first()).toContainText('XP');
+    await expect(page.locator('.shell__desk .critter-desk__burst').first()).toContainText('XP');
     await expect(coins).not.toHaveText(String(before));
     const after = Number(await coins.textContent());
     expect(after).toBeGreaterThan(before);
@@ -22,10 +22,10 @@ test('completing a task earns xp and coins once', async ({ page }) => {
     await expect(coins).toHaveText(String(after));
 });
 
-test('buying an item puts it on the cat', async ({ page }) => {
+test('buying an item puts it on the critter', async ({ page }) => {
     await signIn(page);
     await page.goto('/shop');
-    const item = page.locator('.shop__item', { hasText: 'Ball of yarn' });
+    const item = page.locator('.shop__item', { hasText: 'Smooth pebble' });
     if (await item.getByRole('button', { name: 'Buy' }).count()) {
         await item.getByRole('button', { name: 'Buy' }).click();
     } else if (await item.getByRole('button', { name: 'Wear' }).count()) {

@@ -14,7 +14,7 @@ final class CosmeticCatalogTest extends TestCase
 {
     public function testGetsAnItemBySlug(): void
     {
-        self::assertEquals(new CosmeticItem('frog-hat', Slot::Hat, 60, 3), CosmeticCatalog::get('frog-hat'));
+        self::assertEquals(new CosmeticItem('toadstool', Slot::Hat, 60, 3), CosmeticCatalog::get('toadstool'));
     }
 
     public function testUnknownSlugThrows(): void

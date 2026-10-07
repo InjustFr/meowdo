@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
-use App\Domain\Gamification\Cat;
-use App\Domain\Gamification\Coat;
+use App\Domain\Gamification\Critter;
 use App\Domain\Gamification\Player;
+use App\Domain\Gamification\Tint;
 use App\Domain\Identity\User;
 use App\Infrastructure\Security\SecurityUser;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,14 +16,14 @@ use Symfony\Component\Uid\Ulid;
 
 trait ActsAsUser
 {
-    protected static function createUser(?string $email = null, string $timezone = 'Europe/Paris', string $catName = 'Mochi'): User
+    protected static function createUser(?string $email = null, string $timezone = 'Europe/Paris', string $critterName = 'Pip'): User
     {
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
-        $user = User::invite($email ?? \sprintf('%s@meowdo.test', strtolower((string) new Ulid())), 'Louis', $timezone, Clock::get()->now());
+        $user = User::invite($email ?? \sprintf('%s@mossydew.test', strtolower((string) new Ulid())), 'Louis', $timezone, Clock::get()->now());
         $user->changePassword('not-a-real-hash');
         $entityManager->persist($user);
         $entityManager->persist(Player::start($user));
-        $entityManager->persist(Cat::adopt($user, $catName, Coat::Ginger));
+        $entityManager->persist(Critter::adopt($user, $critterName, Tint::Sprout));
         $entityManager->flush();
 
         return $user;

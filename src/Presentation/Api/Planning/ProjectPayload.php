@@ -14,7 +14,7 @@ final readonly class ProjectPayload
         #[Assert\NotBlank(message: 'name.required')]
         #[Assert\Length(max: Project::MAX_NAME_LENGTH, maxMessage: 'name.too_long')]
         public string $name = '',
-        public ProjectColor $color = ProjectColor::Lamp,
+        public ProjectColor $color = ProjectColor::Honey,
     ) {
     }
 }

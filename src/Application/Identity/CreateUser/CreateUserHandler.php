@@ -7,8 +7,8 @@ namespace App\Application\Identity\CreateUser;
 use App\Application\Identity\AccountMailer;
 use App\Application\Identity\PasswordTokenIssuer;
 use App\Application\Transaction;
-use App\Domain\Gamification\Cat;
-use App\Domain\Gamification\CatRepository;
+use App\Domain\Gamification\Critter;
+use App\Domain\Gamification\CritterRepository;
 use App\Domain\Gamification\Player;
 use App\Domain\Gamification\PlayerRepository;
 use App\Domain\Identity\Exception\EmailAlreadyTaken;
@@ -21,7 +21,7 @@ final readonly class CreateUserHandler
     public function __construct(
         private UserRepository $users,
         private PlayerRepository $players,
-        private CatRepository $cats,
+        private CritterRepository $critters,
         private PasswordTokenIssuer $tokens,
         private AccountMailer $mailer,
         private Transaction $transaction,
@@ -38,7 +38,7 @@ final readonly class CreateUserHandler
         $user = User::invite($email, $command->displayName, $command->timezone, $this->tokens->now());
         $this->users->add($user);
         $this->players->add(Player::start($user));
-        $this->cats->add(Cat::adopt($user, $command->catName, $command->coat));
+        $this->critters->add(Critter::adopt($user, $command->critterName, $command->tint));
         [$passwordToken, $token] = $this->tokens->issue($user, PasswordTokenPurpose::Invitation);
         $this->transaction->commit();
 

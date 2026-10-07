@@ -32,7 +32,7 @@ final class MatrixTest extends KernelTestCase
 
     public function testClassifyingPutsTheTaskLastInItsQuadrant(): void
     {
-        self::createTask('Stalk', quadrant: Quadrant::Schedule);
+        self::createTask('Plant', quadrant: Quadrant::Schedule);
         $task = self::createTask('Thought');
 
         $classified = $this->classify($task, Quadrant::Schedule);

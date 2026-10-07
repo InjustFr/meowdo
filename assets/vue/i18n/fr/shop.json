@@ -3,7 +3,7 @@
     "subtitle": "Dépensez les pièces gagnées en terminant vos tâches. Survolez un objet pour l’essayer.",
     "previewLabel": "{name} fait des essayages",
     "name": "Nom",
-    "coat": "Pelage",
+    "tint": "Teinte",
     "bought": "{name} a reçu : {item}.",
     "renamed": "Dites bonjour à {name}.",
     "buy": "Acheter",
@@ -14,35 +14,35 @@
     "unlocksAt": "Niveau {level}",
     "slots": {
         "hat": "Chapeaux",
-        "neckwear": "Cous",
-        "toy": "Jouets",
+        "neckwear": "Autour du cou",
+        "toy": "Compagnons",
         "backdrop": "Décors"
     },
     "items": {
-        "party-hat": "Chapeau de fête",
+        "acorn-cap": "Chapeau de gland",
         "beanie": "Bonnet",
-        "frog-hat": "Chapeau grenouille",
+        "toadstool": "Champignon",
         "wizard-hat": "Chapeau de sorcier",
-        "crown": "Couronne",
-        "bell-collar": "Collier à grelot",
+        "flower-crown": "Couronne de fleurs",
+        "leaf-collar": "Collier de feuilles",
         "bow-tie": "Nœud papillon",
         "bandana": "Bandana",
         "scarf": "Écharpe",
-        "yarn-ball": "Pelote de laine",
-        "fish": "Poisson",
-        "mouse": "Souris en peluche",
-        "laser-dot": "Point laser",
-        "rooftop": "Toits la nuit",
-        "library": "Bibliothèque",
-        "aquarium": "Aquarium",
-        "sakura": "Cerisiers en fleurs"
+        "pebble": "Galet",
+        "dewdrop": "Goutte de rosée",
+        "snail": "Escargot",
+        "firefly": "Luciole",
+        "pond": "Mare",
+        "terrarium": "Terrarium",
+        "rainfall": "Jour de pluie",
+        "autumn": "Feuilles d’automne"
     },
-    "coats": {
-        "ginger": "Roux",
-        "tuxedo": "Smoking",
-        "smoke": "Gris fumée",
-        "calico": "Calico",
-        "midnight": "Noir minuit",
-        "cream": "Crème"
+    "tints": {
+        "sprout": "Pousse",
+        "lichen": "Lichen",
+        "peat": "Tourbe",
+        "rust": "Rouille",
+        "frost": "Givre",
+        "plum": "Prune"
     }
 }

@@ -6,7 +6,7 @@ x-php: &php-healthcheck
 
 services:
   php:
-    image: meowdo-dev
+    image: mossydew-dev
     build:
       context: .
       target: dev
@@ -47,7 +47,7 @@ services:
       - php-e2e
 
   php-e2e:
-    image: meowdo-dev
+    image: mossydew-dev
     build:
       context: .
       target: dev

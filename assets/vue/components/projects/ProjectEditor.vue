@@ -10,7 +10,7 @@ import { ApiError } from '../../composables/useApi.js';
 import { useProjects } from '../../composables/useProjects.js';
 import { useToast } from '../../composables/useToast.js';
 
-const COLORS = ['coral', 'lamp', 'catnip', 'sky', 'lavender', 'yarn', 'mint', 'ginger'];
+const COLORS = ['moss', 'lichen', 'fjord', 'heather', 'blossom', 'berry', 'rust', 'honey'];
 
 const props = defineProps({
     project: { type: Object, default: null },
@@ -21,7 +21,7 @@ const open = defineModel('open', { type: Boolean, required: true });
 const { t } = useI18n();
 const toast = useToast();
 const projects = useProjects();
-const form = reactive({ name: '', color: 'lamp' });
+const form = reactive({ name: '', color: 'moss' });
 const errors = ref({});
 const saving = ref(false);
 
@@ -78,6 +78,7 @@ async function save() {
 <style scoped>
 .project-editor { display: flex; flex-direction: column; gap: var(--space-4); }
 .project-editor__colors { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.project-editor__swatch { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 0.1875rem solid transparent; border-radius: 50%; background: var(--swatch); color: var(--night); cursor: pointer; }
-.project-editor__swatch[data-state="checked"] { border-color: var(--moonmilk); }
+.project-editor__swatch { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border: none; border-radius: 50%; background: var(--swatch); color: #ffffff; cursor: pointer; transition: box-shadow var(--transition); }
+.project-editor__swatch:hover { box-shadow: 0 0 0 0.1875rem var(--color-border-strong); }
+.project-editor__swatch[data-state="checked"] { box-shadow: 0 0 0 0.125rem var(--color-surface), 0 0 0 0.25rem var(--swatch); }
 </style>

@@ -1,0 +1,17 @@
+{
+    "deskLabel": "{name} dans son coin de mousse",
+    "level": "Niveau {level}",
+    "xpProgress": "Progression vers le niveau suivant",
+    "toNextLevel": "{xp} XP avant le niveau {level}",
+    "coins": "Pièces",
+    "streak": "Série",
+    "days": "pas de série | 1 jour | {count} jours",
+    "dressUp": "Habiller {name}",
+    "burstXp": "+{xp} XP",
+    "burstCoins": "+{coins} pièces",
+    "mood": {
+        "lively": "{name} se gorge de rosée",
+        "idle": "{name} attend une tâche",
+        "dormant": "{name} s’est mis en boule dans la mousse"
+    }
+}

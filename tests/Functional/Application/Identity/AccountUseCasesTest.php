@@ -11,9 +11,9 @@ use App\Application\Identity\CreateUser\CreateUserHandler;
 use App\Application\Identity\RequestPasswordReset\RequestPasswordResetHandler;
 use App\Application\Identity\ResendInvitation\ResendInvitationHandler;
 use App\Application\Identity\SetPassword\SetPasswordHandler;
-use App\Domain\Gamification\CatRepository;
-use App\Domain\Gamification\Coat;
+use App\Domain\Gamification\CritterRepository;
 use App\Domain\Gamification\PlayerRepository;
+use App\Domain\Gamification\Tint;
 use App\Domain\Identity\Exception\AccountAlreadyActive;
 use App\Domain\Identity\Exception\EmailAlreadyTaken;
 use App\Domain\Identity\Exception\PasswordTokenExpired;
@@ -49,8 +49,8 @@ final class AccountUseCasesTest extends KernelTestCase
         self::assertSame(['louis@example.com', 'Louis', 'Europe/Paris', null], [$user->email(), $user->displayName(), $user->timezone(), $user->passwordHash()]);
         $player = self::getContainer()->get(PlayerRepository::class)->of($user);
         self::assertSame([0, 0, 1], [$player->xp(), $player->coins(), $player->level()]);
-        $cat = self::getContainer()->get(CatRepository::class)->of($user);
-        self::assertSame(['Mochi', Coat::Calico], [$cat->name(), $cat->coat()]);
+        $critter = self::getContainer()->get(CritterRepository::class)->of($user);
+        self::assertSame(['Pip', Tint::Sprout], [$critter->name(), $critter->tint()]);
         self::assertEmailCount(1);
         $email = self::getMailerMessage();
         self::assertInstanceOf(Email::class, $email);
@@ -71,7 +71,7 @@ final class AccountUseCasesTest extends KernelTestCase
     {
         $this->expectExceptionObject(new UnknownTimezone('Europe/Atlantis'));
 
-        self::getContainer()->get(CreateUserHandler::class)(new CreateUser('louis@example.com', 'Louis', 'Europe/Atlantis', 'Mochi', Coat::Ginger));
+        self::getContainer()->get(CreateUserHandler::class)(new CreateUser('louis@example.com', 'Louis', 'Europe/Atlantis', 'Pip', Tint::Rust));
     }
 
     public function testTheInvitationSetsThePasswordOnce(): void
@@ -171,7 +171,7 @@ final class AccountUseCasesTest extends KernelTestCase
 
     private function createAccount(string $email): User
     {
-        return self::getContainer()->get(CreateUserHandler::class)(new CreateUser($email, 'Louis', 'Europe/Paris', 'Mochi', Coat::Calico));
+        return self::getContainer()->get(CreateUserHandler::class)(new CreateUser($email, 'Louis', 'Europe/Paris', 'Pip', Tint::Sprout));
     }
 
     private function tokenFromLastEmail(): string

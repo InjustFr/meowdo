@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Security;
 
 use App\Domain\Identity\Language;
+use App\Domain\Identity\Theme;
 use App\Domain\Identity\User;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,12 +19,13 @@ final class SecurityUser implements UserInterface, PasswordAuthenticatedUserInte
         private readonly ?string $passwordHash,
         public readonly string $displayName,
         public readonly ?Language $language,
+        public readonly ?Theme $theme,
     ) {
     }
 
     public static function fromUser(User $user): self
     {
-        return new self($user->id(), $user->email(), $user->passwordHash(), $user->displayName(), $user->language());
+        return new self($user->id(), $user->email(), $user->passwordHash(), $user->displayName(), $user->language(), $user->theme());
     }
 
     public function getUserIdentifier(): string
@@ -53,10 +55,11 @@ final class SecurityUser implements UserInterface, PasswordAuthenticatedUserInte
             'password' => null === $this->passwordHash ? null : hash('crc32c', $this->passwordHash),
             'displayName' => $this->displayName,
             'language' => $this->language?->value,
+            'theme' => null === $this->theme ? null : [$this->theme->background, $this->theme->accent],
         ];
     }
 
-    /** @param array{id: string, email: string, password: ?string, displayName: string, language?: ?string} $data */
+    /** @param array{id: string, email: string, password: ?string, displayName: string, language?: ?string, theme?: ?array{string, string}} $data */
     public function __unserialize(array $data): void
     {
         $this->id = Ulid::fromString($data['id']);
@@ -64,5 +67,6 @@ final class SecurityUser implements UserInterface, PasswordAuthenticatedUserInte
         $this->passwordHash = $data['password'];
         $this->displayName = $data['displayName'];
         $this->language = Language::tryFrom($data['language'] ?? '');
+        $this->theme = isset($data['theme']) ? Theme::of(...$data['theme']) : null;
     }
 }

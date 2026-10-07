@@ -39,7 +39,7 @@ trait PlansTasks
         ));
     }
 
-    protected static function createProject(string $name, ProjectColor $color = ProjectColor::Lamp): ProjectView
+    protected static function createProject(string $name, ProjectColor $color = ProjectColor::Honey): ProjectView
     {
         return self::getContainer()->get(CreateProjectHandler::class)(new CreateProject($name, $color));
     }

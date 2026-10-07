@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Identity\CreateUser;
 
-use App\Domain\Gamification\Coat;
+use App\Domain\Gamification\Tint;
 
 final readonly class CreateUser
 {
@@ -12,8 +12,8 @@ final readonly class CreateUser
         public string $email,
         public string $displayName,
         public string $timezone,
-        public string $catName,
-        public Coat $coat,
+        public string $critterName,
+        public Tint $tint,
     ) {
     }
 }

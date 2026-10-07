@@ -67,21 +67,21 @@ const draggable = { group: 'matrix', animation: 160, delay: 180, delayOnTouchOnl
 
 <style scoped>
 .matrix { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: ". top" "side board" ". tray"; gap: var(--space-2) var(--space-3); }
-.matrix__axis { display: flex; color: var(--color-subtle); font-size: var(--font-size-xs); font-weight: 700; }
+.matrix__axis { display: flex; color: var(--color-subtle); font-size: var(--font-size-2xs); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; }
 .matrix__axis span { flex: 1; text-align: center; }
 .matrix__axis--top { grid-area: top; }
 .matrix__axis--side { grid-area: side; flex-direction: row-reverse; writing-mode: vertical-rl; transform: rotate(180deg); }
 .matrix__axis--side span { display: flex; align-items: center; justify-content: center; }
 .matrix__board { grid-area: board; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
-.matrix__zone { --tone: var(--quadrant-unsorted); display: flex; flex-direction: column; gap: var(--space-3); min-height: 14rem; padding: var(--space-4); border-radius: var(--radius-panel); background: color-mix(in oklch, var(--tone) 9%, var(--night)); box-shadow: inset 0 0 0 0.0625rem color-mix(in oklch, var(--tone) 30%, transparent); }
+.matrix__zone { --tone: var(--quadrant-unsorted); display: flex; flex-direction: column; gap: var(--space-3); min-height: 14rem; padding: var(--space-4); border: 0.0625rem solid var(--color-border); border-top: 0.1875rem solid var(--tone); border-radius: var(--radius); background: color-mix(in oklch, var(--tone) 5%, var(--color-surface)); }
 .matrix__zone--do_first { --tone: var(--quadrant-do-first); }
 .matrix__zone--schedule { --tone: var(--quadrant-schedule); }
 .matrix__zone--delegate { --tone: var(--quadrant-delegate); }
 .matrix__zone--eliminate { --tone: var(--quadrant-eliminate); }
-.matrix__name { color: var(--tone); font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; }
+.matrix__name { color: var(--color-ink); font-family: var(--font-display); font-size: 1.375rem; font-weight: 400; }
 .matrix__plain { color: var(--color-muted); font-size: var(--font-size-sm); }
 .matrix__tasks { display: flex; flex: 1; flex-direction: column; gap: var(--space-2); min-height: 4rem; margin: 0; padding: 0; list-style: none; }
-.matrix__tray { grid-area: tray; display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3); padding: var(--space-4); border: 0.125rem dashed var(--color-line-strong); border-radius: var(--radius-panel); }
+.matrix__tray { grid-area: tray; display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3); padding: var(--space-4); border: 0.0625rem dashed var(--color-border-strong); border-radius: var(--radius); }
 .matrix__tasks--tray { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
 :deep(.matrix__ghost) { opacity: 0.4; }
 

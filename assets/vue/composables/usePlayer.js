@@ -18,9 +18,9 @@ export function usePlayer() {
         load: () => api.load('/api/player', player),
         markAchievementsSeen: () => api.post('/api/achievements/seen'),
         buy: (slug) => api.post(`/api/shop/${slug}/buy`),
-        wear: (slug) => api.post(`/api/cat/wear/${slug}`),
-        takeOff: (slot) => api.post(`/api/cat/take-off/${slot}`),
-        rename: (name) => api.put('/api/cat/name', { name }),
-        recoat: (coat) => api.put('/api/cat/coat', { coat }),
+        wear: (slug) => api.post(`/api/critter/wear/${slug}`),
+        takeOff: (slot) => api.post(`/api/critter/take-off/${slot}`),
+        rename: (name) => api.put('/api/critter/name', { name }),
+        retint: (tint) => api.put('/api/critter/tint', { tint }),
     };
 }

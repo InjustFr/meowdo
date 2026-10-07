@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Web;
 
 use App\Application\Identity\CreateUser\CreateUser;
 use App\Application\Identity\CreateUser\CreateUserHandler;
-use App\Domain\Gamification\Coat;
+use App\Domain\Gamification\Tint;
 use App\Tests\Support\Json;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -27,7 +27,7 @@ final class AuthenticationTest extends WebTestCase
     public function testInvitedUserSetsPasswordThenSignsIn(): void
     {
         $client = self::createClient();
-        self::getContainer()->get(CreateUserHandler::class)(new CreateUser('louis@example.com', 'Louis', 'Europe/Paris', 'Mochi', Coat::Ginger));
+        self::getContainer()->get(CreateUserHandler::class)(new CreateUser('louis@example.com', 'Louis', 'Europe/Paris', 'Pip', Tint::Rust));
         $link = $this->linkFromLastEmail();
 
         $client->request('GET', $link);
@@ -48,7 +48,7 @@ final class AuthenticationTest extends WebTestCase
     public function testWrongPasswordIsRejected(): void
     {
         $client = self::createClient();
-        self::getContainer()->get(CreateUserHandler::class)(new CreateUser('louis@example.com', 'Louis', 'Europe/Paris', 'Mochi', Coat::Ginger));
+        self::getContainer()->get(CreateUserHandler::class)(new CreateUser('louis@example.com', 'Louis', 'Europe/Paris', 'Pip', Tint::Rust));
 
         $client->request('GET', '/login');
         $client->request('POST', '/login', ['_csrf_token' => Json::string(self::props($client), 'csrfToken'), 'email' => 'louis@example.com', 'password' => 'wrong password']);

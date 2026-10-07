@@ -38,7 +38,7 @@ final class CompleteTaskTest extends KernelTestCase
         self::assertTrue($completion->task->done);
         self::assertEquals(new Reward(26, 7), $completion->reward);
         self::assertNull($completion->leveledUpTo);
-        self::assertSame([26, 7, 1, 1, 'purring'], [$completion->player->xp, $completion->player->coins, $completion->player->level, $completion->player->streak, $completion->player->cat->mood]);
+        self::assertSame([26, 7, 1, 1, 'lively'], [$completion->player->xp, $completion->player->coins, $completion->player->level, $completion->player->streak, $completion->player->critter->mood]);
     }
 
     public function testRewardIsEarnedOncePerTask(): void
@@ -57,7 +57,7 @@ final class CompleteTaskTest extends KernelTestCase
     {
         foreach (['2026-10-04', '2026-10-05', '2026-10-06'] as $day) {
             self::freezeAt($day.' 08:00 UTC');
-            $completion = self::completeTask(self::createTask('Feed the cat '.$day, quadrant: Quadrant::DoFirst));
+            $completion = self::completeTask(self::createTask('Water the fern '.$day, quadrant: Quadrant::DoFirst));
         }
 
         self::assertEquals(new Reward(23, 6), $completion->reward);
@@ -75,11 +75,11 @@ final class CompleteTaskTest extends KernelTestCase
         self::assertSame([2, 100, 300], [$completion->player->level, $completion->player->levelStartXp, $completion->player->nextLevelXp]);
     }
 
-    public function testFirstCompletionUnlocksFirstPaw(): void
+    public function testFirstCompletionUnlocksFirstDrop(): void
     {
         $completion = self::completeTask(self::createTask('Vet'));
 
-        self::assertSame(['first_paw'], $completion->player->newAchievements);
-        self::assertSame(['first_paw'], self::getContainer()->get(ShowPlayerHandler::class)()->newAchievements);
+        self::assertSame(['first_drop'], $completion->player->newAchievements);
+        self::assertSame(['first_drop'], self::getContainer()->get(ShowPlayerHandler::class)()->newAchievements);
     }
 }

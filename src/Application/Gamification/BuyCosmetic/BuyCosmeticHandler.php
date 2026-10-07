@@ -7,9 +7,9 @@ namespace App\Application\Gamification\BuyCosmetic;
 use App\Application\Gamification\AchievementCheck;
 use App\Application\Identity\CurrentUser;
 use App\Application\Transaction;
-use App\Domain\Gamification\CatRepository;
 use App\Domain\Gamification\Cosmetic\CosmeticCatalog;
 use App\Domain\Gamification\Cosmetic\OwnershipRepository;
+use App\Domain\Gamification\CritterRepository;
 use App\Domain\Gamification\Exception\CosmeticAlreadyOwned;
 use App\Domain\Gamification\PlayerRepository;
 use Psr\Clock\ClockInterface;
@@ -19,7 +19,7 @@ final readonly class BuyCosmeticHandler
     public function __construct(
         private CurrentUser $currentUser,
         private PlayerRepository $players,
-        private CatRepository $cats,
+        private CritterRepository $critters,
         private OwnershipRepository $ownerships,
         private Transaction $transaction,
         private ClockInterface $clock,
@@ -37,7 +37,7 @@ final readonly class BuyCosmeticHandler
 
         $ownership = $this->players->of($user)->buy($item, $this->clock->now());
         $this->ownerships->add($ownership);
-        $this->cats->of($user)->wear($ownership);
+        $this->critters->of($user)->wear($ownership);
         $this->transaction->commit();
         ($this->achievements)();
     }

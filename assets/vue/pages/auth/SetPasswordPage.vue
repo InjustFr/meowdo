@@ -17,7 +17,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-    <AuthLayout :title="invitation ? t('auth.setPassword.welcome') : t('auth.setPassword.title')" :mood="invitation ? 'purring' : 'idle'">
+    <AuthLayout :title="invitation ? t('auth.setPassword.welcome') : t('auth.setPassword.title')" :mood="invitation ? 'lively' : 'idle'">
         <template v-if="linkError">
             <AuthMessage>{{ linkError }}</AuthMessage>
             <a href="/password/forgot">{{ t('auth.setPassword.newLink') }}</a>

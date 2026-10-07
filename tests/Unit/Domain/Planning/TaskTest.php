@@ -39,13 +39,13 @@ final class TaskTest extends TestCase
 
     public function testTitleWhitespaceIsCollapsed(): void
     {
-        $task = $this->task("  Feed   the\tcat \n tonight ");
+        $task = $this->task("  Water   the\tfern \n tonight ");
 
-        self::assertSame('Feed the cat tonight', $task->title());
+        self::assertSame('Water the fern tonight', $task->title());
 
-        $task->rename(" Brush \n\n the cat ");
+        $task->rename(" Water \n\n the fern ");
 
-        self::assertSame('Brush the cat', $task->title());
+        self::assertSame('Water the fern', $task->title());
     }
 
     public function testTitleIsCutAtMaxLength(): void
@@ -157,7 +157,7 @@ final class TaskTest extends TestCase
     {
         $owner = $this->user('louis@example.com');
         $task = Task::create($owner, 'Vet', new \DateTimeImmutable(self::NOW));
-        $project = Project::create($owner, 'Home', ProjectColor::Coral, new \DateTimeImmutable(self::NOW));
+        $project = Project::create($owner, 'Home', ProjectColor::Berry, new \DateTimeImmutable(self::NOW));
 
         $task->fileUnder($project);
         self::assertSame($project, $task->project());
@@ -169,7 +169,7 @@ final class TaskTest extends TestCase
     public function testCannotBeFiledUnderAnotherOwnersProject(): void
     {
         $task = Task::create($this->user('louis@example.com'), 'Vet', new \DateTimeImmutable(self::NOW));
-        $project = Project::create($this->user('other@example.com'), 'Home', ProjectColor::Coral, new \DateTimeImmutable(self::NOW));
+        $project = Project::create($this->user('other@example.com'), 'Home', ProjectColor::Berry, new \DateTimeImmutable(self::NOW));
 
         $this->expectExceptionObject(new ProjectOfAnotherOwner());
 

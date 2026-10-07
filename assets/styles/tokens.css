@@ -1,59 +1,53 @@
 :root {
-    --night: #1d1a33;
-    --night-deep: #16142a;
-    --slate: #2a2747;
-    --slate-raised: #353159;
-    --moonmilk: #eee8f7;
-    --dusk: #b9b0d0;
-    --dusk-dim: #8a82a8;
-    --lamp: #ffc857;
-    --lamp-deep: #e9a92c;
-    --catnip: #7bd389;
-    --yarn: #ff8fa3;
-    --coral: #ff6b6b;
-    --sky: #6ec5ff;
-    --lavender: #9a8fbf;
+    --theme-background: #f5f5f3;
+    --theme-accent: #5b7f3a;
 
-    --color-bg: var(--night);
-    --color-rail: var(--night-deep);
-    --color-surface: var(--slate);
-    --color-raised: var(--slate-raised);
-    --color-text: var(--moonmilk);
-    --color-muted: var(--dusk);
-    --color-subtle: var(--dusk-dim);
-    --color-line: color-mix(in oklch, var(--moonmilk) 10%, transparent);
-    --color-line-strong: color-mix(in oklch, var(--moonmilk) 20%, transparent);
-    --color-hover: color-mix(in oklch, var(--moonmilk) 5%, transparent);
-    --color-accent: var(--lamp);
-    --color-accent-strong: var(--lamp-deep);
-    --color-accent-soft: color-mix(in oklch, var(--lamp) 16%, transparent);
-    --color-on-accent: var(--night);
-    --color-success: var(--catnip);
-    --color-success-soft: color-mix(in oklch, var(--catnip) 16%, transparent);
-    --color-danger: var(--coral);
-    --color-danger-soft: color-mix(in oklch, var(--coral) 16%, transparent);
-    --color-backdrop: rgb(10 8 24 / 65%);
+    --color-bg: var(--theme-background);
+    --color-surface: oklch(from var(--theme-background) min(1, l + 0.05 + clamp(0, (l - 0.62) * 100, 1)) calc(c * 0.5) h);
+    --color-sidebar: var(--color-surface);
+    --color-text: oklch(from var(--theme-background) calc(0.93 - 0.72 * clamp(0, (l - 0.62) * 100, 1)) min(c, 0.012) h);
+    --color-ink: oklch(from var(--theme-background) calc(0.97 - 0.79 * clamp(0, (l - 0.62) * 100, 1)) min(c, 0.01) h);
+    --color-muted: color-mix(in oklch, var(--color-text) 62%, var(--color-bg));
+    --color-subtle: color-mix(in oklch, var(--color-text) 40%, var(--color-bg));
+    --color-border: color-mix(in oklch, var(--color-text) 8%, var(--color-bg));
+    --color-border-strong: color-mix(in oklch, var(--color-text) 16%, var(--color-bg));
+    --color-hover: color-mix(in oklch, var(--color-text) 4%, var(--color-surface));
 
-    --quadrant-do-first: var(--coral);
-    --quadrant-schedule: var(--lamp);
-    --quadrant-delegate: var(--sky);
-    --quadrant-eliminate: var(--lavender);
-    --quadrant-unsorted: #4a4570;
+    --color-accent: var(--theme-accent);
+    --color-accent-strong: color-mix(in oklch, var(--theme-accent) 80%, var(--color-ink));
+    --color-accent-soft: color-mix(in oklch, var(--theme-accent) 11%, var(--color-surface));
+    --color-on-accent: oklch(from var(--theme-accent) calc(0.99 - 0.78 * clamp(0, (l - 0.7) * 100, 1)) min(c, 0.02) h);
 
-    --project-coral: #ff7a6b;
-    --project-lamp: #ffc857;
-    --project-catnip: #7bd389;
-    --project-sky: #6ec5ff;
-    --project-lavender: #a99ce0;
-    --project-yarn: #ff8fa3;
-    --project-mint: #5fd4c4;
-    --project-ginger: #f2994a;
+    --color-danger: color-mix(in oklch, oklch(from var(--theme-background) calc(0.74 - 0.26 * clamp(0, (l - 0.62) * 100, 1)) 0.15 28) 90%, var(--theme-accent));
+    --color-success: color-mix(in oklch, oklch(from var(--theme-background) calc(0.76 - 0.25 * clamp(0, (l - 0.62) * 100, 1)) 0.13 145) 90%, var(--theme-accent));
+    --color-warning: color-mix(in oklch, oklch(from var(--theme-background) calc(0.8 - 0.22 * clamp(0, (l - 0.62) * 100, 1)) 0.13 70) 90%, var(--theme-accent));
+    --color-info: color-mix(in oklch, oklch(from var(--theme-background) calc(0.72 - 0.22 * clamp(0, (l - 0.62) * 100, 1)) 0.11 240) 90%, var(--theme-accent));
+    --color-surface-hueless: oklch(from var(--color-surface) l 0 none);
+    --color-danger-soft: color-mix(in oklch, var(--color-danger) 10%, var(--color-surface-hueless));
+    --color-success-soft: color-mix(in oklch, var(--color-success) 12%, var(--color-surface-hueless));
+    --color-warning-soft: color-mix(in oklch, var(--color-warning) 12%, var(--color-surface-hueless));
+    --color-backdrop: rgb(17 17 17 / 35%);
 
-    --lamp-glow: radial-gradient(circle at 70% 0%, color-mix(in oklch, var(--lamp) 22%, transparent), transparent 60%);
+    --color-dew: oklch(from var(--theme-background) calc(0.7 - 0.12 * clamp(0, (l - 0.62) * 100, 1)) 0.09 220);
 
-    --radius-row: 0.625rem;
-    --radius-panel: 1.25rem;
-    --radius-control: 0.75rem;
+    --quadrant-do-first: var(--color-danger);
+    --quadrant-schedule: var(--color-accent);
+    --quadrant-delegate: var(--color-info);
+    --quadrant-eliminate: var(--color-warning);
+    --quadrant-unsorted: var(--color-border-strong);
+
+    --project-berry: oklch(0.6 0.15 12);
+    --project-honey: oklch(0.74 0.13 80);
+    --project-moss: oklch(0.6 0.12 135);
+    --project-fjord: oklch(0.6 0.1 235);
+    --project-heather: oklch(0.6 0.1 310);
+    --project-blossom: oklch(0.72 0.1 355);
+    --project-lichen: oklch(0.68 0.06 175);
+    --project-rust: oklch(0.62 0.14 45);
+
+    --radius: 0.5rem;
+    --radius-sm: 0.25rem;
+    --radius-inner: calc(var(--radius) - 0.125rem);
     --radius-pill: 62.4375rem;
 
     --space-1: 0.25rem;
@@ -64,16 +58,18 @@
     --space-6: 2rem;
     --space-7: 3rem;
 
-    --font-body: "Atkinson Hyperlegible Next Variable", "Atkinson Hyperlegible Next", system-ui, sans-serif;
-    --font-display: "Bagel Fat One", "Cooper Black", Georgia, serif;
-    --font-size: 1rem;
-    --font-size-md: 0.9375rem;
+    --font-body: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-display: "Patua One", Rockwell, Georgia, serif;
+    --font-size: 0.9375rem;
+    --font-size-md: 0.875rem;
     --font-size-sm: 0.8125rem;
     --font-size-xs: 0.75rem;
+    --font-size-2xs: 0.7rem;
+    --tracking-caps: 0.05em;
 
-    --rail-width: 15rem;
-    --desk-width: 21rem;
-    --shadow: 0 0.75rem 2rem rgb(6 4 18 / 45%);
-    --transition: 160ms ease;
-    --focus-ring: 0 0 0 0.1875rem color-mix(in oklch, var(--lamp) 45%, transparent);
+    --rail-width: 15.5rem;
+    --desk-width: 20rem;
+    --shadow: 0 0.0625rem 0.125rem rgb(17 17 17 / 6%), 0 0.5rem 1.5rem rgb(17 17 17 / 8%);
+    --transition: 180ms ease;
+    --focus-ring: 0 0 0 0.1875rem var(--color-accent-soft);
 }

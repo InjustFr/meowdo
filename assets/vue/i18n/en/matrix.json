@@ -9,22 +9,22 @@
     "notImportant": "Not important",
     "quadrants": {
         "do_first": {
-            "name": "Pounce",
+            "name": "Water",
             "plain": "Urgent and important",
             "advice": "do it now"
         },
         "schedule": {
-            "name": "Stalk",
+            "name": "Plant",
             "plain": "Important, not urgent",
             "advice": "plan it"
         },
         "delegate": {
-            "name": "Swat away",
+            "name": "Trim",
             "plain": "Urgent, not important",
             "advice": "hand it off or keep it short"
         },
         "eliminate": {
-            "name": "Nap on it",
+            "name": "Compost",
             "plain": "Neither",
             "advice": "drop it or do it last"
         }

@@ -93,17 +93,17 @@ final class ListsTest extends KernelTestCase
         self::createTask('Unsorted early deadline', dueOn: '2026-10-07');
         self::createTask('Unsorted no deadline');
         self::createTask('Unsorted later deadline', dueOn: '2026-10-20');
-        self::createTask('Nap', quadrant: Quadrant::Eliminate);
-        self::createTask('Stalk first', quadrant: Quadrant::Schedule);
-        self::createTask('Stalk second', quadrant: Quadrant::Schedule);
-        self::createTask('Pounce', quadrant: Quadrant::DoFirst);
-        self::createTask('Swat', quadrant: Quadrant::Delegate);
+        self::createTask('Compost', quadrant: Quadrant::Eliminate);
+        self::createTask('Plant first', quadrant: Quadrant::Schedule);
+        self::createTask('Plant second', quadrant: Quadrant::Schedule);
+        self::createTask('Water', quadrant: Quadrant::DoFirst);
+        self::createTask('Trim', quadrant: Quadrant::Delegate);
         self::freezeAt('2026-10-06 09:00 UTC');
         self::createTask('Unsorted created later');
-        self::completeTask(self::createTask('Done pounce', quadrant: Quadrant::DoFirst));
+        self::completeTask(self::createTask('Done water', quadrant: Quadrant::DoFirst));
 
         self::assertSame(
-            ['Pounce', 'Stalk first', 'Stalk second', 'Swat', 'Nap', 'Unsorted early deadline', 'Unsorted later deadline', 'Unsorted no deadline', 'Unsorted created later'],
+            ['Water', 'Plant first', 'Plant second', 'Trim', 'Compost', 'Unsorted early deadline', 'Unsorted later deadline', 'Unsorted no deadline', 'Unsorted created later'],
             self::titles(self::getContainer()->get(ShowMatrixHandler::class)()),
         );
     }

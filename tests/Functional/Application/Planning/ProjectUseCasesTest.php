@@ -34,9 +34,9 @@ final class ProjectUseCasesTest extends KernelTestCase
 
     public function testCreateProject(): void
     {
-        $project = self::createProject('  Home ', ProjectColor::Coral);
+        $project = self::createProject('  Home ', ProjectColor::Berry);
 
-        self::assertSame(['Home', 'coral', 0], [$project->name, $project->color, $project->openTasks]);
+        self::assertSame(['Home', 'berry', 0], [$project->name, $project->color, $project->openTasks]);
         self::assertTrue(Ulid::isValid($project->id));
     }
 
@@ -68,10 +68,10 @@ final class ProjectUseCasesTest extends KernelTestCase
     {
         $project = self::createProject('Home');
 
-        $edited = $this->edit($project, 'HOME sweet home', ProjectColor::Mint);
-        self::assertSame(['HOME sweet home', 'mint'], [$edited->name, $edited->color]);
+        $edited = $this->edit($project, 'HOME sweet home', ProjectColor::Lichen);
+        self::assertSame(['HOME sweet home', 'lichen'], [$edited->name, $edited->color]);
 
-        $recased = $this->edit($project, 'home sweet home', ProjectColor::Mint);
+        $recased = $this->edit($project, 'home sweet home', ProjectColor::Lichen);
         self::assertSame('home sweet home', $recased->name);
     }
 
@@ -82,7 +82,7 @@ final class ProjectUseCasesTest extends KernelTestCase
 
         $this->expectExceptionObject(new DuplicateProjectName('home'));
 
-        $this->edit($work, 'home', ProjectColor::Sky);
+        $this->edit($work, 'home', ProjectColor::Fjord);
     }
 
     public function testListsProjectsByNameWithTheirOpenTaskCount(): void

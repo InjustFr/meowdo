@@ -6,16 +6,16 @@ namespace App\Application\Gamification\WearCosmetic;
 
 use App\Application\Identity\CurrentUser;
 use App\Application\Transaction;
-use App\Domain\Gamification\CatRepository;
 use App\Domain\Gamification\Cosmetic\CosmeticCatalog;
 use App\Domain\Gamification\Cosmetic\OwnershipRepository;
+use App\Domain\Gamification\CritterRepository;
 use App\Domain\Gamification\Exception\CosmeticNotOwned;
 
 final readonly class WearCosmeticHandler
 {
     public function __construct(
         private CurrentUser $currentUser,
-        private CatRepository $cats,
+        private CritterRepository $critters,
         private OwnershipRepository $ownerships,
         private Transaction $transaction,
     ) {
@@ -26,7 +26,7 @@ final readonly class WearCosmeticHandler
         $user = $this->currentUser->get();
         CosmeticCatalog::get($slug);
         $ownership = $this->ownerships->find($user, $slug) ?? throw new CosmeticNotOwned($slug);
-        $this->cats->of($user)->wear($ownership);
+        $this->critters->of($user)->wear($ownership);
         $this->transaction->commit();
     }
 }

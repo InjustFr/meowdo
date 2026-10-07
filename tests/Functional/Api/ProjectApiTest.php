@@ -18,10 +18,10 @@ final class ProjectApiTest extends WebTestCase
     {
         $client = self::signedInClient();
 
-        $client->jsonRequest('POST', '/api/projects', ['name' => 'Home', 'color' => 'coral']);
+        $client->jsonRequest('POST', '/api/projects', ['name' => 'Home', 'color' => 'berry']);
         self::assertResponseStatusCodeSame(201);
         $id = Json::string(self::body($client), 'id');
-        self::assertSame(['Home', 'coral'], [Json::at(self::body($client), 'name'), Json::at(self::body($client), 'color')]);
+        self::assertSame(['Home', 'berry'], [Json::at(self::body($client), 'name'), Json::at(self::body($client), 'color')]);
 
         $client->jsonRequest('POST', '/api/tasks', ['title' => 'Laundry', 'projectId' => $id]);
         self::assertResponseStatusCodeSame(201);
@@ -30,9 +30,9 @@ final class ProjectApiTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSame(['Laundry'], array_column(self::body($client), 'title'));
 
-        $client->jsonRequest('PATCH', "/api/projects/$id", ['name' => 'Home sweet home', 'color' => 'mint']);
+        $client->jsonRequest('PATCH', "/api/projects/$id", ['name' => 'Home sweet home', 'color' => 'lichen']);
         self::assertResponseIsSuccessful();
-        self::assertSame('mint', Json::string(self::body($client), 'color'));
+        self::assertSame('lichen', Json::string(self::body($client), 'color'));
 
         $client->jsonRequest('GET', '/api/projects');
         self::assertSame(['Home sweet home'], array_column(self::body($client), 'name'));

@@ -6,7 +6,7 @@ namespace App\Tests\Unit\Domain\Gamification\Achievement;
 
 use App\Domain\Gamification\Achievement\AchievementRule;
 use App\Domain\Gamification\Achievement\PlayerStats;
-use App\Domain\Gamification\Achievement\Rule\FirstPaw;
+use App\Domain\Gamification\Achievement\Rule\FirstDrop;
 use App\Domain\Gamification\Achievement\Rule\FirstPurchase;
 use App\Domain\Gamification\Achievement\Rule\FiveHundredTasks;
 use App\Domain\Gamification\Achievement\Rule\HundredTasks;
@@ -14,9 +14,9 @@ use App\Domain\Gamification\Achievement\Rule\LevelFive;
 use App\Domain\Gamification\Achievement\Rule\LevelTen;
 use App\Domain\Gamification\Achievement\Rule\MatrixSorter;
 use App\Domain\Gamification\Achievement\Rule\MonthStreak;
-use App\Domain\Gamification\Achievement\Rule\PatientHunter;
-use App\Domain\Gamification\Achievement\Rule\TenPounces;
+use App\Domain\Gamification\Achievement\Rule\PatientGardener;
 use App\Domain\Gamification\Achievement\Rule\TenTasks;
+use App\Domain\Gamification\Achievement\Rule\TenWaterings;
 use App\Domain\Gamification\Achievement\Rule\ThreeDayStreak;
 use App\Domain\Gamification\Achievement\Rule\WeekStreak;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -41,12 +41,12 @@ final class AchievementRuleTest extends TestCase
     {
         $completed = static fn (int $count): PlayerStats => new PlayerStats(tasksCompleted: $count);
 
-        yield 'first paw' => [new FirstPaw(), 'first_paw', $completed, 1];
+        yield 'first drop' => [new FirstDrop(), 'first_drop', $completed, 1];
         yield 'ten tasks' => [new TenTasks(), 'ten_tasks', $completed, 10];
         yield 'hundred tasks' => [new HundredTasks(), 'hundred_tasks', $completed, 100];
         yield 'five hundred tasks' => [new FiveHundredTasks(), 'five_hundred_tasks', $completed, 500];
-        yield 'ten pounces' => [new TenPounces(), 'pounce_10', static fn (int $count): PlayerStats => new PlayerStats(doFirstCompleted: $count), 10];
-        yield 'patient hunter' => [new PatientHunter(), 'stalk_25', static fn (int $count): PlayerStats => new PlayerStats(scheduleCompleted: $count), 25];
+        yield 'ten waterings' => [new TenWaterings(), 'water_10', static fn (int $count): PlayerStats => new PlayerStats(doFirstCompleted: $count), 10];
+        yield 'patient gardener' => [new PatientGardener(), 'plant_25', static fn (int $count): PlayerStats => new PlayerStats(scheduleCompleted: $count), 25];
         yield 'matrix sorter' => [new MatrixSorter(), 'matrix_sorter', static fn (int $count): PlayerStats => new PlayerStats(tasksClassified: $count), 20];
         yield 'three day streak' => [new ThreeDayStreak(), 'streak_3', static fn (int $days): PlayerStats => new PlayerStats(bestStreak: $days), 3];
         yield 'week streak' => [new WeekStreak(), 'streak_7', static fn (int $days): PlayerStats => new PlayerStats(bestStreak: $days), 7];
@@ -60,7 +60,7 @@ final class AchievementRuleTest extends TestCase
     {
         $stats = new PlayerStats(tasksCompleted: 1_000);
 
-        self::assertFalse(new TenPounces()->isMetBy($stats));
+        self::assertFalse(new TenWaterings()->isMetBy($stats));
         self::assertFalse(new WeekStreak()->isMetBy($stats));
         self::assertFalse(new FirstPurchase()->isMetBy($stats));
     }

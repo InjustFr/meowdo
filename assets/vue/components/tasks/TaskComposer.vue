@@ -47,17 +47,17 @@ async function submit() {
     display: flex;
     align-items: center;
     gap: var(--space-3);
-    min-height: 3.5rem;
+    min-height: 3.25rem;
     padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
-    border: 0.125rem dashed var(--color-line-strong);
-    border-radius: var(--radius-row);
+    border: 0.0625rem dashed var(--color-border-strong);
+    border-radius: var(--radius);
     transition: border-color var(--transition), background var(--transition);
 }
 
-.task-composer:focus-within { border-style: solid; border-color: var(--color-accent); background: var(--color-surface); }
+.task-composer:focus-within { border-style: solid; border-color: var(--color-accent); background: var(--color-surface); box-shadow: var(--focus-ring); }
 .task-composer__icon { flex-shrink: 0; color: var(--color-muted); }
 .task-composer__input { flex: 1; min-width: 0; padding: var(--space-2) 0; border: none; background: none; outline: none; }
 .task-composer__input::placeholder { color: var(--color-subtle); }
-.task-composer__submit { padding: var(--space-2) var(--space-4); border: none; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-on-accent); font-weight: 700; cursor: pointer; }
+.task-composer__submit { padding: var(--space-2) var(--space-4); border: none; border-radius: var(--radius); background: var(--color-accent); color: var(--color-on-accent); font-weight: 600; cursor: pointer; }
 .task-composer__submit:disabled { opacity: 0; pointer-events: none; }
 </style>

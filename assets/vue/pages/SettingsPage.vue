@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { SwitchRoot, SwitchThumb } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
+import AppearanceSettings from '../components/settings/AppearanceSettings.vue';
 import BaseButton from '../components/ui/BaseButton.vue';
 import BaseSelect from '../components/ui/BaseSelect.vue';
 import FormField from '../components/ui/FormField.vue';
@@ -18,7 +19,7 @@ const { t } = useI18n();
 const api = useApi();
 const toast = useToast();
 const session = useSession();
-const { enabled: sound, bongo } = useSound();
+const { enabled: sound, drip } = useSound();
 
 const timezones = Intl.supportedValuesOf('timeZone').map((zone) => ({ value: zone, label: zone.replaceAll('_', ' ') }));
 const browserZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -47,7 +48,7 @@ async function saveLanguage(value) {
 
 function toggleSound(value) {
     sound.value = value;
-    if (value) bongo(2);
+    if (value) drip();
 }
 </script>
 
@@ -68,6 +69,10 @@ function toggleSound(value) {
                 </label>
             </div>
         </PageSection>
+        <PageSection :title="t('settings.appearance.title')">
+            <p class="settings__intro">{{ t('settings.appearance.intro') }}</p>
+            <AppearanceSettings />
+        </PageSection>
         <PageSection :title="t('settings.account')">
             <form method="post" action="/logout" class="settings__logout">
                 <input type="hidden" name="_csrf_token" :value="session?.logoutToken">
@@ -81,9 +86,10 @@ function toggleSound(value) {
 <style scoped>
 .settings { display: flex; flex-direction: column; gap: var(--space-4); max-width: 28rem; }
 .settings__switch { display: flex; align-items: center; gap: var(--space-3); cursor: pointer; }
-.switch { position: relative; flex-shrink: 0; width: 2.75rem; height: 1.625rem; padding: 0; border: none; border-radius: var(--radius-pill); background: var(--color-line-strong); cursor: pointer; transition: background var(--transition); }
-.switch[data-state="checked"] { background: var(--catnip); }
-.switch__thumb { display: block; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--moonmilk); transform: translateX(0.1875rem); transition: transform var(--transition); }
-.switch__thumb[data-state="checked"] { transform: translateX(1.3125rem); }
+.switch { position: relative; flex-shrink: 0; width: 2.5rem; height: 1.5rem; padding: 0; border: none; border-radius: var(--radius-pill); background: var(--color-border-strong); cursor: pointer; transition: background var(--transition); }
+.switch[data-state="checked"] { background: var(--color-accent); }
+.switch__thumb { display: block; width: 1.125rem; height: 1.125rem; border-radius: 50%; background: var(--color-surface); box-shadow: var(--shadow); transform: translateX(0.1875rem); transition: transform var(--transition); }
+.switch__thumb[data-state="checked"] { transform: translateX(1.1875rem); }
+.settings__intro { max-width: 36rem; color: var(--color-muted); font-size: var(--font-size-md); }
 .settings__credits { color: var(--color-muted); font-size: var(--font-size-sm); }
 </style>

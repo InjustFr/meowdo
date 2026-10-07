@@ -21,7 +21,7 @@ final class GamificationApiTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSame(1, Json::int(self::body($client), 'level'));
-        self::assertSame(['name' => 'Mochi', 'coat' => 'ginger', 'mood' => 'sleepy', 'outfit' => ['hat' => null, 'neckwear' => null, 'toy' => null, 'backdrop' => null]], Json::array(self::body($client), 'cat'));
+        self::assertSame(['name' => 'Pip', 'tint' => 'sprout', 'mood' => 'dormant', 'outfit' => ['hat' => null, 'neckwear' => null, 'toy' => null, 'backdrop' => null]], Json::array(self::body($client), 'critter'));
     }
 
     public function testShopAndOutfit(): void
@@ -30,38 +30,38 @@ final class GamificationApiTest extends WebTestCase
 
         $client->jsonRequest('GET', '/api/shop');
         self::assertResponseIsSuccessful();
-        self::assertSame(['slug' => 'party-hat', 'slot' => 'hat', 'price' => 30, 'minLevel' => 1, 'owned' => false, 'worn' => false], Json::array(self::body($client), 0));
+        self::assertSame(['slug' => 'acorn-cap', 'slot' => 'hat', 'price' => 30, 'minLevel' => 1, 'owned' => false, 'worn' => false], Json::array(self::body($client), 0));
 
-        $client->jsonRequest('POST', '/api/shop/party-hat/buy');
+        $client->jsonRequest('POST', '/api/shop/acorn-cap/buy');
         self::assertResponseStatusCodeSame(422);
         $client->jsonRequest('POST', '/api/shop/jetpack/buy');
         self::assertResponseStatusCodeSame(422);
-        $client->jsonRequest('POST', '/api/cat/wear/party-hat');
+        $client->jsonRequest('POST', '/api/critter/wear/acorn-cap');
         self::assertResponseStatusCodeSame(422);
 
-        $client->jsonRequest('POST', '/api/cat/take-off/hat');
+        $client->jsonRequest('POST', '/api/critter/take-off/hat');
         self::assertResponseStatusCodeSame(204);
-        $client->jsonRequest('POST', '/api/cat/take-off/tail');
+        $client->jsonRequest('POST', '/api/critter/take-off/tail');
         self::assertResponseStatusCodeSame(404);
     }
 
-    public function testRenameAndRecoatTheCat(): void
+    public function testRenameAndRetintTheCritter(): void
     {
         $client = self::signedInClient();
 
-        $client->jsonRequest('PUT', '/api/cat/name', ['name' => 'Biscuit']);
+        $client->jsonRequest('PUT', '/api/critter/name', ['name' => 'Bramble']);
         self::assertResponseStatusCodeSame(204);
-        $client->jsonRequest('PUT', '/api/cat/coat', ['coat' => 'smoke']);
+        $client->jsonRequest('PUT', '/api/critter/tint', ['tint' => 'frost']);
         self::assertResponseStatusCodeSame(204);
 
         $client->jsonRequest('GET', '/api/player');
-        self::assertSame(['Biscuit', 'smoke'], [Json::string(self::body($client), 'cat', 'name'), Json::string(self::body($client), 'cat', 'coat')]);
+        self::assertSame(['Bramble', 'frost'], [Json::string(self::body($client), 'critter', 'name'), Json::string(self::body($client), 'critter', 'tint')]);
 
-        $client->jsonRequest('PUT', '/api/cat/name', ['name' => '']);
+        $client->jsonRequest('PUT', '/api/critter/name', ['name' => '']);
         self::assertResponseStatusCodeSame(422);
-        $client->jsonRequest('PUT', '/api/cat/name', ['name' => str_repeat('n', 31)]);
+        $client->jsonRequest('PUT', '/api/critter/name', ['name' => str_repeat('n', 31)]);
         self::assertResponseStatusCodeSame(422);
-        $client->jsonRequest('PUT', '/api/cat/coat', ['coat' => 'rainbow']);
+        $client->jsonRequest('PUT', '/api/critter/tint', ['tint' => 'rainbow']);
         self::assertResponseStatusCodeSame(422);
     }
 
@@ -74,7 +74,7 @@ final class GamificationApiTest extends WebTestCase
         $client->jsonRequest('GET', '/api/achievements');
         self::assertResponseIsSuccessful();
         self::assertCount(13, self::body($client));
-        self::assertSame('first_paw', Json::string(self::body($client), 0, 'id'));
+        self::assertSame('first_drop', Json::string(self::body($client), 0, 'id'));
         self::assertIsString(Json::at(self::body($client), 0, 'unlockedAt'));
 
         $client->jsonRequest('POST', '/api/achievements/seen');

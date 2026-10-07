@@ -23,13 +23,13 @@ final class QuadrantTest extends TestCase
     /** @return iterable<array{bool, bool, Quadrant}> */
     public static function quadrants(): iterable
     {
-        yield 'pounce' => [true, true, Quadrant::DoFirst];
-        yield 'stalk' => [false, true, Quadrant::Schedule];
-        yield 'swat away' => [true, false, Quadrant::Delegate];
-        yield 'nap on it' => [false, false, Quadrant::Eliminate];
+        yield 'water now' => [true, true, Quadrant::DoFirst];
+        yield 'plant' => [false, true, Quadrant::Schedule];
+        yield 'trim' => [true, false, Quadrant::Delegate];
+        yield 'compost' => [false, false, Quadrant::Eliminate];
     }
 
-    public function testPriorityOrdersPounceStalkSwatNapThenUnsorted(): void
+    public function testPriorityOrdersWaterPlantTrimCompostThenUnsorted(): void
     {
         self::assertSame(
             [0, 1, 2, 3, 4],

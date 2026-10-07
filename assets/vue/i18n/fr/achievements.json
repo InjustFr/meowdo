@@ -3,44 +3,44 @@
     "progress": "{unlocked} sur {total} débloqués",
     "bestStreak": "Meilleure série : aucune | Meilleure série : 1 jour | Meilleure série : {count} jours",
     "unlockedOn": "Débloqué le {date}",
-    "first_paw": {
-        "title": "Première patte",
+    "first_drop": {
+        "title": "Première goutte",
         "description": "Terminez votre première tâche."
     },
     "ten_tasks": {
-        "title": "Échauffement",
+        "title": "Prendre racine",
         "description": "Terminez 10 tâches."
     },
     "hundred_tasks": {
-        "title": "Club des cent pattes",
+        "title": "Cent gouttes de rosée",
         "description": "Terminez 100 tâches."
     },
     "five_hundred_tasks": {
-        "title": "Chasseur légendaire",
+        "title": "Mousse ancestrale",
         "description": "Terminez 500 tâches."
     },
     "streak_3": {
-        "title": "Trois jours de ronron",
+        "title": "Trois matins humides",
         "description": "Terminez quelque chose 3 jours de suite."
     },
     "streak_7": {
-        "title": "Une semaine de moustaches",
+        "title": "Une semaine de rosée",
         "description": "Terminez quelque chose 7 jours de suite."
     },
     "streak_30": {
-        "title": "Neuf vies de concentration",
+        "title": "Increvable",
         "description": "Terminez quelque chose 30 jours de suite."
     },
-    "pounce_10": {
-        "title": "Bond rapide",
-        "description": "Terminez 10 tâches Bondir (urgentes et importantes)."
+    "water_10": {
+        "title": "Arrosage express",
+        "description": "Terminez 10 tâches Arroser (urgentes et importantes)."
     },
-    "stalk_25": {
-        "title": "Chasseur patient",
-        "description": "Terminez 25 tâches Guetter (importantes, pas urgentes)."
+    "plant_25": {
+        "title": "Jardinier patient",
+        "description": "Terminez 25 tâches Planter (importantes, pas urgentes)."
     },
     "matrix_sorter": {
-        "title": "Chat bien rangé",
+        "title": "Carré bien rangé",
         "description": "Placez 20 tâches dans la matrice."
     },
     "first_purchase": {
@@ -48,11 +48,11 @@
         "description": "Achetez votre premier objet à la boutique."
     },
     "level_5": {
-        "title": "Chat aguerri",
+        "title": "Bien enraciné",
         "description": "Atteignez le niveau 5."
     },
     "level_10": {
-        "title": "Chat suprême",
+        "title": "Forêt ancienne",
         "description": "Atteignez le niveau 10."
     }
 }

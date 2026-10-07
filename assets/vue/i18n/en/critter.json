@@ -1,0 +1,17 @@
+{
+    "deskLabel": "{name} in its moss patch",
+    "level": "Level {level}",
+    "xpProgress": "Progress to the next level",
+    "toNextLevel": "{xp} XP to level {level}",
+    "coins": "Coins",
+    "streak": "Streak",
+    "days": "no streak | 1 day | {count} days",
+    "dressUp": "Dress up {name}",
+    "burstXp": "+{xp} XP",
+    "burstCoins": "+{coins} coins",
+    "mood": {
+        "lively": "{name} is soaking up the dew",
+        "idle": "{name} is waiting for a task",
+        "dormant": "{name} has curled up in the moss"
+    }
+}

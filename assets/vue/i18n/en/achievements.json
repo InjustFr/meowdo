@@ -3,44 +3,44 @@
     "progress": "{unlocked} of {total} unlocked",
     "bestStreak": "Best streak: none yet | Best streak: 1 day | Best streak: {count} days",
     "unlockedOn": "Unlocked {date}",
-    "first_paw": {
-        "title": "First paw print",
+    "first_drop": {
+        "title": "First dewdrop",
         "description": "Complete your first task."
     },
     "ten_tasks": {
-        "title": "Warming up",
+        "title": "Taking root",
         "description": "Complete 10 tasks."
     },
     "hundred_tasks": {
-        "title": "Hundred-paw club",
+        "title": "Hundred dewdrops",
         "description": "Complete 100 tasks."
     },
     "five_hundred_tasks": {
-        "title": "Legendary mouser",
+        "title": "Ancient moss",
         "description": "Complete 500 tasks."
     },
     "streak_3": {
-        "title": "Three-day purr",
+        "title": "Three damp mornings",
         "description": "Complete something 3 days in a row."
     },
     "streak_7": {
-        "title": "Week of whiskers",
+        "title": "A week of dew",
         "description": "Complete something 7 days in a row."
     },
     "streak_30": {
-        "title": "Nine lives of focus",
+        "title": "Survives anything",
         "description": "Complete something 30 days in a row."
     },
-    "pounce_10": {
-        "title": "Quick pouncer",
-        "description": "Finish 10 Pounce tasks (urgent and important)."
+    "water_10": {
+        "title": "Quick waterer",
+        "description": "Finish 10 Water tasks (urgent and important)."
     },
-    "stalk_25": {
-        "title": "Patient hunter",
-        "description": "Finish 25 Stalk tasks (important, not urgent)."
+    "plant_25": {
+        "title": "Patient gardener",
+        "description": "Finish 25 Plant tasks (important, not urgent)."
     },
     "matrix_sorter": {
-        "title": "Sorted cat",
+        "title": "Tidy patch",
         "description": "Place 20 tasks in the matrix."
     },
     "first_purchase": {
@@ -48,11 +48,11 @@
         "description": "Buy your first item in the shop."
     },
     "level_5": {
-        "title": "Seasoned cat",
+        "title": "Well rooted",
         "description": "Reach level 5."
     },
     "level_10": {
-        "title": "Top cat",
+        "title": "Old growth",
         "description": "Reach level 10."
     }
 }
