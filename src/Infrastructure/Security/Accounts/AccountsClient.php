@@ -17,7 +17,7 @@ final readonly class AccountsClient
     ) {
     }
 
-    public function signIn(string $code, string $verifier, string $redirectUri): SignIn
+    public function signIn(string $code, string $verifier, string $redirectUri): AccountsSignIn
     {
         try {
             $tokens = $this->httpClient->request('POST', $this->configuration->tokenUrl, ['body' => [
@@ -43,7 +43,10 @@ final readonly class AccountsClient
             throw new CustomUserMessageAuthenticationException('login.failed');
         }
 
-        return new SignIn($accountId, self::text($claims, 'email'), self::text($claims, 'name') ?? self::text($claims, 'preferred_username'), self::text($claims, 'zoneinfo'));
+        return new AccountsSignIn(
+            new SignIn($accountId, self::text($claims, 'email'), self::text($claims, 'name') ?? self::text($claims, 'preferred_username'), self::text($claims, 'zoneinfo')),
+            self::text($tokens, 'id_token'),
+        );
     }
 
     /** @param array<mixed> $claims */

@@ -123,15 +123,33 @@ final class AuthenticationTest extends WebTestCase
     public function testSigningOutAlsoSignsOutOfTheMossyleafAccount(): void
     {
         $client = self::createClient();
-        $client->loginUser(SecurityUser::fromUser(self::createUser()));
-        $client->request('GET', '/settings');
-        $token = Json::string(Json::decode((string) $client->getCrawler()->filter('#app-session')->text()), 'logoutToken');
+        $client->request('GET', '/login');
+        $code = FakeAccounts::code(['sub' => 'account-1', 'email' => 'fern@example.com']);
+        $client->request('GET', '/login/check', ['state' => $this->authorizeQuery($client)['state'], 'code' => $code]);
 
-        $client->request('POST', '/logout', ['_csrf_token' => $token]);
+        $client->request('POST', '/logout', ['_csrf_token' => $this->logoutToken($client)]);
 
-        self::assertResponseRedirects('https://accounts.test/end-session?client_id=mossydew&post_logout_redirect_uri=http%3A%2F%2Flocalhost%2F');
+        self::assertResponseRedirects('https://accounts.test/end-session?client_id=mossydew&id_token_hint=id.'.$code.'&post_logout_redirect_uri=http%3A%2F%2Flocalhost%2F');
+        $client->getCookieJar()->clear();
         $client->jsonRequest('GET', '/api/player');
         self::assertResponseStatusCodeSame(401);
+    }
+
+    public function testSigningOutOfARememberedSessionStillEndsTheMossyleafSession(): void
+    {
+        $client = self::createClient();
+        $client->loginUser(SecurityUser::fromUser(self::createUser()));
+
+        $client->request('POST', '/logout', ['_csrf_token' => $this->logoutToken($client)]);
+
+        self::assertResponseRedirects('https://accounts.test/end-session?client_id=mossydew');
+    }
+
+    private function logoutToken(KernelBrowser $client): string
+    {
+        $client->request('GET', '/settings');
+
+        return Json::string(Json::decode((string) $client->getCrawler()->filter('#app-session')->text()), 'logoutToken');
     }
 
     /**
