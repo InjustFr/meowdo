@@ -9,6 +9,17 @@
 - **T7** Deleting a project keeps its tasks, which move to the inbox. — `Task.project` `onDelete: SET NULL`
 - **T8** Project names are unique per user (case-insensitive), ≤ 60 chars, with one of 8 colours (berry, honey, moss, fjord, heather, blossom, lichen, rust). — `CreateProjectHandler`, `EditProjectHandler`, `ProjectColor`
 
+## Subtasks
+
+Made to split a piece of work (a drawing) into achievable steps (sketch, colouring, render).
+
+- **S1** A task can be split into subtasks, added from its editor. A subtask has the same owner and project as its parent and is otherwise a full task (planned day, deadline, quadrant, notes). One level only: a subtask cannot have subtasks. — `Task::addSubtask()`, `AddSubtaskHandler`
+- **S2** Subtasks are listed in the order they were added. In every list, a subtask whose parent is in the same list is shown under it; otherwise it shows "Subtask of …". A parent shows its progress (done / total). — `ListSubtasksHandler`, `assets/vue/tasks/subtasks.js`
+- **S3** Completing the last open subtask completes the parent. Each subtask earns its own reward, and so does the parent when it completes (G1): the completion reward is their sum. A parent with an open subtask cannot be completed by hand. — `Task::complete()`, `CompleteTaskHandler`
+- **S4** Reopening a subtask reopens its parent; adding a subtask to a done parent reopens it. Neither earns anything again (G1). A reopened parent without open subtasks can be completed by hand. — `Task::reopen()`, `Task::addSubtask()`
+- **S5** A subtask stays in its parent's project: moving the parent moves its subtasks, a subtask cannot be moved on its own. Deleting the parent deletes its subtasks; deleting a subtask keeps the parent. — `Task::fileUnder()`, `Task.parent` `onDelete: CASCADE`
+- **S6** A subtask cannot repeat. The next occurrence of a repeating parent (R2) starts with open copies of its subtasks (title and notes). — `Task::repeat()`, `Task::nextOccurrence()`
+
 ## Eisenhower matrix
 
 - **M1** Quadrants: Water = urgent & important (`DoFirst`), Plant = important, not urgent (`Schedule`), Trim = urgent, not important (`Delegate`), Compost = neither (`Eliminate`). A task may be unsorted.

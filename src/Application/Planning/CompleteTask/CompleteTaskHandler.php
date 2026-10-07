@@ -34,20 +34,28 @@ final readonly class CompleteTaskHandler
     {
         $task = $this->tasks->get($id);
         $today = $this->today->date();
-        $task->complete($this->today->now());
-        ($this->continueSeries)($task);
+        $completed = $task->complete($this->today->now());
 
         $reward = null;
         $leveledUpTo = null;
-        if ($task->claimReward($this->today->now())) {
-            $player = $this->players->of($this->currentUser->get());
+        $player = $this->players->of($this->currentUser->get());
+        foreach ($completed as $done) {
+            ($this->continueSeries)($done);
+            if (!$done->claimReward($this->today->now())) {
+                continue;
+            }
             $player->recordActivity($today);
-            $reward = $this->policy->rewardFor($task, $today, $player->streak()->current);
+            $earned = $this->policy->rewardFor($done, $today, $player->streak()->current);
+            $reward = null === $reward ? $earned : $reward->plus($earned);
+        }
+        if (null !== $reward) {
             $leveledUpTo = $player->earn($reward);
         }
         $this->transaction->commit();
         ($this->achievements)();
 
-        return new CompletionView(TaskView::of($task), $reward, $leveledUpTo, ($this->showPlayer)());
+        $parent = $task->parent();
+
+        return new CompletionView(TaskView::of($task), $reward, $leveledUpTo, ($this->showPlayer)(), null === $parent ? null : TaskView::of($parent));
     }
 }

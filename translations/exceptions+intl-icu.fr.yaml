@@ -18,6 +18,10 @@ task:
     missing_plan_date: 'Choisissez une date dans le calendrier.'
     invalid_recurrence: 'Une tâche se répète tous les 1 à 365 jours, semaines, mois ou années, pas tous les {interval}.'
     done_cannot_repeat: '« {title} » est faite : rouvrez-la avant de la faire se répéter.'
+    subtask_cannot_have_subtasks: '« {title} » est une sous-tâche : elle ne peut pas avoir ses propres sous-tâches.'
+    subtask_cannot_repeat: '« {title} » est une sous-tâche : faites plutôt se répéter sa tâche parente.'
+    subtask_follows_parent_project: '« {title} » est une sous-tâche : elle reste dans le projet de sa tâche parente.'
+    open_subtasks: '« {title} » sera terminée d’elle-même une fois toutes ses sous-tâches faites.'
 game:
     not_enough_coins: 'Il vous faut {price} pièces, vous en avez {coins}.'
     level_too_low: 'Atteignez le niveau {level} pour débloquer cet objet.'

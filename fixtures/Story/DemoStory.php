@@ -98,6 +98,10 @@ final class DemoStory extends Story
         $this->task('Gift idea for Lea\'s birthday', null, due: 12);
         $this->task('Read "Deep Work"', null, Quadrant::Schedule);
         $this->task('Back up the laptop', $work);
+        $cover = $this->task('Cover art for "Morning Dew"', $music, Quadrant::Schedule, due: 9, notes: 'Square, 3000 px, moss and dew drops.');
+        $this->subtask($cover, 'Sketch', '09:01');
+        $this->subtask($cover, 'Colouring', '09:02', planned: 0);
+        $this->subtask($cover, 'Render and export', '09:03');
 
         foreach (['leaf-collar', 'pebble'] as $slug) {
             $ownership = $this->player->buy(CosmeticCatalog::get($slug), $this->now);
@@ -146,6 +150,17 @@ final class DemoStory extends Story
         $task->describe($notes);
 
         return $task;
+    }
+
+    private function subtask(Task $parent, string $title, string $time, ?int $planned = null): Task
+    {
+        $subtask = $parent->addSubtask($title, $this->moment(-2, $time));
+        if (null !== $planned) {
+            $subtask->planFor($this->day($planned));
+        }
+        $this->entityManager->persist($subtask);
+
+        return $subtask;
     }
 
     private function done(Task $task, int $offset): void

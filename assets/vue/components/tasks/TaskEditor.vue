@@ -9,6 +9,7 @@ import BaseSelect from '../ui/BaseSelect.vue';
 import ConfirmButton from '../ui/ConfirmButton.vue';
 import FormField from '../ui/FormField.vue';
 import QuadrantPicker from './QuadrantPicker.vue';
+import SubtaskChecklist from './SubtaskChecklist.vue';
 import { ApiError, useApi } from '../../composables/useApi.js';
 import { useProjects } from '../../composables/useProjects.js';
 import { useTaskActions } from '../../composables/useTaskActions.js';
@@ -92,15 +93,19 @@ async function remove() {
             <FormField :label="t('tasks.editor.notes')">
                 <textarea v-model="form.notes" rows="3" />
             </FormField>
+            <p v-if="task.parentId" class="task-editor__parent">{{ t('tasks.subtasks.of', { title: task.parentTitle }) }}</p>
             <div class="task-editor__pair">
-                <FormField :label="t('tasks.editor.project')" as="div">
+                <FormField v-if="!task.parentId" :label="t('tasks.editor.project')" as="div">
                     <BaseSelect v-model="form.projectId" :options="projectOptions" />
                 </FormField>
                 <FormField :label="t('tasks.editor.deadline')" as="div" :error="errors.dueOn">
                     <BaseDatePicker v-model="form.dueOn" />
                 </FormField>
             </div>
-            <FormField v-if="!task.done" :label="t('tasks.editor.repeat')" as="div" :error="errors['recurrence.interval']" :hint="recurrenceLabel(recurrence, t)">
+            <FormField v-if="!task.parentId" :label="t('tasks.subtasks.title')" as="div" :hint="t('tasks.subtasks.hint')">
+                <SubtaskChecklist :task="task" />
+            </FormField>
+            <FormField v-if="!task.done && !task.parentId" :label="t('tasks.editor.repeat')" as="div" :error="errors['recurrence.interval']" :hint="recurrenceLabel(recurrence, t)">
                 <div class="task-editor__repeat">
                     <input
                         v-if="form.repeatUnit"
@@ -129,6 +134,7 @@ async function remove() {
 
 <style scoped>
 .task-editor { display: flex; flex-direction: column; gap: var(--space-4); }
+.task-editor__parent { margin: 0; color: var(--color-muted); font-size: var(--font-size-sm); }
 .task-editor__pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--space-4); }
 .task-editor__repeat { display: flex; gap: var(--space-2); }
 .task-editor__interval { flex: none; width: 4.5rem; text-align: center; font-variant-numeric: tabular-nums; }

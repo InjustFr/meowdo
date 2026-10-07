@@ -62,6 +62,36 @@ final class TaskApiTest extends WebTestCase
         self::assertSame([], self::body($client));
     }
 
+    public function testSubtasks(): void
+    {
+        $client = self::signedInClient();
+        $parent = self::create($client, 'Fox drawing');
+
+        $client->jsonRequest('POST', "/api/tasks/$parent/subtasks", ['title' => 'Sketch']);
+        self::assertResponseStatusCodeSame(201);
+        $subtask = self::body($client);
+        self::assertSame([$parent, 'Fox drawing', false], [$subtask['parentId'], $subtask['parentTitle'], $subtask['done']]);
+        $id = Json::string($subtask, 'id');
+
+        $client->jsonRequest('GET', "/api/tasks/$parent/subtasks");
+        self::assertResponseIsSuccessful();
+        self::assertSame([$id], array_column(self::body($client), 'id'));
+
+        $client->jsonRequest('POST', "/api/tasks/$parent/complete");
+        self::assertResponseStatusCodeSame(422);
+        self::assertSame('“Fox drawing” completes by itself once all its subtasks are done.', Json::string(self::body($client), 'detail'));
+
+        $client->jsonRequest('POST', "/api/tasks/$id/subtasks", ['title' => 'Pencils']);
+        self::assertResponseStatusCodeSame(422);
+
+        $client->jsonRequest('POST', "/api/tasks/$parent/subtasks", ['title' => ' ']);
+        self::assertResponseStatusCodeSame(422);
+
+        $client->jsonRequest('POST', "/api/tasks/$id/complete");
+        self::assertResponseIsSuccessful();
+        self::assertSame([true, 1, 1], [Json::at(self::body($client), 'parent', 'done'), Json::at(self::body($client), 'parent', 'subtaskCount'), Json::at(self::body($client), 'parent', 'subtasksDone')]);
+    }
+
     public function testInvalidPayloadsAre422(): void
     {
         $client = self::signedInClient();
@@ -142,7 +172,7 @@ final class TaskApiTest extends WebTestCase
         $id = self::create($client, 'Secret');
         $client->loginUser(SecurityUser::fromUser(self::createUser()));
 
-        foreach ([['PATCH', "/api/tasks/$id", ['title' => 'Mine']], ['POST', "/api/tasks/$id/complete", []], ['POST', "/api/tasks/$id/plan", ['when' => 'today']], ['DELETE', "/api/tasks/$id", []]] as [$method, $url, $payload]) {
+        foreach ([['PATCH', "/api/tasks/$id", ['title' => 'Mine']], ['POST', "/api/tasks/$id/complete", []], ['POST', "/api/tasks/$id/plan", ['when' => 'today']], ['DELETE', "/api/tasks/$id", []], ['GET', "/api/tasks/$id/subtasks", []], ['POST', "/api/tasks/$id/subtasks", ['title' => 'Mine']]] as [$method, $url, $payload]) {
             $client->jsonRequest($method, $url, $payload);
             self::assertResponseStatusCodeSame(404, "$method $url");
         }

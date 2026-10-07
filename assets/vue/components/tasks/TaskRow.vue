@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { AlignLeft, Repeat, Sun } from '@lucide/vue';
+import { AlignLeft, CornerDownRight, ListChecks, Repeat, Sun } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import IconButton from '../ui/IconButton.vue';
 import DropCheck from './DropCheck.vue';
@@ -12,12 +12,14 @@ import { useTaskActions } from '../../composables/useTaskActions.js';
 import { useTaskEditor } from '../../composables/useTaskEditor.js';
 import { isOverdue, isPlannedFor } from '../../tasks/days.js';
 import { recurrenceLabel } from '../../tasks/recurrence.js';
+import { hasOpenSubtasks } from '../../tasks/subtasks.js';
 
 const props = defineProps({
     task: { type: Object, required: true },
     showProject: { type: Boolean, default: true },
     showPlanned: { type: Boolean, default: true },
     compact: { type: Boolean, default: false },
+    nested: { type: Boolean, default: false },
 });
 
 const { t } = useI18n();
@@ -43,11 +45,19 @@ const plannedLabel = computed(() => {
     return dayLabel(props.task.plannedOn);
 });
 
+const locked = computed(() => hasOpenSubtasks(props.task));
+const parentLabel = computed(() => (props.nested ? null : props.task.parentTitle));
+const checkLabel = computed(() => {
+    if (locked.value) return t('tasks.subtasks.locked', { title: props.task.title });
+    return t(props.task.done ? 'tasks.reopen' : 'tasks.complete', { title: props.task.title });
+});
+
 const repeatLabel = computed(() => recurrenceLabel(props.task.recurrence, t));
 
 const dueLabel = computed(() => (props.task.dueOn ? t('tasks.due', { day: dayLabel(props.task.dueOn) }) : null));
 
 function toggle() {
+    if (locked.value) return null;
     return props.task.done ? actions.reopen(props.task) : actions.complete(props.task);
 }
 
@@ -75,16 +85,20 @@ function onKeydown(event) {
 
 <template>
     <li
-        :class="['task-row', `task-row--${task.quadrant ?? 'unsorted'}`, { 'task-row--done': task.done, 'task-row--compact': compact }]"
+        :class="['task-row', `task-row--${task.quadrant ?? 'unsorted'}`, { 'task-row--done': task.done, 'task-row--compact': compact, 'task-row--nested': nested }]"
         tabindex="0"
         :data-task="task.id"
         @keydown="onKeydown"
     >
-        <DropCheck :done="task.done" :label="t(task.done ? 'tasks.reopen' : 'tasks.complete', { title: task.title })" @toggle="toggle" />
+        <DropCheck :done="task.done" :disabled="locked" :label="checkLabel" @toggle="toggle" />
         <div class="task-row__main">
             <button type="button" class="task-row__title" @click="editor.edit(task)">{{ task.title }}</button>
-            <p v-if="(showProject && project) || plannedLabel || dueLabel || repeatLabel || task.notes" class="task-row__meta">
+            <p v-if="parentLabel || (showProject && project) || task.subtaskCount || plannedLabel || dueLabel || repeatLabel || task.notes" class="task-row__meta">
+                <span v-if="parentLabel" class="task-row__parent"><CornerDownRight size="0.875rem" aria-hidden="true" />{{ t('tasks.subtasks.of', { title: parentLabel }) }}</span>
                 <span v-if="showProject && project" class="task-row__project" :style="{ '--project': `var(--project-${project.color})` }">{{ project.name }}</span>
+                <span v-if="task.subtaskCount" class="task-row__subtasks" :aria-label="t('tasks.subtasks.progress', { done: task.subtasksDone, total: task.subtaskCount })">
+                    <ListChecks size="0.875rem" aria-hidden="true" /><span aria-hidden="true">{{ task.subtasksDone }}/{{ task.subtaskCount }}</span>
+                </span>
                 <span v-if="plannedLabel" class="task-row__planned">{{ plannedLabel }}</span>
                 <span v-if="dueLabel" :class="['task-row__due', { 'task-row__due--overdue': overdue }]">{{ dueLabel }}</span>
                 <span v-if="repeatLabel" class="task-row__repeat"><Repeat size="0.875rem" aria-hidden="true" />{{ repeatLabel }}</span>
@@ -138,7 +152,9 @@ function onKeydown(event) {
 .task-row__project { display: inline-flex; align-items: center; gap: var(--space-1); }
 .task-row__project::before { content: ""; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--project); }
 .task-row__due--overdue { color: var(--color-danger); font-weight: 600; }
-.task-row__repeat { display: inline-flex; align-items: center; gap: var(--space-1); }
+.task-row__repeat, .task-row__parent, .task-row__subtasks { display: inline-flex; align-items: center; gap: var(--space-1); }
+.task-row__parent { min-width: 0; overflow-wrap: anywhere; }
+.task-row__subtasks { font-variant-numeric: tabular-nums; }
 .task-row__notes { color: var(--color-subtle); }
 .task-row__actions { display: flex; align-items: center; flex-shrink: 0; }
 .task-row__sun[aria-pressed="true"] { color: var(--color-warning); }
@@ -146,6 +162,8 @@ function onKeydown(event) {
 .task-row--done { border-color: transparent; background: transparent; }
 .task-row--done::before { opacity: 0.3; }
 .task-row--done .task-row__title { color: var(--color-subtle); text-decoration: line-through; text-decoration-color: var(--color-border-strong); }
+
+.task-row--nested { min-height: 2.75rem; }
 
 .task-row--compact { min-height: 3rem; gap: var(--space-2); padding-left: var(--space-3); cursor: grab; }
 .task-row--compact .task-row__title { font-size: var(--font-size-md); }

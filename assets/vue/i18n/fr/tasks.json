@@ -56,5 +56,14 @@
             "month": "Chaque mois | Tous les {n} mois",
             "year": "Chaque année | Tous les {n} ans"
         }
+    },
+    "subtasks": {
+        "title": "Sous-tâches",
+        "hint": "La tâche se termine d’elle-même une fois toutes ses sous-tâches faites ; chaque sous-tâche rapporte sa propre récompense.",
+        "add": "Nouvelle sous-tâche",
+        "placeholder": "Ajouter une étape, p. ex. croquis",
+        "of": "Sous-tâche de « {title} »",
+        "progress": "{done} sous-tâches faites sur {total}",
+        "locked": "« {title} » se termine quand ses sous-tâches sont faites"
     }
 }

@@ -128,7 +128,28 @@ final readonly class DoctrineTaskQueries implements TaskQueries
     private function list(QueryBuilder $query): array
     {
         $tasks = $query->getQuery()->getResult();
+        $tasks = \is_array($tasks) ? array_values(array_filter($tasks, static fn (mixed $task): bool => $task instanceof Task)) : [];
+        $this->loadFamilies($tasks);
 
-        return \is_array($tasks) ? array_values(array_filter($tasks, static fn (mixed $task): bool => $task instanceof Task)) : [];
+        return $tasks;
+    }
+
+    /**
+     * @param list<Task> $tasks
+     */
+    private function loadFamilies(array $tasks): void
+    {
+        if ([] === $tasks) {
+            return;
+        }
+        $this->entityManager->createQueryBuilder()
+            ->select('t', 'parent', 'subtask')
+            ->from(Task::class, 't')
+            ->leftJoin('t.parent', 'parent')
+            ->leftJoin('t.subtasks', 'subtask')
+            ->where('t.id IN (:ids)')
+            ->setParameter('ids', array_map(static fn (Task $task): string => $task->id()->toRfc4122(), $tasks))
+            ->getQuery()
+            ->getResult();
     }
 }

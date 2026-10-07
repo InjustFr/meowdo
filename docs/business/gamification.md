@@ -1,6 +1,6 @@
 # Gamification
 
-- **G1** Completing a task earns a reward **once per task, ever**: reopening and completing again earns nothing. Deleting a task never removes XP. — `Task::claimReward()`
+- **G1** Completing a task earns a reward **once per task, ever**: reopening and completing again earns nothing. Deleting a task never removes XP. A subtask is a task: it earns its own reward, and its parent earns one too when the last subtask completes it (S3). — `Task::claimReward()`
 - **G2** Base XP by quadrant: Plant 25, Water 20, unsorted 8, Trim 10, Compost 5 (Plant pays most: important work done before it is urgent). +5 when done on or before its deadline. — `RewardPolicy`
 - **G3** Streak multiplier: × (1 + 0.05 × streak days, capped at 10 days). Coins = ⌈XP / 4⌉. — `RewardPolicy`
 - **G4** Streak: consecutive days (user's time zone) with at least one rewarded completion. Missing a day resets the shown streak to 0; the best streak is kept. — `Streak`

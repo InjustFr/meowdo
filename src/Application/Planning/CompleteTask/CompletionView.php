@@ -15,6 +15,7 @@ final readonly class CompletionView
         public ?Reward $reward,
         public ?int $leveledUpTo,
         public PlayerView $player,
+        public ?TaskView $parent = null,
     ) {
     }
 }

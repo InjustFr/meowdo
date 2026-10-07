@@ -2,12 +2,13 @@
 defineProps({
     done: { type: Boolean, required: true },
     label: { type: String, required: true },
+    disabled: { type: Boolean, default: false },
 });
 const emit = defineEmits(['toggle']);
 </script>
 
 <template>
-    <button type="button" :class="['drop-check', { 'drop-check--done': done }]" role="checkbox" :aria-checked="done" :aria-label="label" @click="emit('toggle')">
+    <button type="button" :class="['drop-check', { 'drop-check--done': done }]" role="checkbox" :aria-checked="done" :aria-label="label" :disabled="disabled" @click="emit('toggle')">
         <svg viewBox="0 0 24 24" aria-hidden="true">
             <path class="drop-check__drop" d="M12 3.5q6 6.8 6 10.5a6 6 0 0 1-12 0q0-3.7 6-10.5z" />
             <path class="drop-check__tick" d="M9 14.2l2.2 2.2 4-4.4" />
@@ -41,6 +42,10 @@ const emit = defineEmits(['toggle']);
 .drop-check--done .drop-check__drop { fill: transparent; opacity: 0; }
 .drop-check--done .drop-check__tick { animation: tick 240ms ease-out 80ms forwards; }
 .drop-check--done:hover .drop-check__drop { opacity: 0; }
+
+.drop-check:disabled { border-style: dashed; cursor: not-allowed; }
+.drop-check:disabled:hover { border-color: var(--color-border-strong); }
+.drop-check:disabled .drop-check__drop { opacity: 0; }
 
 @keyframes tick { to { stroke-dashoffset: 0; } }
 </style>

@@ -8,10 +8,16 @@ use App\Domain\Identity\User;
 use App\Domain\Planning\Exception\DoneTaskCannotRepeat;
 use App\Domain\Planning\Exception\EmptyTaskTitle;
 use App\Domain\Planning\Exception\ProjectOfAnotherOwner;
+use App\Domain\Planning\Exception\SubtaskCannotHaveSubtasks;
+use App\Domain\Planning\Exception\SubtaskCannotRepeat;
+use App\Domain\Planning\Exception\SubtaskFollowsParentProject;
 use App\Domain\Planning\Exception\TaskAlreadyDone;
+use App\Domain\Planning\Exception\TaskHasOpenSubtasks;
 use App\Domain\Planning\Exception\TaskNotDone;
 use App\Domain\Shared\Day;
 use App\Domain\Shared\OptionalText;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
@@ -42,6 +48,15 @@ class Task
     #[ORM\ManyToOne(targetEntity: Project::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Project $project = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subtasks')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?self $parent = null;
+
+    /** @var Collection<int, Task> */
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent', cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
+    private Collection $subtasks;
 
     #[ORM\Column(type: 'date_immutable', nullable: true)]
     private ?\DateTimeImmutable $plannedOn = null;
@@ -76,11 +91,26 @@ class Task
         $this->owner = $owner;
         $this->title = self::validTitle($title);
         $this->createdAt = $now;
+        $this->subtasks = new ArrayCollection();
     }
 
     public static function create(User $owner, string $title, \DateTimeImmutable $now): self
     {
         return new self($owner, $title, $now);
+    }
+
+    public function addSubtask(string $title, \DateTimeImmutable $now): self
+    {
+        if (null !== $this->parent) {
+            throw new SubtaskCannotHaveSubtasks($this->title);
+        }
+        $subtask = new self($this->owner, $title, $now);
+        $subtask->parent = $this;
+        $subtask->project = $this->project;
+        $this->subtasks->add($subtask);
+        $this->completedAt = null;
+
+        return $subtask;
     }
 
     public function rename(string $title): void
@@ -118,12 +148,12 @@ class Task
         if (!$project->owner()->id()->equals($this->owner->id())) {
             throw new ProjectOfAnotherOwner();
         }
-        $this->project = $project;
+        $this->move($project);
     }
 
     public function detach(): void
     {
-        $this->project = null;
+        $this->move(null);
     }
 
     public function classify(Quadrant $quadrant, int $rank): void
@@ -142,6 +172,9 @@ class Task
     {
         if (null !== $recurrence && $this->isDone()) {
             throw new DoneTaskCannotRepeat($this->title);
+        }
+        if (null !== $recurrence && null !== $this->parent) {
+            throw new SubtaskCannotRepeat($this->title);
         }
         $this->recurrenceUnit = $recurrence?->unit;
         $this->recurrenceInterval = $recurrence?->interval;
@@ -177,18 +210,35 @@ class Task
         if (null !== $dueOn) {
             $occurrence->dueOn = $dueOn->modify(\sprintf('%+d days', Day::daysBetween($anchor, $nextDay)));
         }
+        foreach ($this->subtasks as $subtask) {
+            $occurrence->addSubtask($subtask->title, $now)->describe($subtask->notes);
+        }
         $occurrence->repeat($recurrence);
         $this->repeat(null);
 
         return $occurrence;
     }
 
-    public function complete(\DateTimeImmutable $now): void
+    /**
+     * @return list<Task>
+     */
+    public function complete(\DateTimeImmutable $now): array
     {
         if ($this->isDone()) {
             throw new TaskAlreadyDone($this->title);
         }
+        if ($this->openSubtaskCount() > 0) {
+            throw new TaskHasOpenSubtasks($this->title);
+        }
         $this->completedAt = $now;
+
+        $parent = $this->parent;
+        if (null === $parent || $parent->isDone() || $parent->openSubtaskCount() > 0) {
+            return [$this];
+        }
+        $parent->completedAt = $now;
+
+        return [$this, $parent];
     }
 
     public function reopen(): void
@@ -197,6 +247,9 @@ class Task
             throw new TaskNotDone($this->title);
         }
         $this->completedAt = null;
+        if (null !== $this->parent) {
+            $this->parent->completedAt = null;
+        }
     }
 
     public function claimReward(\DateTimeImmutable $now): bool
@@ -244,6 +297,29 @@ class Task
         return $this->project;
     }
 
+    public function parent(): ?self
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @return list<Task>
+     */
+    public function subtasks(): array
+    {
+        return array_values($this->subtasks->toArray());
+    }
+
+    public function subtaskCount(): int
+    {
+        return $this->subtasks->count();
+    }
+
+    public function openSubtaskCount(): int
+    {
+        return \count(array_filter($this->subtasks->toArray(), static fn (self $subtask): bool => !$subtask->isDone()));
+    }
+
     public function plannedOn(): ?\DateTimeImmutable
     {
         return null === $this->plannedOn ? null : Day::normalize($this->plannedOn);
@@ -281,6 +357,22 @@ class Task
     public function createdAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    private function move(?Project $project): void
+    {
+        if (null !== $this->parent && !self::sameProject($project, $this->parent->project)) {
+            throw new SubtaskFollowsParentProject($this->title);
+        }
+        $this->project = $project;
+        foreach ($this->subtasks as $subtask) {
+            $subtask->project = $project;
+        }
+    }
+
+    private static function sameProject(?Project $one, ?Project $other): bool
+    {
+        return null === $one || null === $other ? $one === $other : $one->id()->equals($other->id());
     }
 
     private static function validTitle(string $title): string

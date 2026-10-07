@@ -11,4 +11,9 @@ final readonly class Reward
         public int $coins,
     ) {
     }
+
+    public function plus(self $other): self
+    {
+        return new self($this->xp + $other->xp, $this->coins + $other->coins);
+    }
 }

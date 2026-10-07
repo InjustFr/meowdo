@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
+use App\Application\Planning\AddSubtask\AddSubtask;
+use App\Application\Planning\AddSubtask\AddSubtaskHandler;
 use App\Application\Planning\CompleteTask\CompleteTaskHandler;
 use App\Application\Planning\CompleteTask\CompletionView;
 use App\Application\Planning\CreateProject\CreateProject;
@@ -37,6 +39,11 @@ trait PlansTasks
             null === $dueOn ? null : Day::of($dueOn),
             $quadrant,
         ));
+    }
+
+    protected static function addSubtask(TaskView $parent, string $title): TaskView
+    {
+        return self::getContainer()->get(AddSubtaskHandler::class)(new AddSubtask(Ulid::fromString($parent->id), $title));
     }
 
     protected static function createProject(string $name, ProjectColor $color = ProjectColor::Honey): ProjectView

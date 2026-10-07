@@ -56,5 +56,14 @@
             "month": "Every month | Every {n} months",
             "year": "Every year | Every {n} years"
         }
+    },
+    "subtasks": {
+        "title": "Subtasks",
+        "hint": "The task completes by itself once every subtask is done; each subtask earns its own reward.",
+        "add": "New subtask",
+        "placeholder": "Add a step, e.g. sketch",
+        "of": "Subtask of “{title}”",
+        "progress": "{done} of {total} subtasks done",
+        "locked": "“{title}” completes once its subtasks are done"
     }
 }
