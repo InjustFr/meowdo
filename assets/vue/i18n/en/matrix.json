@@ -28,5 +28,10 @@
             "plain": "Neither",
             "advice": "drop it or do it last"
         }
+    },
+    "filter": {
+        "label": "Filter by project",
+        "inbox": "Inbox",
+        "all": "Show all"
     }
 }

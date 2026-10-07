@@ -1,15 +1,20 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useI18n } from 'vue-i18n';
+import ProjectFilter from '../components/matrix/ProjectFilter.vue';
 import PageHeader from '../components/ui/PageHeader.vue';
 import TaskRow from '../components/tasks/TaskRow.vue';
 import { useApi } from '../composables/useApi.js';
 import { useTaskActions } from '../composables/useTaskActions.js';
 import { sortTasks } from '../tasks/compareTasks.js';
+import { formatSelection, matchesSelection, mergeOrder, parseSelection } from '../tasks/projectFilter.js';
 import { QUADRANTS } from '../tasks/quadrants.js';
 
 const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
 const actions = useTaskActions();
 const tasks = ref(null);
 useApi().load('/api/matrix', tasks);
@@ -17,14 +22,23 @@ useApi().load('/api/matrix', tasks);
 const zones = ref({});
 const unsorted = ref([]);
 
-watch(tasks, (value) => {
+const selection = computed({
+    get: () => parseSelection(route.query.projects),
+    set: (value) => router.replace({ query: { ...route.query, projects: formatSelection(value) } }),
+});
+
+const inQuadrant = (quadrant) => sortTasks((tasks.value ?? []).filter((task) => task.quadrant === quadrant));
+
+watch([tasks, selection], ([value]) => {
     if (!value) return;
-    zones.value = Object.fromEntries(QUADRANTS.map((quadrant) => [quadrant.value, sortTasks(value.filter((task) => task.quadrant === quadrant.value))]));
-    unsorted.value = sortTasks(value.filter((task) => task.quadrant === null));
+    const shown = (quadrant) => inQuadrant(quadrant).filter((task) => matchesSelection(task, selection.value));
+    zones.value = Object.fromEntries(QUADRANTS.map((quadrant) => [quadrant.value, shown(quadrant.value)]));
+    unsorted.value = shown(null);
 }, { immediate: true });
 
 function arranged(quadrant) {
-    actions.reorder(quadrant, zones.value[quadrant].map((task) => task.id));
+    const all = inQuadrant(quadrant).map((task) => task.id);
+    actions.reorder(quadrant, mergeOrder(all, zones.value[quadrant].map((task) => task.id)));
 }
 
 function unclassified(event) {
@@ -38,13 +52,14 @@ const draggable = { group: 'matrix', animation: 160, delay: 180, delayOnTouchOnl
 <template>
     <div class="page page--wide">
         <PageHeader :title="t('matrix.title')" :subtitle="t('matrix.subtitle')" />
+        <ProjectFilter v-model="selection" />
         <div v-if="tasks" class="matrix">
             <p class="matrix__axis matrix__axis--top" aria-hidden="true"><span>{{ t('matrix.urgent') }}</span><span>{{ t('matrix.notUrgent') }}</span></p>
             <p class="matrix__axis matrix__axis--side" aria-hidden="true"><span>{{ t('matrix.important') }}</span><span>{{ t('matrix.notImportant') }}</span></p>
             <div class="matrix__board">
                 <section v-for="quadrant in QUADRANTS" :key="quadrant.value" :class="['matrix__zone', `matrix__zone--${quadrant.value}`]">
                     <header class="matrix__header">
-                        <h2 class="matrix__name">{{ t(`matrix.quadrants.${quadrant.value}.name`) }}</h2>
+                        <h2 class="matrix__name">{{ t(`matrix.quadrants.${quadrant.value}.name`) }} <span class="matrix__count">{{ zones[quadrant.value].length }}</span></h2>
                         <p class="matrix__plain">{{ t(`matrix.quadrants.${quadrant.value}.plain`) }} · {{ t(`matrix.quadrants.${quadrant.value}.advice`) }}</p>
                     </header>
                     <VueDraggable v-model="zones[quadrant.value]" v-bind="draggable" tag="ul" class="matrix__tasks" @update="arranged(quadrant.value)" @add="arranged(quadrant.value)">
@@ -54,7 +69,7 @@ const draggable = { group: 'matrix', animation: 160, delay: 180, delayOnTouchOnl
             </div>
             <section class="matrix__tray">
                 <header class="matrix__header">
-                    <h2>{{ t('matrix.unsorted') }}</h2>
+                    <h2>{{ t('matrix.unsorted') }} <span class="matrix__count">{{ unsorted.length }}</span></h2>
                     <p class="matrix__plain">{{ t('matrix.unsortedHint') }}</p>
                 </header>
                 <VueDraggable v-model="unsorted" v-bind="draggable" tag="ul" class="matrix__tasks matrix__tasks--tray" @add="unclassified">
@@ -72,23 +87,25 @@ const draggable = { group: 'matrix', animation: 160, delay: 180, delayOnTouchOnl
 .matrix__axis--top { grid-area: top; }
 .matrix__axis--side { grid-area: side; flex-direction: row-reverse; writing-mode: vertical-rl; transform: rotate(180deg); }
 .matrix__axis--side span { display: flex; align-items: center; justify-content: center; }
-.matrix__board { grid-area: board; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
-.matrix__zone { --tone: var(--quadrant-unsorted); display: flex; flex-direction: column; gap: var(--space-3); min-height: 14rem; padding: var(--space-4); border: 0.0625rem solid var(--color-border); border-top: 0.1875rem solid var(--tone); border-radius: var(--radius); background: color-mix(in oklch, var(--tone) 5%, var(--color-surface)); }
+.matrix__board { grid-area: board; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: var(--space-3); height: max(30rem, calc(100dvh - 16rem)); }
+.matrix__zone { --tone: var(--quadrant-unsorted); display: flex; flex-direction: column; gap: var(--space-3); min-height: 0; overflow: hidden; padding: var(--space-4) var(--space-3) var(--space-3) var(--space-4); border: 0.0625rem solid var(--color-border); border-top: 0.1875rem solid var(--tone); border-radius: var(--radius); background: color-mix(in oklch, var(--tone) 5%, var(--color-surface)); }
 .matrix__zone--do_first { --tone: var(--quadrant-do-first); }
 .matrix__zone--schedule { --tone: var(--quadrant-schedule); }
 .matrix__zone--delegate { --tone: var(--quadrant-delegate); }
 .matrix__zone--eliminate { --tone: var(--quadrant-eliminate); }
 .matrix__name { color: var(--color-ink); font-family: var(--font-display); font-size: 1.375rem; font-weight: 400; }
+.matrix__count { color: var(--color-subtle); font-family: var(--font-body); font-size: var(--font-size-sm); font-variant-numeric: tabular-nums; }
 .matrix__plain { color: var(--color-muted); font-size: var(--font-size-sm); }
-.matrix__tasks { display: flex; flex: 1; flex-direction: column; gap: var(--space-2); min-height: 4rem; margin: 0; padding: 0; list-style: none; }
-.matrix__tray { grid-area: tray; display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3); padding: var(--space-4); border: 0.0625rem dashed var(--color-border-strong); border-radius: var(--radius); }
-.matrix__tasks--tray { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
+.matrix__header { flex-shrink: 0; padding-right: var(--space-1); }
+.matrix__tasks { display: flex; flex: 1; flex-direction: column; gap: var(--space-2); min-height: 4rem; margin: 0; padding: 0.125rem var(--space-1) 0.125rem 0.125rem; overflow-y: auto; overscroll-behavior: contain; list-style: none; }
+.matrix__tasks :deep(.task-row) { flex-shrink: 0; }
+.matrix__tray { grid-area: tray; display: flex; flex-direction: column; gap: var(--space-3); max-height: 24rem; margin-top: var(--space-3); padding: var(--space-4) var(--space-3) var(--space-3) var(--space-4); border: 0.0625rem dashed var(--color-border-strong); border-radius: var(--radius); }
+.matrix__tasks--tray { display: grid; grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); align-content: start; }
 :deep(.matrix__ghost) { opacity: 0.4; }
 
 @media (max-width: 48rem) {
     .matrix { grid-template-columns: 1fr; grid-template-areas: "board" "tray"; }
     .matrix__axis { display: none; }
-    .matrix__board { grid-template-columns: 1fr; }
-    .matrix__zone { min-height: 0; }
+    .matrix__board { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-rows: 22rem; height: auto; }
 }
 </style>

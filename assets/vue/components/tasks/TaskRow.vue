@@ -107,14 +107,13 @@ function onKeydown(event) {
         </div>
         <div v-if="!task.done" class="task-row__actions">
             <IconButton
-                v-if="!compact"
                 :icon="Sun"
                 :label="inToday ? t('tasks.removeFromToday') : t('tasks.addToToday')"
                 :pressed="inToday"
                 class="task-row__sun"
                 @click="plan(inToday ? 'none' : 'today')"
             />
-            <PlanMenu v-if="!compact" v-model:open="planOpen" :task="task" @plan="plan" />
+            <PlanMenu v-model:open="planOpen" :task="task" @plan="plan" />
             <TaskMenu :task="task" @edit="editor.edit(task)" @classify="(quadrant) => actions.classify(task, quadrant)" />
         </div>
     </li>

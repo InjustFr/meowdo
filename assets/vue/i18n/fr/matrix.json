@@ -28,5 +28,10 @@
             "plain": "Ni l’un ni l’autre",
             "advice": "à abandonner ou garder pour la fin"
         }
+    },
+    "filter": {
+        "label": "Filtrer par projet",
+        "inbox": "Boîte de réception",
+        "all": "Tout afficher"
     }
 }
