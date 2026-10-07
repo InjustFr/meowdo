@@ -1,25 +1,17 @@
 <script setup>
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import { ChartColumn, CircleCheckBig, Plus, Settings, Trophy } from '@lucide/vue';
+import { Plus } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import BaseButton from '../components/ui/BaseButton.vue';
 import EmptyState from '../components/ui/EmptyState.vue';
 import PageHeader from '../components/ui/PageHeader.vue';
-import PageSection from '../components/ui/PageSection.vue';
 import ProjectEditor from '../components/projects/ProjectEditor.vue';
 import { useProjects } from '../composables/useProjects.js';
 
 const { t } = useI18n();
 const { projects } = useProjects();
 const creating = ref(false);
-
-const MORE = [
-    { to: '/done', icon: CircleCheckBig, label: 'nav.done' },
-    { to: '/stats', icon: ChartColumn, label: 'nav.stats' },
-    { to: '/achievements', icon: Trophy, label: 'nav.achievements' },
-    { to: '/settings', icon: Settings, label: 'nav.settings' },
-];
 </script>
 
 <template>
@@ -41,16 +33,6 @@ const MORE = [
                 </RouterLink>
             </li>
         </ul>
-        <PageSection :title="t('nav.more')">
-            <ul class="projects">
-                <li v-for="link in MORE" :key="link.to">
-                    <RouterLink :to="link.to" class="projects__link projects__link--more">
-                        <component :is="link.icon" class="projects__icon" size="1.125rem" :stroke-width="1.75" aria-hidden="true" />
-                        <span class="projects__name">{{ t(link.label) }}</span>
-                    </RouterLink>
-                </li>
-            </ul>
-        </PageSection>
         <ProjectEditor v-model:open="creating" @saved="(project) => project && $router.push(`/projects/${project.id}`)" />
     </div>
 </template>
@@ -62,6 +44,4 @@ const MORE = [
 .projects__link:hover { background: var(--color-surface); }
 .projects__name { flex: 1; font-weight: 700; }
 .projects__count { color: var(--color-muted); }
-.projects__link--more::before { display: none; }
-.projects__icon { flex-shrink: 0; color: var(--color-subtle); }
 </style>

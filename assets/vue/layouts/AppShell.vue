@@ -1,12 +1,13 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { RouterLink, RouterView, useRoute } from 'vue-router';
-import { CalendarDays, ChartColumn, CircleCheckBig, FolderOpen, Grid2x2, Inbox, Plus, Settings, Shirt, Sun, Trophy } from '@lucide/vue';
+import { CalendarDays, Grid2x2, Inbox, Menu, Sun } from '@lucide/vue';
 import { ConfigProvider, TooltipProvider } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
 import CritterDesk from '../components/critter/CritterDesk.vue';
 import CelebrationLayer from '../components/critter/CelebrationLayer.vue';
-import IconButton from '../components/ui/IconButton.vue';
+import NavDrawer from '../components/nav/NavDrawer.vue';
+import NavMenu from '../components/nav/NavMenu.vue';
 import ProjectEditor from '../components/projects/ProjectEditor.vue';
 import TaskEditor from '../components/tasks/TaskEditor.vue';
 import ToastHost from '../components/ui/ToastHost.vue';
@@ -18,42 +19,25 @@ import { intlLocale } from '../i18n/locale.js';
 
 const { t } = useI18n();
 const route = useRoute();
-const { projects, load: loadProjects } = useProjects();
+const { load: loadProjects } = useProjects();
 const { load: loadPlayer } = usePlayer();
 const editor = useTaskEditor();
 const creatingProject = ref(false);
+const menuOpen = ref(false);
 
 loadProjects();
 loadPlayer();
 useSync();
 
-const MAIN = [
-    { to: '/', icon: Sun, label: 'nav.today' },
-    { to: '/upcoming', icon: CalendarDays, label: 'nav.upcoming' },
-    { to: '/inbox', icon: Inbox, label: 'nav.inbox' },
-    { to: '/matrix', icon: Grid2x2, label: 'nav.matrix' },
-    { to: '/done', icon: CircleCheckBig, label: 'nav.done' },
-];
-
-const SECONDARY = [
-    { to: '/shop', icon: Shirt, label: 'nav.shop' },
-    { to: '/achievements', icon: Trophy, label: 'nav.achievements' },
-    { to: '/stats', icon: ChartColumn, label: 'nav.stats' },
-    { to: '/settings', icon: Settings, label: 'nav.settings' },
-];
-
 const TABS = [
     { to: '/', icon: Sun, label: 'nav.today' },
     { to: '/upcoming', icon: CalendarDays, label: 'nav.upcoming' },
     { to: '/matrix', icon: Grid2x2, label: 'nav.matrix' },
-    { to: '/projects', icon: FolderOpen, label: 'nav.projects', also: ['/inbox', '/done', '/stats', '/achievements', '/settings', '/credits'] },
-    { to: '/shop', icon: Shirt, label: 'nav.critter' },
+    { to: '/inbox', icon: Inbox, label: 'nav.inbox' },
 ];
 
-function tabActive(tab) {
-    if (tab.to === '/') return route.path === '/';
-    return [tab.to, ...(tab.also ?? [])].some((path) => route.path === path || route.path.startsWith(`${path}/`));
-}
+const tabActive = (tab) => (tab.to === '/' ? route.path === '/' : route.path === tab.to || route.path.startsWith(`${tab.to}/`));
+const elsewhere = computed(() => !TABS.some(tabActive));
 
 function focusComposer(event) {
     const typing = event.target.closest?.('input, textarea, [contenteditable], [role="dialog"], [role="menu"]');
@@ -75,36 +59,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
             <div class="shell">
                 <a class="shell__skip" href="#main">{{ t('nav.skip') }}</a>
                 <nav class="shell__rail" :aria-label="t('nav.label')">
-                    <RouterLink to="/" class="shell__brand">mossydew</RouterLink>
-                    <ul class="shell__links">
-                        <li v-for="link in MAIN" :key="link.to">
-                            <RouterLink :to="link.to" class="shell__link" exact-active-class="shell__link--active">
-                                <component :is="link.icon" class="shell__icon" size="1.125rem" :stroke-width="1.75" aria-hidden="true" />{{ t(link.label) }}
-                            </RouterLink>
-                        </li>
-                    </ul>
-                    <div class="shell__projects">
-                        <div class="shell__projects-header">
-                            <h2 class="shell__projects-title">{{ t('nav.projects') }}</h2>
-                            <IconButton :icon="Plus" :label="t('projects.new')" @click="creatingProject = true" />
-                        </div>
-                        <ul class="shell__links">
-                            <li v-for="project in projects" :key="project.id">
-                                <RouterLink :to="`/projects/${project.id}`" class="shell__link shell__link--project" active-class="shell__link--active" :style="{ '--project': `var(--project-${project.color})` }">
-                                    <span class="shell__project-name">{{ project.name }}</span>
-                                    <span v-if="project.openTasks" class="shell__count tabular">{{ project.openTasks }}</span>
-                                </RouterLink>
-                            </li>
-                        </ul>
-                        <p v-if="!projects.length" class="shell__hint">{{ t('nav.noProjects') }}</p>
-                    </div>
-                    <ul class="shell__links shell__links--secondary">
-                        <li v-for="link in SECONDARY" :key="link.to">
-                            <RouterLink :to="link.to" class="shell__link" active-class="shell__link--active">
-                                <component :is="link.icon" class="shell__icon" size="1.125rem" :stroke-width="1.75" aria-hidden="true" />{{ t(link.label) }}
-                            </RouterLink>
-                        </li>
-                    </ul>
+                    <NavMenu @new-project="creatingProject = true" />
                 </nav>
 
                 <main id="main" class="shell__main">
@@ -119,8 +74,14 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
                         <component :is="tab.icon" size="1.25rem" :stroke-width="1.75" aria-hidden="true" />
                         <span>{{ t(tab.label) }}</span>
                     </RouterLink>
+                    <button type="button" :class="['shell__tab', { 'shell__tab--active': elsewhere }]" aria-haspopup="dialog" :aria-expanded="menuOpen" @click="menuOpen = true">
+                        <Menu size="1.25rem" :stroke-width="1.75" aria-hidden="true" />
+                        <span>{{ t('nav.menu') }}</span>
+                    </button>
                 </nav>
             </div>
+
+            <NavDrawer v-model:open="menuOpen" @new-project="creatingProject = true" />
 
             <TaskEditor v-model:open="editor.state.open" :task="editor.state.task" />
             <ProjectEditor v-model:open="creatingProject" @saved="(project) => project && $router.push(`/projects/${project.id}`)" />
@@ -152,39 +113,6 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
     border-right: 0.0625rem solid var(--color-border);
     background: var(--color-sidebar);
 }
-
-.shell__brand { padding: 0 var(--space-3); color: var(--color-ink); font-family: var(--font-display); font-size: 1.6rem; line-height: 1; text-decoration: none; }
-.shell__links { display: flex; flex-direction: column; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
-.shell__links--secondary { margin-top: auto; }
-
-.shell__link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-3);
-    border-left: 0.125rem solid transparent;
-    color: var(--color-muted);
-    font-weight: 500;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: color var(--transition), background var(--transition), border-color var(--transition);
-}
-
-.shell__link:hover { color: var(--color-ink); background: var(--color-bg); }
-.shell__link--active { color: var(--color-ink); background: var(--color-accent-soft); border-left-color: var(--color-accent); }
-.shell__icon { flex-shrink: 0; color: var(--color-subtle); transition: color var(--transition); }
-.shell__link:hover .shell__icon { color: var(--color-ink); }
-.shell__link--active .shell__icon { color: var(--color-accent); }
-
-.shell__link--project { --project: var(--color-border-strong); }
-.shell__link--project::before { content: ""; flex-shrink: 0; width: 0.5rem; height: 0.5rem; margin: 0 0.3125rem; border-radius: 50%; background: var(--project); }
-.shell__project-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.shell__count { color: var(--color-subtle); font-size: var(--font-size-sm); }
-
-.shell__projects { display: flex; flex-direction: column; gap: var(--space-1); }
-.shell__projects-header { display: flex; align-items: center; justify-content: space-between; padding-left: var(--space-3); }
-.shell__projects-title { color: var(--color-subtle); font-size: var(--font-size-xs); font-weight: 600; }
-.shell__hint { padding: 0 var(--space-3); color: var(--color-subtle); font-size: var(--font-size-sm); }
 
 .shell__main { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; padding: var(--space-6) var(--space-7) var(--space-7); }
 .shell__main :deep(.page) { display: flex; flex-direction: column; gap: var(--space-5); width: 100%; max-width: 46rem; }
@@ -230,7 +158,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
         backdrop-filter: blur(0.75rem);
     }
 
-    .shell__tab { display: flex; flex-direction: column; align-items: center; gap: 0.125rem; padding: var(--space-2) 0; border-top: 0.125rem solid transparent; color: var(--color-subtle); font-size: var(--font-size-xs); font-weight: 500; text-decoration: none; }
+    .shell__tab { display: flex; flex-direction: column; align-items: center; gap: 0.125rem; padding: var(--space-2) 0; border: none; border-top: 0.125rem solid transparent; background: none; color: var(--color-subtle); font: inherit; font-size: var(--font-size-xs); font-weight: 500; text-decoration: none; cursor: pointer; }
     .shell__tab--active { border-top-color: var(--color-accent); color: var(--color-ink); }
     .shell__tab--active svg { color: var(--color-accent); }
 }

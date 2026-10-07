@@ -25,13 +25,16 @@ test('a completed task appears on done under today and can be reopened there', a
     await expect(row(page, task).getByRole('checkbox', { name: `Complete “${task}”` })).toBeVisible();
 });
 
-test('done and statistics are reachable from the projects tab on a phone', async ({ page }) => {
+test('the phone menu leads to done and statistics', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await signIn(page);
-    await page.locator('.shell__tabs').getByRole('link', { name: 'Projects' }).click();
-    await page.getByRole('link', { name: 'Done', exact: true }).click();
+    const tabs = page.locator('.shell__tabs');
+    const menu = page.getByRole('dialog', { name: 'Menu' });
+    await tabs.getByRole('button', { name: 'Menu' }).click();
+    await menu.getByRole('link', { name: 'Done', exact: true }).click();
     await expect(page.getByRole('heading', { level: 1, name: 'Done' })).toBeVisible();
-    await page.goBack();
-    await page.getByRole('link', { name: 'Statistics', exact: true }).click();
+    await tabs.getByRole('button', { name: 'Menu' }).click();
+    await menu.getByRole('link', { name: 'Statistics', exact: true }).click();
+    await expect(menu).toBeHidden();
     await expect(page.getByRole('heading', { level: 1, name: 'Statistics' })).toBeVisible();
 });
