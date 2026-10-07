@@ -1,0 +1,37 @@
+{
+    "title": "Statistiques",
+    "subtitle": "Les graphiques couvrent les 30 derniers jours.",
+    "days": "0 jour | 1 jour | {count} jours",
+    "totals": {
+        "completed": "Terminées",
+        "allTime": "depuis le début",
+        "recent": "30 derniers jours",
+        "thisWeek": "Cette semaine",
+        "thisMonth": "Ce mois-ci",
+        "open": "En cours",
+        "overdue": "En retard",
+        "streak": "Série",
+        "bestStreak": "Meilleure série"
+    },
+    "perDay": {
+        "title": "Terminées par jour",
+        "summary": "1 tâche terminée ces {days} derniers jours. Jour le plus actif : {day}, avec {count}. | {total} tâches terminées ces {days} derniers jours. Jour le plus actif : {day}, avec {count}.",
+        "summaryEmpty": "Aucune tâche terminée ces {days} derniers jours.",
+        "tip": "{day} :",
+        "day": "Jour",
+        "count": "Terminées"
+    },
+    "byQuadrant": {
+        "title": "Par quadrant"
+    },
+    "byProject": {
+        "title": "Par projet",
+        "empty": "Rien de terminé ces 30 derniers jours."
+    },
+    "onTime": {
+        "title": "Échéances tenues",
+        "rate": "{rate} % à temps",
+        "detail": "{onTime} à temps · {late} en retard",
+        "empty": "Aucune tâche avec échéance terminée ces 30 derniers jours."
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "title": "Statistics",
+    "subtitle": "Charts cover the last 30 days.",
+    "days": "0 days | 1 day | {count} days",
+    "totals": {
+        "completed": "Completed",
+        "allTime": "all time",
+        "recent": "Last 30 days",
+        "thisWeek": "This week",
+        "thisMonth": "This month",
+        "open": "Open",
+        "overdue": "Overdue",
+        "streak": "Streak",
+        "bestStreak": "Best streak"
+    },
+    "perDay": {
+        "title": "Completed per day",
+        "summary": "1 task completed over the last {days} days. Busiest day: {day}, with {count}. | {total} tasks completed over the last {days} days. Busiest day: {day}, with {count}.",
+        "summaryEmpty": "No task completed over the last {days} days.",
+        "tip": "{day}:",
+        "day": "Day",
+        "count": "Completed"
+    },
+    "byQuadrant": {
+        "title": "By quadrant"
+    },
+    "byProject": {
+        "title": "By project",
+        "empty": "Nothing completed in the last 30 days."
+    },
+    "onTime": {
+        "title": "Deadlines met",
+        "rate": "{rate}% on time",
+        "detail": "{onTime} on time · {late} late",
+        "empty": "No task with a deadline was completed in the last 30 days."
+    }
+}

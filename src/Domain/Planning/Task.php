@@ -20,6 +20,7 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Table(name: 'task')]
 #[ORM\Index(name: 'task_owner_planned', columns: ['owner_id', 'planned_on'])]
 #[ORM\Index(name: 'task_owner_quadrant', columns: ['owner_id', 'quadrant', 'rank'])]
+#[ORM\Index(name: 'task_owner_completed', columns: ['owner_id', 'completed_at'])]
 class Task
 {
     public const int MAX_TITLE_LENGTH = 200;

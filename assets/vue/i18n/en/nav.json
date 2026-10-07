@@ -5,10 +5,13 @@
     "upcoming": "Upcoming",
     "inbox": "Inbox",
     "matrix": "Matrix",
+    "done": "Done",
     "projects": "Projects",
     "shop": "Shop",
     "achievements": "Achievements",
+    "stats": "Statistics",
     "settings": "Settings",
     "critter": "Critter",
-    "noProjects": "Group tasks by theme with a project."
+    "noProjects": "Group tasks by theme with a project.",
+    "more": "More"
 }

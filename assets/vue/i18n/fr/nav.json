@@ -5,10 +5,13 @@
     "upcoming": "À venir",
     "inbox": "Boîte de réception",
     "matrix": "Matrice",
+    "done": "Terminées",
     "projects": "Projets",
     "shop": "Boutique",
     "achievements": "Succès",
+    "stats": "Statistiques",
     "settings": "Réglages",
     "critter": "Bestiole",
-    "noProjects": "Regroupez vos tâches par thème avec un projet."
+    "noProjects": "Regroupez vos tâches par thème avec un projet.",
+    "more": "Plus"
 }

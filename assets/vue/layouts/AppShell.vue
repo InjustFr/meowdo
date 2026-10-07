@@ -1,7 +1,7 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
-import { CalendarDays, FolderOpen, Grid2x2, Inbox, Plus, Settings, Shirt, Sun, Trophy } from '@lucide/vue';
+import { RouterLink, RouterView, useRoute } from 'vue-router';
+import { CalendarDays, ChartColumn, CircleCheckBig, FolderOpen, Grid2x2, Inbox, Plus, Settings, Shirt, Sun, Trophy } from '@lucide/vue';
 import { ConfigProvider, TooltipProvider } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
 import CritterDesk from '../components/critter/CritterDesk.vue';
@@ -17,6 +17,7 @@ import { useTaskEditor } from '../composables/useTaskEditor.js';
 import { intlLocale } from '../i18n/locale.js';
 
 const { t } = useI18n();
+const route = useRoute();
 const { projects, load: loadProjects } = useProjects();
 const { load: loadPlayer } = usePlayer();
 const editor = useTaskEditor();
@@ -31,11 +32,13 @@ const MAIN = [
     { to: '/upcoming', icon: CalendarDays, label: 'nav.upcoming' },
     { to: '/inbox', icon: Inbox, label: 'nav.inbox' },
     { to: '/matrix', icon: Grid2x2, label: 'nav.matrix' },
+    { to: '/done', icon: CircleCheckBig, label: 'nav.done' },
 ];
 
 const SECONDARY = [
     { to: '/shop', icon: Shirt, label: 'nav.shop' },
     { to: '/achievements', icon: Trophy, label: 'nav.achievements' },
+    { to: '/stats', icon: ChartColumn, label: 'nav.stats' },
     { to: '/settings', icon: Settings, label: 'nav.settings' },
 ];
 
@@ -43,9 +46,14 @@ const TABS = [
     { to: '/', icon: Sun, label: 'nav.today' },
     { to: '/upcoming', icon: CalendarDays, label: 'nav.upcoming' },
     { to: '/matrix', icon: Grid2x2, label: 'nav.matrix' },
-    { to: '/projects', icon: FolderOpen, label: 'nav.projects' },
+    { to: '/projects', icon: FolderOpen, label: 'nav.projects', also: ['/inbox', '/done', '/stats', '/achievements', '/settings', '/credits'] },
     { to: '/shop', icon: Shirt, label: 'nav.critter' },
 ];
+
+function tabActive(tab) {
+    if (tab.to === '/') return route.path === '/';
+    return [tab.to, ...(tab.also ?? [])].some((path) => route.path === path || route.path.startsWith(`${path}/`));
+}
 
 function focusComposer(event) {
     const typing = event.target.closest?.('input, textarea, [contenteditable], [role="dialog"], [role="menu"]');
@@ -107,7 +115,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
                 <div class="shell__desk"><CritterDesk /></div>
 
                 <nav class="shell__tabs" :aria-label="t('nav.label')">
-                    <RouterLink v-for="tab in TABS" :key="tab.to" :to="tab.to" class="shell__tab" :exact-active-class="tab.to === '/' ? 'shell__tab--active' : undefined" :active-class="tab.to === '/' ? undefined : 'shell__tab--active'">
+                    <RouterLink v-for="tab in TABS" :key="tab.to" :to="tab.to" :class="['shell__tab', { 'shell__tab--active': tabActive(tab) }]" active-class="" exact-active-class="">
                         <component :is="tab.icon" size="1.25rem" :stroke-width="1.75" aria-hidden="true" />
                         <span>{{ t(tab.label) }}</span>
                     </RouterLink>

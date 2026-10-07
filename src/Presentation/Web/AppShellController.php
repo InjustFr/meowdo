@@ -39,6 +39,8 @@ final class AppShellController extends AbstractController
             'upcoming' => ['/api/tasks/upcoming'],
             'inbox' => ['/api/tasks/inbox'],
             'matrix' => ['/api/matrix'],
+            'done' => ['/api/tasks/done'],
+            'stats' => ['/api/stats'],
             'shop' => ['/api/shop'],
             'achievements' => ['/api/achievements'],
             default => [],

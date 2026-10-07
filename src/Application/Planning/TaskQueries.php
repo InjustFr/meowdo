@@ -19,6 +19,8 @@ interface TaskQueries
      */
     public function completedBetween(\DateTimeImmutable $from, \DateTimeImmutable $until): array;
 
+    public function lastCompletedBefore(\DateTimeImmutable $until): ?Task;
+
     /**
      * @return list<Task>
      */

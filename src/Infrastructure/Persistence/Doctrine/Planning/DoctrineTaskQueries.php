@@ -36,7 +36,17 @@ final readonly class DoctrineTaskQueries implements TaskQueries
             ->andWhere('t.completedAt >= :from AND t.completedAt < :until')
             ->setParameter('from', $from, 'datetime_immutable')
             ->setParameter('until', $until, 'datetime_immutable')
-            ->orderBy('t.completedAt', 'DESC'));
+            ->orderBy('t.completedAt', 'DESC')
+            ->addOrderBy('t.id', 'DESC'));
+    }
+
+    public function lastCompletedBefore(\DateTimeImmutable $until): ?Task
+    {
+        return $this->list($this->scoped()
+            ->andWhere('t.completedAt < :until')
+            ->setParameter('until', $until, 'datetime_immutable')
+            ->orderBy('t.completedAt', 'DESC')
+            ->setMaxResults(1))[0] ?? null;
     }
 
     public function openPlannedBetween(\DateTimeImmutable $first, \DateTimeImmutable $last): array

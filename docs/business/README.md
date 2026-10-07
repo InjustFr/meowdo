@@ -9,4 +9,5 @@
 | XP, level, coins, streak | `Domain\Gamification\{Player, LevelCurve, RewardPolicy, Streak}` | [gamification.md](gamification.md) |
 | Critter (moss piglet), tint, mood, outfit, shop | `Domain\Gamification\{Critter, Tint, CritterMood, Cosmetic\*}` | [gamification.md](gamification.md) |
 | Achievements | `Domain\Gamification\Achievement\*` | [gamification.md](gamification.md) |
+| Done, statistics | `Application\Planning\{ListDoneTasks, ShowStatistics}\*` | [history.md](history.md) |
 | Account, invitation, password, theme | `Domain\Identity\*` | [accounts.md](accounts.md) |

@@ -1,0 +1,13 @@
+{
+    "title": "Terminées",
+    "subtitle": "Rien de terminé ces 30 derniers jours | 1 tâche terminée ces 30 derniers jours | {count} tâches terminées ces 30 derniers jours",
+    "older": "Voir plus ancien",
+    "empty": {
+        "title": "Rien de terminé pour l’instant",
+        "hint": "Les tâches terminées s’accumulent ici, jour après jour."
+    },
+    "quiet": {
+        "title": "Un mois calme",
+        "hint": "Les tâches terminées plus anciennes sont toujours là."
+    }
+}

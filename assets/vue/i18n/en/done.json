@@ -1,0 +1,13 @@
+{
+    "title": "Done",
+    "subtitle": "Nothing completed in the last 30 days | 1 task completed in the last 30 days | {count} tasks completed in the last 30 days",
+    "older": "Show older",
+    "empty": {
+        "title": "Nothing done yet",
+        "hint": "Completed tasks gather here, day by day."
+    },
+    "quiet": {
+        "title": "A quiet month",
+        "hint": "Older completed tasks are still here."
+    }
+}
