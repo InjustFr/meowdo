@@ -19,7 +19,6 @@ final readonly class PlayerView
         public int $bestStreak,
         public int $speciesCollected,
         public int $speciesTotal,
-        public ?SpecimenView $latestSpecimen,
         public array $newAchievements,
     ) {
     }

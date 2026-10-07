@@ -24,10 +24,10 @@ final class PlayerTest extends TestCase
         $player = $this->player();
 
         self::assertNull($player->earn(new Reward(60)));
-        self::assertSame(2, $player->earn(new Reward(40)));
+        self::assertSame(2, $player->earn(new Reward(90)));
         self::assertNull($player->earn(new Reward(10)));
-        self::assertSame(4, $player->earn(new Reward(500)));
-        self::assertSame([610, 4], [$player->xp(), $player->level()]);
+        self::assertSame(5, $player->earn(new Reward(500)));
+        self::assertSame([660, 5], [$player->xp(), $player->level()]);
     }
 
     public function testRecordsActivityInTheStreak(): void

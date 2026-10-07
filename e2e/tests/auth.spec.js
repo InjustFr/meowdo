@@ -7,7 +7,7 @@ test('signed-out visitors sign in with their mossyleaf account', async ({ page }
     await signInWithAccount(page, 'demo');
     await page.waitForURL('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
-    await expect(page.locator('.shell__desk .herbarium-desk')).toBeVisible();
+    await expect(page.locator('.shell__rail .player-progress')).toBeVisible();
 });
 
 test('a new mossyleaf account starts with an empty herbarium', async ({ page }) => {
@@ -15,7 +15,7 @@ test('a new mossyleaf account starts with an empty herbarium', async ({ page }) 
     await page.goto('/login');
     await signInWithAccount(page, account, { email: `${account}@mossyleaf.test`, name: 'Fern' });
     await page.waitForURL('/');
-    await expect(page.locator('.shell__desk')).toContainText('Reach level 2 to collect your first moss.');
+    await expect(page.locator('.shell__rail [data-test=species]')).toHaveText('0 of 48 mosses');
     await page.goto('/settings');
     await expect(page.getByText(`${account}@mossyleaf.test`)).toBeVisible();
 });

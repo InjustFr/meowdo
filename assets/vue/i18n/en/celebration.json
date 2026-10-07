@@ -1,6 +1,12 @@
 {
-    "levelUp": "Level {level}!",
-    "newSpecies": "A new moss joins your herbarium. | New mosses join your herbarium.",
+    "levelUp": "Level {level}",
+    "newSpecies": {
+        "common": "A common moss joins your herbarium.",
+        "uncommon": "An uncommon moss joins your herbarium.",
+        "rare": "A rare moss joins your herbarium.",
+        "very_rare": "A very rare moss joins your herbarium!"
+    },
+    "newSpeciesMany": "{count} mosses join your herbarium.",
     "herbariumComplete": "Your herbarium is complete: every moss has been found.",
     "achievement": "New achievement | New achievements",
     "continue": "Continue"

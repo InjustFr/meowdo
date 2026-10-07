@@ -36,6 +36,11 @@
     --quadrant-eliminate: var(--color-warning);
     --quadrant-unsorted: var(--color-border-strong);
 
+    --rarity-common: var(--color-subtle);
+    --rarity-uncommon: var(--color-accent);
+    --rarity-rare: var(--color-info);
+    --rarity-very-rare: var(--color-warning);
+
     --project-berry: oklch(0.6 0.15 12);
     --project-honey: oklch(0.74 0.13 80);
     --project-moss: oklch(0.6 0.12 135);
@@ -68,7 +73,6 @@
     --tracking-caps: 0.05em;
 
     --rail-width: 15.5rem;
-    --desk-width: 20rem;
     --shadow: 0 0.0625rem 0.125rem rgb(17 17 17 / 6%), 0 0.5rem 1.5rem rgb(17 17 17 / 8%);
     --transition: 180ms ease;
     --focus-ring: 0 0 0 0.1875rem var(--color-accent-soft);

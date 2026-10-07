@@ -21,7 +21,7 @@ final class GamificationApiTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSame(1, Json::int(self::body($client), 'level'));
-        self::assertSame([0, 48, null], [Json::int(self::body($client), 'speciesCollected'), Json::int(self::body($client), 'speciesTotal'), Json::at(self::body($client), 'latestSpecimen')]);
+        self::assertSame([0, 48], [Json::int(self::body($client), 'speciesCollected'), Json::int(self::body($client), 'speciesTotal')]);
     }
 
     public function testListHerbarium(): void
@@ -31,7 +31,7 @@ final class GamificationApiTest extends WebTestCase
         $client->jsonRequest('GET', '/api/herbarium');
 
         self::assertResponseIsSuccessful();
-        self::assertSame(['total' => 48, 'specimens' => []], self::body($client));
+        self::assertSame(['total' => 48, 'specimens' => [], 'remaining' => ['common' => 16, 'uncommon' => 13, 'rare' => 14, 'very_rare' => 5]], self::body($client));
     }
 
     public function testAchievementsAreCelebratedOnce(): void

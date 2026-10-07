@@ -7,7 +7,7 @@ test('completing a task earns xp once', async ({ page }) => {
     await page.getByLabel('New task').fill(task);
     await page.getByLabel('New task').press('Enter');
 
-    const bursts = page.locator('.shell__desk .herbarium-desk__burst');
+    const bursts = page.locator('.shell__rail .player-progress__burst');
     await row(page, task).getByRole('checkbox', { name: `Complete “${task}”` }).click();
     await expect(bursts.first()).toContainText('XP');
     await expect(bursts).toHaveCount(0);
@@ -23,29 +23,29 @@ test('crossing a level reveals a new moss for the herbarium', async ({ page }) =
     await page.goto('/login');
     await signInWithAccount(page, account, { email: `${account}@mossyleaf.test`, name: 'Moss' });
     await page.waitForURL('/');
-    await expect(page.locator('.shell__desk [data-test=species]')).toHaveText('0/48');
+    await expect(page.locator('.shell__rail [data-test=species]')).toHaveText('0 of 48 mosses');
 
-    const titles = ['Prune the ferns', 'Repot the cactus', 'Sow the basil', 'Mulch the beds'].map(unique);
+    const titles = ['Prune the ferns', 'Repot the cactus', 'Sow the basil', 'Mulch the beds', 'Water the moss', 'Rake the leaves'].map(unique);
     const ids = [];
     for (const title of titles) {
         const created = await page.request.post('/api/tasks', { data: { title, plan: 'today', quadrant: 'schedule' } });
         expect(created.ok()).toBeTruthy();
         ids.push((await created.json()).id);
     }
-    for (const id of ids.slice(0, 3)) {
+    for (const id of ids.slice(0, 5)) {
         expect((await page.request.post(`/api/tasks/${id}/complete`)).ok()).toBeTruthy();
     }
     await page.request.post('/api/achievements/seen');
     await page.reload();
 
-    await row(page, titles[3]).getByRole('checkbox', { name: `Complete “${titles[3]}”` }).click();
-    const celebration = page.getByRole('dialog', { name: 'Level 2!' });
+    await row(page, titles[5]).getByRole('checkbox', { name: `Complete “${titles[5]}”` }).click();
+    const celebration = page.getByRole('dialog', { name: 'Level 2' });
     await expect(celebration).toBeVisible();
     await expect(celebration.locator('[data-test=species-card]')).toHaveCount(1);
-    await expect(celebration).toContainText('A new moss joins your herbarium.');
+    await expect(celebration).toContainText('moss joins your herbarium');
     await celebration.getByRole('button', { name: 'Continue' }).click();
 
-    await expect(page.locator('.shell__desk [data-test=species]')).toHaveText('1/48');
+    await expect(page.locator('.shell__rail [data-test=species]')).toHaveText('1 of 48 mosses');
     await page.goto('/herbarium');
     await expect(page.getByRole('heading', { level: 1, name: 'Herbarium' })).toBeVisible();
     await expect(page.locator('.shell__main [data-test=species-card]')).toHaveCount(1);

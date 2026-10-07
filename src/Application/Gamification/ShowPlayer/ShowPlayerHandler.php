@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Application\Gamification\ShowPlayer;
 
 use App\Application\Gamification\PlayerView;
-use App\Application\Gamification\SpecimenView;
 use App\Application\Identity\CurrentUser;
 use App\Application\Planning\Today;
 use App\Domain\Gamification\Achievement\UnlockedAchievement;
@@ -31,8 +30,6 @@ final readonly class ShowPlayerHandler
         $user = $this->currentUser->get();
         $player = $this->players->of($user);
         $level = $player->level();
-        $specimens = $this->specimens->of($user);
-        $latest = array_last($specimens);
         $unseen = array_filter($this->achievements->of($user), static fn (UnlockedAchievement $achievement): bool => !$achievement->isSeen());
 
         return new PlayerView(
@@ -43,9 +40,8 @@ final readonly class ShowPlayerHandler
             LevelCurve::thresholdOf($level + 1),
             $player->streak()->asOf($this->today->date()),
             $player->streak()->best,
-            \count($specimens),
+            \count($this->specimens->of($user)),
             \count(SpeciesCatalog::all()),
-            null === $latest ? null : SpecimenView::of($latest),
             array_values(array_map(static fn (UnlockedAchievement $achievement): string => $achievement->achievement(), $unseen)),
         );
     }

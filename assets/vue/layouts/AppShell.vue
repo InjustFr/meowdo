@@ -5,7 +5,7 @@ import { CalendarDays, Grid2x2, Inbox, Menu, Sun } from '@lucide/vue';
 import { ConfigProvider, TooltipProvider } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
 import CelebrationLayer from '../components/herbarium/CelebrationLayer.vue';
-import HerbariumDesk from '../components/herbarium/HerbariumDesk.vue';
+import PlayerProgress from '../components/herbarium/PlayerProgress.vue';
 import NavDrawer from '../components/nav/NavDrawer.vue';
 import NavMenu from '../components/nav/NavMenu.vue';
 import ProjectEditor from '../components/projects/ProjectEditor.vue';
@@ -59,15 +59,13 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
             <div class="shell">
                 <a class="shell__skip" href="#main">{{ t('nav.skip') }}</a>
                 <nav class="shell__rail" :aria-label="t('nav.label')">
-                    <NavMenu @new-project="creatingProject = true" />
+                    <NavMenu @new-project="creatingProject = true"><PlayerProgress /></NavMenu>
                 </nav>
 
                 <main id="main" class="shell__main">
-                    <div class="shell__strip"><HerbariumDesk compact /></div>
+                    <div class="shell__strip"><PlayerProgress compact /></div>
                     <RouterView />
                 </main>
-
-                <div class="shell__desk"><HerbariumDesk /></div>
 
                 <nav class="shell__tabs" :aria-label="t('nav.label')">
                     <RouterLink v-for="tab in TABS" :key="tab.to" :to="tab.to" :class="['shell__tab', { 'shell__tab--active': tabActive(tab) }]" active-class="" exact-active-class="">
@@ -94,7 +92,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
 <style scoped>
 .shell {
     display: grid;
-    grid-template-columns: var(--rail-width) minmax(0, 1fr) var(--desk-width);
+    grid-template-columns: var(--rail-width) minmax(0, 1fr);
     min-height: 100vh;
 }
 
@@ -120,27 +118,16 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
 
 .shell__strip { display: none; }
 
-.shell__desk {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    padding: var(--space-6) var(--space-5);
-    border-left: 0.0625rem solid var(--color-border);
-}
-
 .shell__tabs { display: none; }
 
 @media (max-width: 72rem) {
-    .shell { grid-template-columns: var(--rail-width) minmax(0, 1fr); }
-    .shell__desk { display: none; }
-    .shell__strip { display: block; padding-bottom: var(--space-4); border-bottom: 0.0625rem solid var(--color-border); }
     .shell__main { padding-inline: var(--space-6); }
 }
 
 @media (max-width: 48rem) {
     .shell { grid-template-columns: minmax(0, 1fr); }
     .shell__rail { display: none; }
+    .shell__strip { display: block; padding-bottom: var(--space-4); border-bottom: 0.0625rem solid var(--color-border); }
     .shell__main { gap: var(--space-4); padding: var(--space-4) var(--space-4) calc(6rem + env(safe-area-inset-bottom)); }
     .shell__main :deep(h1) { font-size: 1.6rem; }
 

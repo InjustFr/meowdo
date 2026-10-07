@@ -1,6 +1,6 @@
 # MossyDew — project guide for Claude
 
-Gamified task manager from the MossyTrunk ecosystem, with a moss herbarium to fill. Tasks (with a planned day and an optional deadline) live in projects or in the inbox; **Today** is a work context that gathers tasks from every project; the **Eisenhower matrix** orders every list; completing tasks earns XP and streaks; every level crossed adds a random moss species (iNaturalist photo) to the user's herbarium, alongside achievements.
+Gamified task manager from the MossyTrunk ecosystem, with a moss herbarium to fill. Tasks (with a planned day and an optional deadline) live in projects or in the inbox; **Today** is a work context that gathers tasks from every project; the **Eisenhower matrix** orders every list; completing tasks earns XP and streaks; every level (flat 150 XP) crossed adds a random moss species (iNaturalist photo, rarity-weighted) to the user's herbarium, alongside achievements.
 UI languages: **English and French**. URLs, code, commits: **English**.
 
 **Business rules live in [`docs/business/`](docs/business/README.md)** — read the relevant page before touching a domain concept, and update it in the same commit when a rule changes.
@@ -61,12 +61,12 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 ## Frontend — `assets/`
 
 - `app.js` mounts the SPA in `templates/app.html.twig` (`#app-session`, `#app-preload` filled by `AppShellController` through `ApiPreload`). A new page that loads data on mount adds its URL to `AppShellController::pageUrls()`.
-- `vue/layouts/AppShell.vue` keeps the rail/tab bar and the **HerbariumDesk** (level, streak, latest species) mounted across routes. Pages are thin orchestrators.
+- `vue/layouts/AppShell.vue` keeps the rail (with **PlayerProgress**: level, XP bar, herbarium link, streak) or the phone strip and tab bar mounted across routes. Pages are thin orchestrators.
 - Data goes through `composables/useApi.js` (`load` = stale-while-revalidate, writes send `X-Refresh`, see MossyTrunk). Task ordering on the client uses `vue/tasks/compareTasks.js`, which must match `DoctrineTaskQueries::ordered()` (Vitest covers it).
 - Interactive widgets on **Reka UI**; icons **Lucide** (`size` in rem); no native select/checkbox/date inputs.
 - CSS: BEM, `<style scoped>`, tokens in `assets/styles/tokens.css`, **rem only** (except inside SVG drawings, whose transforms and font sizes are in viewBox user units). Same look as MossyTrunk: tokens derived from the user's theme (`--theme-background`, `--theme-accent` on `<html>`, chosen in Settings › Appearance, same five presets as MossyTrunk, default mossy green on light grey): never hardcode a colour outside SVG drawings. White surfaces, thin borders, `--radius` 0.5rem. Fonts: Patua One (display, lowercase `mossydew` wordmark), Inter (text), self-hosted via `@fontsource`.
 - **Never hardcode a user-visible string**: vue-i18n keys from `assets/vue/i18n/<locale>/<namespace>.json` (same keys in every locale).
-- Motion: one bold moment — the new species card developing in the level-up celebration. `prefers-reduced-motion` disables it.
+- Motion: one bold moment — the level-up reveal (`LevelUpReveal.vue`: level rolls over, the card flips and develops amid a spore burst). `prefers-reduced-motion` disables it.
 - Assets: hand-built SVG for drawings, CC0/CC BY iNaturalist photos for the herbarium (`bin/console app:herbarium:import` after changing `SpeciesCatalog`, self-hosted in `public/herbarium/`), no AI-generated images; every third-party asset is listed with its licence in `docs/assets.md` and on `/credits`.
 
 ## Testing expectations
@@ -76,7 +76,7 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 
 ## Differences from MossyTrunk
 
-- Vite + vue-router SPA instead of Encore + UX Vue + Turbo (the herbarium desk stays mounted between pages).
+- Vite + vue-router SPA instead of Encore + UX Vue + Turbo (the rail progress stays mounted between pages).
 - Owner scoping instead of workspaces; every user has their own data.
 - Vitest for pure JS modules.
 

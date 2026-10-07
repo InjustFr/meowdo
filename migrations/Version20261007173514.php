@@ -10,7 +10,7 @@ use Symfony\Component\Uid\Ulid;
 
 final class Version20261007173514 extends AbstractMigration
 {
-    private const int LEVEL_STEP = 50;
+    private const int XP_PER_LEVEL = 150;
 
     private const array SPECIES = [
         'polytrichum-commune',
@@ -115,11 +115,6 @@ final class Version20261007173514 extends AbstractMigration
 
     private static function levelFor(int $xp): int
     {
-        $level = 1;
-        while (self::LEVEL_STEP * ($level + 1) * $level <= $xp) {
-            ++$level;
-        }
-
-        return $level;
+        return intdiv(max(0, $xp), self::XP_PER_LEVEL) + 1;
     }
 }

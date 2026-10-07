@@ -7,6 +7,7 @@ namespace App\Application\Planning\CompleteTask;
 use App\Application\Gamification\AchievementCheck;
 use App\Application\Gamification\CollectSpecies;
 use App\Application\Gamification\ShowPlayer\ShowPlayerHandler;
+use App\Application\Gamification\SpeciesView;
 use App\Application\Identity\CurrentUser;
 use App\Application\Planning\TaskView;
 use App\Application\Planning\Today;
@@ -68,7 +69,7 @@ final readonly class CompleteTaskHandler
             TaskView::of($task),
             $reward,
             $leveledUpTo,
-            array_map(static fn (Species $species): string => $species->slug, $newSpecies),
+            array_map(static fn (Species $species): SpeciesView => SpeciesView::of($species), $newSpecies),
             ($this->showPlayer)(),
             null === $parent ? null : TaskView::of($parent),
         );

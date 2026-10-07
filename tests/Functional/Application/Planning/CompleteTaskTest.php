@@ -6,6 +6,7 @@ namespace App\Tests\Functional\Application\Planning;
 
 use App\Application\Gamification\ShowPlayer\ShowPlayerHandler;
 use App\Application\Planning\ReopenTask\ReopenTaskHandler;
+use App\Domain\Gamification\Herbarium\SpeciesCatalog;
 use App\Domain\Gamification\PlayerRepository;
 use App\Domain\Gamification\Reward;
 use App\Domain\Identity\User;
@@ -67,25 +68,25 @@ final class CompleteTaskTest extends KernelTestCase
 
     public function testLevellingUpIsReported(): void
     {
-        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(90));
+        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(140));
         self::getContainer()->get(EntityManagerInterface::class)->flush();
 
         $completion = self::completeTask(self::createTask('Vet', quadrant: Quadrant::Schedule));
 
         self::assertSame(2, $completion->leveledUpTo);
-        self::assertSame([2, 100, 300], [$completion->player->level, $completion->player->levelStartXp, $completion->player->nextLevelXp]);
+        self::assertSame([2, 150, 300], [$completion->player->level, $completion->player->levelStartXp, $completion->player->nextLevelXp]);
     }
 
     public function testCrossingALevelCollectsOneNewSpecies(): void
     {
-        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(90));
+        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(140));
         self::getContainer()->get(EntityManagerInterface::class)->flush();
 
         $completion = self::completeTask(self::createTask('Vet', quadrant: Quadrant::Schedule));
 
         self::assertCount(1, $completion->newSpecies);
         self::assertSame(1, $completion->player->speciesCollected);
-        self::assertSame($completion->newSpecies[0], $completion->player->latestSpecimen?->species);
+        self::assertSame(SpeciesCatalog::get($completion->newSpecies[0]->slug)->rarity->value, $completion->newSpecies[0]->rarity);
     }
 
     public function testLevelsReachedWithoutCrossingThemHereCollectNothing(): void

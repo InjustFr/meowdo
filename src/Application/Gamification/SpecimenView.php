@@ -9,13 +9,17 @@ use App\Domain\Gamification\Herbarium\Specimen;
 final readonly class SpecimenView
 {
     private function __construct(
+        public int $number,
         public string $species,
+        public string $rarity,
         public string $collectedAt,
     ) {
     }
 
-    public static function of(Specimen $specimen): self
+    public static function of(Specimen $specimen, int $number): self
     {
-        return new self($specimen->species()->slug, $specimen->collectedAt()->format(\DATE_ATOM));
+        $species = $specimen->species();
+
+        return new self($number, $species->slug, $species->rarity->value, $specimen->collectedAt()->format(\DATE_ATOM));
     }
 }

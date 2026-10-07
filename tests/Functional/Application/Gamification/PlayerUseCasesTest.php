@@ -37,7 +37,7 @@ final class PlayerUseCasesTest extends KernelTestCase
     {
         $player = $this->player();
 
-        self::assertSame(['Louis', 0, 1, 0, 100, 0, 0, 0, \count(SpeciesCatalog::all()), null, []], [$player->displayName, $player->xp, $player->level, $player->levelStartXp, $player->nextLevelXp, $player->streak, $player->bestStreak, $player->speciesCollected, $player->speciesTotal, $player->latestSpecimen, $player->newAchievements]);
+        self::assertSame(['Louis', 0, 1, 0, 150, 0, 0, 0, \count(SpeciesCatalog::all()), []], [$player->displayName, $player->xp, $player->level, $player->levelStartXp, $player->nextLevelXp, $player->streak, $player->bestStreak, $player->speciesCollected, $player->speciesTotal, $player->newAchievements]);
     }
 
     public function testStreakFadesAfterAMissedDay(): void
@@ -84,7 +84,10 @@ final class PlayerUseCasesTest extends KernelTestCase
         self::assertCount(2, $herbarium->specimens);
         self::assertNotSame($herbarium->specimens[0]->species, $herbarium->specimens[1]->species);
         self::assertSame('2026-10-06T08:00:00+00:00', $herbarium->specimens[0]->collectedAt);
-        self::assertSame([2, $herbarium->specimens[1]->species], [$this->player()->speciesCollected, $this->player()->latestSpecimen?->species]);
+        self::assertSame([1, 2], [$herbarium->specimens[0]->number, $herbarium->specimens[1]->number]);
+        self::assertSame(SpeciesCatalog::get($herbarium->specimens[0]->species)->rarity->value, $herbarium->specimens[0]->rarity);
+        self::assertSame(\count(SpeciesCatalog::all()) - 2, array_sum($herbarium->remaining));
+        self::assertSame(2, $this->player()->speciesCollected);
     }
 
     private function player(): PlayerView

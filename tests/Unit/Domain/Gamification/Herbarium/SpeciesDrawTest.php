@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Domain\Gamification\Herbarium;
 
+use App\Domain\Gamification\Herbarium\Rarity;
 use App\Domain\Gamification\Herbarium\Species;
 use App\Domain\Gamification\Herbarium\SpeciesCatalog;
 use App\Domain\Gamification\Herbarium\SpeciesDraw;
@@ -50,6 +51,19 @@ final class SpeciesDrawTest extends TestCase
         $second = new SpeciesDraw(new Randomizer(new Mt19937(2)))->draw(5, []);
 
         self::assertNotEquals($first, $second);
+    }
+
+    public function testCommonSpeciesTurnUpMoreOftenThanVeryRareOnes(): void
+    {
+        $draws = array_count_values(array_map(
+            static fn (int $seed): string => new SpeciesDraw(new Randomizer(new Mt19937($seed)))->draw(1, [])[0]->rarity->value,
+            range(1, 2_000),
+        ));
+
+        self::assertGreaterThan($draws[Rarity::Uncommon->value], $draws[Rarity::Common->value]);
+        self::assertGreaterThan($draws[Rarity::Rare->value], $draws[Rarity::Uncommon->value]);
+        self::assertGreaterThan($draws[Rarity::VeryRare->value], $draws[Rarity::Rare->value]);
+        self::assertGreaterThan(0, $draws[Rarity::VeryRare->value]);
     }
 
     private function draw(): SpeciesDraw

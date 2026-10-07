@@ -29,6 +29,7 @@ const SECONDARY = [
 <template>
     <div class="nav-menu">
         <RouterLink to="/" class="nav-menu__brand">mossydew</RouterLink>
+        <slot />
         <ul class="nav-menu__links">
             <li v-for="link in MAIN" :key="link.to">
                 <RouterLink :to="link.to" class="nav-menu__link" exact-active-class="nav-menu__link--active">

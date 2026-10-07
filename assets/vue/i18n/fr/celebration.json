@@ -1,6 +1,12 @@
 {
-    "levelUp": "Niveau {level} !",
-    "newSpecies": "Une nouvelle mousse rejoint votre herbier. | De nouvelles mousses rejoignent votre herbier.",
+    "levelUp": "Niveau {level}",
+    "newSpecies": {
+        "common": "Une mousse commune rejoint votre herbier.",
+        "uncommon": "Une mousse peu commune rejoint votre herbier.",
+        "rare": "Une mousse rare rejoint votre herbier.",
+        "very_rare": "Une mousse très rare rejoint votre herbier !"
+    },
+    "newSpeciesMany": "{count} mousses rejoignent votre herbier.",
     "herbariumComplete": "Votre herbier est complet : toutes les mousses ont été trouvées.",
     "achievement": "Nouveau succès | Nouveaux succès",
     "continue": "Continuer"

@@ -4,7 +4,7 @@ import { Trophy } from '@lucide/vue';
 import { DialogContent, DialogDescription, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
 import BaseButton from '../ui/BaseButton.vue';
-import SpeciesCard from './SpeciesCard.vue';
+import LevelUpReveal from './LevelUpReveal.vue';
 import { useCelebration } from '../../composables/useCelebration.js';
 import { usePlayer } from '../../composables/usePlayer.js';
 
@@ -32,13 +32,8 @@ const achievementsOpen = computed({
     <DialogRoot v-model:open="levelUpOpen">
         <DialogPortal>
             <DialogOverlay class="modal">
-                <DialogContent class="modal__panel celebration">
-                    <div v-if="state.newSpecies.length" class="celebration__species">
-                        <SpeciesCard v-for="slug in state.newSpecies" :key="slug" :slug="slug" revealed />
-                    </div>
-                    <DialogTitle class="celebration__title">{{ t('celebration.levelUp', { level: state.levelUp }) }}</DialogTitle>
-                    <DialogDescription class="celebration__text">{{ state.newSpecies.length ? t('celebration.newSpecies', state.newSpecies.length) : t('celebration.herbariumComplete') }}</DialogDescription>
-                    <div class="actions-row"><BaseButton @click="levelUpOpen = false">{{ t('celebration.continue') }}</BaseButton></div>
+                <DialogContent class="modal__panel celebration celebration--level-up">
+                    <LevelUpReveal v-if="state.levelUp" :level="state.levelUp" :species="state.newSpecies" @continue="levelUpOpen = false" />
                 </DialogContent>
             </DialogOverlay>
         </DialogPortal>
@@ -69,7 +64,7 @@ const achievementsOpen = computed({
 
 <style>
 .celebration { width: min(26rem, 100%); text-align: left; }
-.celebration__species { display: flex; flex-direction: column; gap: var(--space-3); }
+.celebration--level-up { overflow-x: hidden; padding-block: var(--space-6); }
 .celebration__title { margin: 0; color: var(--color-ink); font-family: var(--font-display); font-size: 1.9rem; font-weight: 400; }
 .celebration__text { display: block; color: var(--color-muted); }
 .celebration__list { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }

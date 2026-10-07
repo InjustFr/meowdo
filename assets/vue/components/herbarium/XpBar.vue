@@ -13,7 +13,9 @@ const remaining = computed(() => props.player.nextLevelXp - props.player.xp);
 
 <template>
     <div class="xp-bar">
-        <span class="xp-bar__level" :aria-label="t('herbarium.level', { level: player.level })">{{ player.level }}</span>
+        <span class="xp-bar__level" :aria-label="t('herbarium.level', { level: player.level })">
+            <Transition name="xp-bar-roll"><span :key="player.level" class="xp-bar__number">{{ player.level }}</span></Transition>
+        </span>
         <div class="xp-bar__body">
             <div
                 class="xp-bar__track"
@@ -44,6 +46,14 @@ const remaining = computed(() => props.player.nextLevelXp - props.player.xp);
     font-family: var(--font-display);
     font-size: 1.25rem;
     line-height: 1;
+    overflow: hidden;
+}
+.xp-bar__number { grid-area: 1 / 1; }
+.xp-bar-roll-enter-active, .xp-bar-roll-leave-active { transition: transform 500ms cubic-bezier(0.3, 1.4, 0.5, 1), opacity 300ms ease; }
+.xp-bar-roll-enter-from { opacity: 0; transform: translateY(100%); }
+.xp-bar-roll-leave-to { opacity: 0; transform: translateY(-100%); }
+@media (prefers-reduced-motion: reduce) {
+    .xp-bar-roll-enter-active, .xp-bar-roll-leave-active { transition: none; }
 }
 .xp-bar__body { display: flex; flex: 1; flex-direction: column; gap: var(--space-1); min-width: 0; }
 .xp-bar__track { height: 0.5rem; overflow: hidden; border-radius: var(--radius-pill); background: var(--color-border); }
