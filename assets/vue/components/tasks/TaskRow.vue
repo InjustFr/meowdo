@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import IconButton from '../ui/IconButton.vue';
 import DropCheck from './DropCheck.vue';
 import PlanMenu from './PlanMenu.vue';
+import QuadrantTag from './QuadrantTag.vue';
 import TaskMenu from './TaskMenu.vue';
 import { useDates } from '../../composables/useDates.js';
 import { useProjects } from '../../composables/useProjects.js';
@@ -61,6 +62,8 @@ const checkLabel = computed(() => {
 });
 
 const repeatLabel = computed(() => recurrenceLabel(props.task.recurrence, t));
+
+const showQuadrant = computed(() => !props.compact && !props.task.done && props.task.quadrant !== null);
 
 const dueLabel = computed(() => (props.task.dueOn ? t('tasks.due', { day: dayLabel(props.task.dueOn) }) : null));
 
@@ -148,7 +151,8 @@ function onKeydown(event) {
         <DropCheck :done="task.done" :disabled="locked" :label="checkLabel" @toggle="toggle" />
         <div class="task-row__main">
             <button type="button" class="task-row__title" @click="editor.edit(task)">{{ task.title }}</button>
-            <p v-if="parentLabel || (showProject && project) || task.subtaskCount || plannedLabel || dueLabel || repeatLabel || task.notes" class="task-row__meta">
+            <p v-if="showQuadrant || parentLabel || (showProject && project) || task.subtaskCount || plannedLabel || dueLabel || repeatLabel || task.notes" class="task-row__meta">
+                <QuadrantTag v-if="showQuadrant" :quadrant="task.quadrant" />
                 <span v-if="parentLabel" class="task-row__parent"><CornerDownRight size="0.875rem" aria-hidden="true" />{{ t('tasks.subtasks.of', { title: parentLabel }) }}</span>
                 <span v-if="showProject && project" class="task-row__project" :style="{ '--project': `var(--project-${project.color})` }">{{ project.name }}</span>
                 <span v-if="task.subtaskCount" class="task-row__subtasks" :aria-label="t('tasks.subtasks.progress', { done: task.subtasksDone, total: task.subtaskCount })">
@@ -190,7 +194,8 @@ function onKeydown(event) {
     transition: background var(--transition), opacity var(--transition);
 }
 
-.task-row::before { content: ""; position: absolute; top: 0.625rem; bottom: 0.625rem; left: -0.0625rem; width: 0.1875rem; border-radius: 0 0.125rem 0.125rem 0; background: var(--notch); }
+.task-row::before { content: ""; position: absolute; top: -0.0625rem; bottom: -0.0625rem; left: -0.0625rem; width: 0.3125rem; border-radius: var(--radius) 0 0 var(--radius); background: var(--notch); }
+.task-row--unsorted::before { top: 0.625rem; bottom: 0.625rem; width: 0.1875rem; border-radius: 0 0.125rem 0.125rem 0; }
 .task-row:hover, .task-row:focus-within { border-color: var(--color-border-strong); }
 .task-row:focus-visible { box-shadow: var(--focus-ring); }
 
@@ -198,6 +203,7 @@ function onKeydown(event) {
 .task-row--schedule { --notch: var(--quadrant-schedule); }
 .task-row--delegate { --notch: var(--quadrant-delegate); }
 .task-row--eliminate { --notch: var(--quadrant-eliminate); }
+.task-row:not(.task-row--unsorted) { --drop-check-ring: color-mix(in oklch, var(--notch) 70%, var(--color-border-strong)); }
 
 .task-row__main { display: flex; flex: 1; flex-direction: column; min-width: 0; }
 .task-row__title { padding: 0; border: none; background: none; color: var(--color-ink); font-size: var(--font-size); text-align: left; overflow-wrap: anywhere; cursor: pointer; }

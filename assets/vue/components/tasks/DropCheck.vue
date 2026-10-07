@@ -24,7 +24,7 @@ const emit = defineEmits(['toggle']);
     width: 1.625rem;
     height: 1.625rem;
     padding: 0;
-    border: 0.09375rem solid var(--color-border-strong);
+    border: 0.09375rem solid var(--drop-check-ring, var(--color-border-strong));
     border-radius: 50%;
     background: var(--color-surface);
     cursor: pointer;
@@ -44,7 +44,7 @@ const emit = defineEmits(['toggle']);
 .drop-check--done:hover .drop-check__drop { opacity: 0; }
 
 .drop-check:disabled { border-style: dashed; cursor: not-allowed; }
-.drop-check:disabled:hover { border-color: var(--color-border-strong); }
+.drop-check:disabled:hover { border-color: var(--drop-check-ring, var(--color-border-strong)); }
 .drop-check:disabled .drop-check__drop { opacity: 0; }
 
 @keyframes tick { to { stroke-dashoffset: 0; } }
