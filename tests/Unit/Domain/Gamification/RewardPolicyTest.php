@@ -18,7 +18,7 @@ final class RewardPolicyTest extends TestCase
     private const string TODAY = '2026-10-06';
 
     #[DataProvider('rewards')]
-    public function testRewardTable(?Quadrant $quadrant, ?string $dueOn, int $streak, int $xp, int $coins): void
+    public function testRewardTable(?Quadrant $quadrant, ?string $dueOn, int $streak, int $xp): void
     {
         $now = new \DateTimeImmutable(self::TODAY.' 09:00');
         $task = Task::create(User::join('account', 'louis@example.com', 'Louis', 'Europe/Paris', $now), 'Vet', $now);
@@ -29,25 +29,25 @@ final class RewardPolicyTest extends TestCase
             $task->dueBy(Day::of($dueOn));
         }
 
-        self::assertEquals(new Reward($xp, $coins), new RewardPolicy()->rewardFor($task, Day::of(self::TODAY), $streak));
+        self::assertEquals(new Reward($xp), new RewardPolicy()->rewardFor($task, Day::of(self::TODAY), $streak));
     }
 
-    /** @return iterable<array{?Quadrant, ?string, int, int, int}> */
+    /** @return iterable<array{?Quadrant, ?string, int, int}> */
     public static function rewards(): iterable
     {
-        yield 'plant pays most' => [Quadrant::Schedule, null, 0, 25, 7];
-        yield 'water now' => [Quadrant::DoFirst, null, 0, 20, 5];
-        yield 'trim' => [Quadrant::Delegate, null, 0, 10, 3];
-        yield 'compost' => [Quadrant::Eliminate, null, 0, 5, 2];
-        yield 'unsorted' => [null, null, 0, 8, 2];
-        yield 'on time on the deadline' => [Quadrant::DoFirst, self::TODAY, 0, 25, 7];
-        yield 'on time before the deadline' => [null, '2026-10-20', 0, 13, 4];
-        yield 'late gets no bonus' => [Quadrant::DoFirst, '2026-10-05', 0, 20, 5];
-        yield 'one streak day' => [Quadrant::DoFirst, null, 1, 21, 6];
-        yield 'three streak days' => [null, null, 3, 9, 3];
-        yield 'ten streak days' => [Quadrant::DoFirst, null, 10, 30, 8];
-        yield 'streak capped at ten days' => [Quadrant::DoFirst, null, 25, 30, 8];
-        yield 'everything' => [Quadrant::Schedule, self::TODAY, 10, 45, 12];
-        yield 'negative streak counts as none' => [Quadrant::Schedule, null, -3, 25, 7];
+        yield 'plant pays most' => [Quadrant::Schedule, null, 0, 25];
+        yield 'water now' => [Quadrant::DoFirst, null, 0, 20];
+        yield 'trim' => [Quadrant::Delegate, null, 0, 10];
+        yield 'compost' => [Quadrant::Eliminate, null, 0, 5];
+        yield 'unsorted' => [null, null, 0, 8];
+        yield 'on time on the deadline' => [Quadrant::DoFirst, self::TODAY, 0, 25];
+        yield 'on time before the deadline' => [null, '2026-10-20', 0, 13];
+        yield 'late gets no bonus' => [Quadrant::DoFirst, '2026-10-05', 0, 20];
+        yield 'one streak day' => [Quadrant::DoFirst, null, 1, 21];
+        yield 'three streak days' => [null, null, 3, 9];
+        yield 'ten streak days' => [Quadrant::DoFirst, null, 10, 30];
+        yield 'streak capped at ten days' => [Quadrant::DoFirst, null, 25, 30];
+        yield 'everything' => [Quadrant::Schedule, self::TODAY, 10, 45];
+        yield 'negative streak counts as none' => [Quadrant::Schedule, null, -3, 25];
     }
 }

@@ -7,15 +7,15 @@ test('signed-out visitors sign in with their mossyleaf account', async ({ page }
     await signInWithAccount(page, 'demo');
     await page.waitForURL('/');
     await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible();
-    await expect(page.locator('.shell__desk .critter-desk__name')).toHaveText('Pip');
+    await expect(page.locator('.shell__desk .herbarium-desk')).toBeVisible();
 });
 
-test('a new mossyleaf account finds a critter waiting in its moss', async ({ page }) => {
+test('a new mossyleaf account starts with an empty herbarium', async ({ page }) => {
     const account = unique('fern').replace(' ', '-');
     await page.goto('/login');
     await signInWithAccount(page, account, { email: `${account}@mossyleaf.test`, name: 'Fern' });
     await page.waitForURL('/');
-    await expect(page.locator('.shell__desk .critter-desk__name')).toHaveText('Pip');
+    await expect(page.locator('.shell__desk')).toContainText('Reach level 2 to collect your first moss.');
     await page.goto('/settings');
     await expect(page.getByText(`${account}@mossyleaf.test`)).toBeVisible();
 });

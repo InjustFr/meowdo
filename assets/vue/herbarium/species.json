@@ -1,0 +1,386 @@
+{
+    "polytrichum-commune": {
+        "scientificName": "Polytrichum commune",
+        "taxon": "https://www.inaturalist.org/taxa/68293",
+        "photo": "/herbarium/polytrichum-commune.jpg",
+        "attribution": "(c) Micki Colbeck, some rights reserved (CC BY)",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/20330870"
+    },
+    "polytrichum-juniperinum": {
+        "scientificName": "Polytrichum juniperinum",
+        "taxon": "https://www.inaturalist.org/taxa/68286",
+        "photo": "/herbarium/polytrichum-juniperinum.jpg",
+        "attribution": "(c) Zihao Wang, some rights reserved (CC BY), uploaded by Zihao Wang",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/109519485"
+    },
+    "sphagnum-palustre": {
+        "scientificName": "Sphagnum palustre",
+        "taxon": "https://www.inaturalist.org/taxa/169228",
+        "photo": "/herbarium/sphagnum-palustre.jpg",
+        "attribution": "(c) Justin Paulin, some rights reserved (CC BY), uploaded by Justin Paulin",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/424017492"
+    },
+    "sphagnum-capillifolium": {
+        "scientificName": "Sphagnum capillifolium",
+        "taxon": "https://www.inaturalist.org/taxa/123958",
+        "photo": "/herbarium/sphagnum-capillifolium.jpg",
+        "attribution": "(c) Andrew Melton, some rights reserved (CC BY), uploaded by Andrew Melton",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/44739636"
+    },
+    "hylocomium-splendens": {
+        "scientificName": "Hylocomium splendens",
+        "taxon": "https://www.inaturalist.org/taxa/122555",
+        "photo": "/herbarium/hylocomium-splendens.jpg",
+        "attribution": "(c) Scott Morris, some rights reserved (CC BY), uploaded by Scott Morris",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/169793643"
+    },
+    "pleurozium-schreberi": {
+        "scientificName": "Pleurozium schreberi",
+        "taxon": "https://www.inaturalist.org/taxa/130677",
+        "photo": "/herbarium/pleurozium-schreberi.jpg",
+        "attribution": "(c) Fyodor Pudovikov, some rights reserved (CC BY), uploaded by Fyodor Pudovikov",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/314005850"
+    },
+    "hypnum-cupressiforme": {
+        "scientificName": "Hypnum cupressiforme",
+        "taxon": "https://www.inaturalist.org/taxa/163992",
+        "photo": "/herbarium/hypnum-cupressiforme.jpg",
+        "attribution": "(c) Alexis Tinker-Tsavalas, some rights reserved (CC BY), uploaded by Alexis Tinker-Tsavalas",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/109728471"
+    },
+    "dicranum-scoparium": {
+        "scientificName": "Dicranum scoparium",
+        "taxon": "https://www.inaturalist.org/taxa/123134",
+        "photo": "/herbarium/dicranum-scoparium.jpg",
+        "attribution": "no rights reserved",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/344985088"
+    },
+    "leucobryum-glaucum": {
+        "scientificName": "Leucobryum glaucum",
+        "taxon": "https://www.inaturalist.org/taxa/122658",
+        "photo": "/herbarium/leucobryum-glaucum.jpg",
+        "attribution": "(c) Jason Hollinger, some rights reserved (CC BY)",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/13255641"
+    },
+    "thuidium-tamariscinum": {
+        "scientificName": "Thuidium tamariscinum",
+        "taxon": "https://www.inaturalist.org/taxa/127055",
+        "photo": "/herbarium/thuidium-tamariscinum.jpg",
+        "attribution": "no rights reserved, uploaded by Jens Ullenius",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/109615696"
+    },
+    "ceratodon-purpureus": {
+        "scientificName": "Ceratodon purpureus",
+        "taxon": "https://www.inaturalist.org/taxa/123117",
+        "photo": "/herbarium/ceratodon-purpureus.jpg",
+        "attribution": "(c) Helen Waterman, some rights reserved (CC BY), uploaded by Helen Waterman",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/196219006"
+    },
+    "funaria-hygrometrica": {
+        "scientificName": "Funaria hygrometrica",
+        "taxon": "https://www.inaturalist.org/taxa/120000",
+        "photo": "/herbarium/funaria-hygrometrica.jpg",
+        "attribution": "(c) Igor Balashov, some rights reserved (CC BY), uploaded by Igor Balashov",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/125818998"
+    },
+    "bryum-argenteum": {
+        "scientificName": "Bryum argenteum",
+        "taxon": "https://www.inaturalist.org/taxa/123390",
+        "photo": "/herbarium/bryum-argenteum.jpg",
+        "attribution": "(c) Alexis Tinker-Tsavalas, some rights reserved (CC BY), uploaded by Alexis Tinker-Tsavalas",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/60131664"
+    },
+    "tortula-muralis": {
+        "scientificName": "Tortula muralis",
+        "taxon": "https://www.inaturalist.org/taxa/123498",
+        "photo": "/herbarium/tortula-muralis.jpg",
+        "attribution": "(c) Alexis Tinker-Tsavalas, some rights reserved (CC BY), uploaded by Alexis Tinker-Tsavalas",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/61882321"
+    },
+    "grimmia-pulvinata": {
+        "scientificName": "Grimmia pulvinata",
+        "taxon": "https://www.inaturalist.org/taxa/56117",
+        "photo": "/herbarium/grimmia-pulvinata.jpg",
+        "attribution": "(c) Paul Cook, some rights reserved (CC BY), uploaded by Paul Cook",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/11929304"
+    },
+    "syntrichia-ruralis": {
+        "scientificName": "Syntrichia ruralis",
+        "taxon": "https://www.inaturalist.org/taxa/244075",
+        "photo": "/herbarium/syntrichia-ruralis.jpg",
+        "attribution": "(c) Daniel Cahen, some rights reserved (CC BY), uploaded by Daniel Cahen",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/105583524"
+    },
+    "kindbergia-praelonga": {
+        "scientificName": "Kindbergia praelonga",
+        "taxon": "https://www.inaturalist.org/taxa/1122172",
+        "photo": "/herbarium/kindbergia-praelonga.jpg",
+        "attribution": "no rights reserved, uploaded by Randal",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/54967207"
+    },
+    "brachythecium-rutabulum": {
+        "scientificName": "Brachythecium rutabulum",
+        "taxon": "https://www.inaturalist.org/taxa/159407",
+        "photo": "/herbarium/brachythecium-rutabulum.jpg",
+        "attribution": "(c) Alexis Tinker-Tsavalas, some rights reserved (CC BY), uploaded by Alexis Tinker-Tsavalas",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/178990937"
+    },
+    "rhytidiadelphus-squarrosus": {
+        "scientificName": "Rhytidiadelphus squarrosus",
+        "taxon": "https://www.inaturalist.org/taxa/123754",
+        "photo": "/herbarium/rhytidiadelphus-squarrosus.jpg",
+        "attribution": "(c) kitbeard, some rights reserved (CC BY), uploaded by kitbeard",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/58648863"
+    },
+    "rhytidiadelphus-loreus": {
+        "scientificName": "Rhytidiadelphus loreus",
+        "taxon": "https://www.inaturalist.org/taxa/124422",
+        "photo": "/herbarium/rhytidiadelphus-loreus.jpg",
+        "attribution": "(c) MichellePrice_CJBG, some rights reserved (CC BY)",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/383893599"
+    },
+    "atrichum-undulatum": {
+        "scientificName": "Atrichum undulatum",
+        "taxon": "https://www.inaturalist.org/taxa/124155",
+        "photo": "/herbarium/atrichum-undulatum.jpg",
+        "attribution": "(c) Ixitixel, some rights reserved (CC BY)",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/13282871"
+    },
+    "mnium-hornum": {
+        "scientificName": "Mnium hornum",
+        "taxon": "https://www.inaturalist.org/taxa/165489",
+        "photo": "/herbarium/mnium-hornum.jpg",
+        "attribution": "(c) Helen Waterman, some rights reserved (CC BY), uploaded by Helen Waterman",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/208696151"
+    },
+    "plagiomnium-undulatum": {
+        "scientificName": "Plagiomnium undulatum",
+        "taxon": "https://www.inaturalist.org/taxa/208078",
+        "photo": "/herbarium/plagiomnium-undulatum.jpg",
+        "attribution": "(c) Jacek Pietruszewski, some rights reserved (CC BY), uploaded by Jacek Pietruszewski",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/110688399"
+    },
+    "plagiomnium-affine": {
+        "scientificName": "Plagiomnium affine",
+        "taxon": "https://www.inaturalist.org/taxa/485472",
+        "photo": "/herbarium/plagiomnium-affine.jpg",
+        "attribution": "(c) Zoltán Nagy, some rights reserved (CC BY), uploaded by Zoltán Nagy",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/38887612"
+    },
+    "fissidens-taxifolius": {
+        "scientificName": "Fissidens taxifolius",
+        "taxon": "https://www.inaturalist.org/taxa/163024",
+        "photo": "/herbarium/fissidens-taxifolius.jpg",
+        "attribution": "no rights reserved, uploaded by Mara McHaffie",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/405234824"
+    },
+    "climacium-dendroides": {
+        "scientificName": "Climacium dendroides",
+        "taxon": "https://www.inaturalist.org/taxa/123751",
+        "photo": "/herbarium/climacium-dendroides.jpg",
+        "attribution": "(c) Sandy Wolkenberg, some rights reserved (CC BY)",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/360704594"
+    },
+    "fontinalis-antipyretica": {
+        "scientificName": "Fontinalis antipyretica",
+        "taxon": "https://www.inaturalist.org/taxa/123790",
+        "photo": "/herbarium/fontinalis-antipyretica.jpg",
+        "attribution": "no rights reserved, uploaded by Tero Linjama",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/490632811"
+    },
+    "homalothecium-sericeum": {
+        "scientificName": "Homalothecium sericeum",
+        "taxon": "https://www.inaturalist.org/taxa/123776",
+        "photo": "/herbarium/homalothecium-sericeum.jpg",
+        "attribution": "no rights reserved, uploaded by Irene Saltini",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/48161072"
+    },
+    "pseudoscleropodium-purum": {
+        "scientificName": "Pseudoscleropodium purum",
+        "taxon": "https://www.inaturalist.org/taxa/123645",
+        "photo": "/herbarium/pseudoscleropodium-purum.jpg",
+        "attribution": "(c) Helen Waterman, some rights reserved (CC BY), uploaded by Helen Waterman",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/300118912"
+    },
+    "leucodon-sciuroides": {
+        "scientificName": "Leucodon sciuroides",
+        "taxon": "https://www.inaturalist.org/taxa/430142",
+        "photo": "/herbarium/leucodon-sciuroides.jpg",
+        "attribution": "no rights reserved",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/399792929"
+    },
+    "ulota-crispa": {
+        "scientificName": "Ulota crispa",
+        "taxon": "https://www.inaturalist.org/taxa/170060",
+        "photo": "/herbarium/ulota-crispa.jpg",
+        "attribution": "(c) Barry Walter, some rights reserved (CC BY), uploaded by Barry Walter",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/34507436"
+    },
+    "tetraphis-pellucida": {
+        "scientificName": "Tetraphis pellucida",
+        "taxon": "https://www.inaturalist.org/taxa/124385",
+        "photo": "/herbarium/tetraphis-pellucida.jpg",
+        "attribution": "(c) Игорь Васильев, some rights reserved (CC BY), uploaded by Игорь Васильев",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/317783899"
+    },
+    "buxbaumia-aphylla": {
+        "scientificName": "Buxbaumia aphylla",
+        "taxon": "https://www.inaturalist.org/taxa/159610",
+        "photo": "/herbarium/buxbaumia-aphylla.jpg",
+        "attribution": "(c) Rafael Medina, some rights reserved (CC BY), uploaded by Rafael Medina",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/2076803"
+    },
+    "splachnum-luteum": {
+        "scientificName": "Splachnum luteum",
+        "taxon": "https://www.inaturalist.org/taxa/169281",
+        "photo": "/herbarium/splachnum-luteum.jpg",
+        "attribution": "no rights reserved",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/180287153"
+    },
+    "schistostega-pennata": {
+        "scientificName": "Schistostega pennata",
+        "taxon": "https://www.inaturalist.org/taxa/168594",
+        "photo": "/herbarium/schistostega-pennata.jpg",
+        "attribution": "no rights reserved",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/349410164"
+    },
+    "hookeria-lucens": {
+        "scientificName": "Hookeria lucens",
+        "taxon": "https://www.inaturalist.org/taxa/123710",
+        "photo": "/herbarium/hookeria-lucens.jpg",
+        "attribution": "no rights reserved, uploaded by José Luis Camaño",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/401739951"
+    },
+    "calliergonella-cuspidata": {
+        "scientificName": "Calliergonella cuspidata",
+        "taxon": "https://www.inaturalist.org/taxa/159669",
+        "photo": "/herbarium/calliergonella-cuspidata.jpg",
+        "attribution": "no rights reserved, uploaded by Jean-Paul Boerekamps",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/260288417"
+    },
+    "racomitrium-lanuginosum": {
+        "scientificName": "Racomitrium lanuginosum",
+        "taxon": "https://www.inaturalist.org/taxa/167684",
+        "photo": "/herbarium/racomitrium-lanuginosum.jpg",
+        "attribution": "(c) Henry Miller, some rights reserved (CC BY), uploaded by Henry Miller",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/322845763"
+    },
+    "physcomitrium-pyriforme": {
+        "scientificName": "Physcomitrium pyriforme",
+        "taxon": "https://www.inaturalist.org/taxa/154195",
+        "photo": "/herbarium/physcomitrium-pyriforme.jpg",
+        "attribution": "no rights reserved",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/62473173"
+    },
+    "aulacomnium-palustre": {
+        "scientificName": "Aulacomnium palustre",
+        "taxon": "https://www.inaturalist.org/taxa/154189",
+        "photo": "/herbarium/aulacomnium-palustre.jpg",
+        "attribution": "(c) George Greiff, some rights reserved (CC BY), uploaded by George Greiff",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/31628906"
+    },
+    "dicranella-heteromalla": {
+        "scientificName": "Dicranella heteromalla",
+        "taxon": "https://www.inaturalist.org/taxa/67876",
+        "photo": "/herbarium/dicranella-heteromalla.jpg",
+        "attribution": "no rights reserved, uploaded by Randal",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/101399405"
+    },
+    "pogonatum-urnigerum": {
+        "scientificName": "Pogonatum urnigerum",
+        "taxon": "https://www.inaturalist.org/taxa/167121",
+        "photo": "/herbarium/pogonatum-urnigerum.jpg",
+        "attribution": "(c) George Greiff, some rights reserved (CC BY), uploaded by George Greiff",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/39224547"
+    },
+    "ptilium-crista-castrensis": {
+        "scientificName": "Ptilium crista-castrensis",
+        "taxon": "https://www.inaturalist.org/taxa/136604",
+        "photo": "/herbarium/ptilium-crista-castrensis.jpg",
+        "attribution": "(c) copepodo, some rights reserved (CC BY), uploaded by copepodo",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/152280"
+    },
+    "andreaea-rupestris": {
+        "scientificName": "Andreaea rupestris",
+        "taxon": "https://www.inaturalist.org/taxa/158346",
+        "photo": "/herbarium/andreaea-rupestris.jpg",
+        "attribution": "no rights reserved, uploaded by Jonathan Hughes",
+        "license": "cc0",
+        "source": "https://www.inaturalist.org/photos/227307151"
+    },
+    "rhizomnium-punctatum": {
+        "scientificName": "Rhizomnium punctatum",
+        "taxon": "https://www.inaturalist.org/taxa/127031",
+        "photo": "/herbarium/rhizomnium-punctatum.jpg",
+        "attribution": "(c) Bartosz Czołczyński, some rights reserved (CC BY)",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/614146381"
+    },
+    "bartramia-pomiformis": {
+        "scientificName": "Bartramia pomiformis",
+        "taxon": "https://www.inaturalist.org/taxa/320575",
+        "photo": "/herbarium/bartramia-pomiformis.jpg",
+        "attribution": "(c) Michael J. Papay, some rights reserved (CC BY), uploaded by Michael J. Papay",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/352972353"
+    },
+    "encalypta-streptocarpa": {
+        "scientificName": "Encalypta streptocarpa",
+        "taxon": "https://www.inaturalist.org/taxa/461295",
+        "photo": "/herbarium/encalypta-streptocarpa.jpg",
+        "attribution": "(c) Henry Miller, some rights reserved (CC BY), uploaded by Henry Miller",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/316796537"
+    },
+    "hedwigia-ciliata": {
+        "scientificName": "Hedwigia ciliata",
+        "taxon": "https://www.inaturalist.org/taxa/163550",
+        "photo": "/herbarium/hedwigia-ciliata.jpg",
+        "attribution": "(c) Zihao Wang, some rights reserved (CC BY), uploaded by Zihao Wang",
+        "license": "cc-by",
+        "source": "https://www.inaturalist.org/photos/106717568"
+    }
+}

@@ -16,6 +16,8 @@ services:
     App\Domain\Gamification\Achievement\AchievementReferee:
         arguments: [!tagged_iterator app.achievement_rule]
 
+    Random\Randomizer: ~
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - !service { class: PDO, factory: ['@doctrine.dbal.default_connection', 'getNativeConnection'] }

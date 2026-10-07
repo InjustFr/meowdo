@@ -8,9 +8,7 @@ use App\Application\Identity\ChangeTimezone\ChangeTimezoneHandler;
 use App\Application\Identity\ChooseLanguage\ChooseLanguageHandler;
 use App\Application\Identity\SignIn\SignIn;
 use App\Application\Identity\SignIn\SignInHandler;
-use App\Domain\Gamification\CritterRepository;
 use App\Domain\Gamification\PlayerRepository;
-use App\Domain\Gamification\Tint;
 use App\Domain\Identity\Exception\EmailAlreadyTaken;
 use App\Domain\Identity\Exception\InvalidEmail;
 use App\Domain\Identity\Language;
@@ -31,15 +29,13 @@ final class AccountUseCasesTest extends KernelTestCase
         self::freezeAt('2026-10-06 08:00 UTC');
     }
 
-    public function testAFirstSignInCreatesTheUserWithTheirCritter(): void
+    public function testAFirstSignInCreatesTheUserAndTheirPlayer(): void
     {
         $user = $this->signIn(new SignIn('account-1', 'Louis@Example.com', 'Louis', 'Asia/Tokyo'));
 
         self::assertSame(['account-1', 'louis@example.com', 'Louis', 'Asia/Tokyo', null], [$user->accountId(), $user->email(), $user->displayName(), $user->timezone(), $user->language()]);
         $player = self::getContainer()->get(PlayerRepository::class)->of($user);
-        self::assertSame([0, 0, 1], [$player->xp(), $player->coins(), $player->level()]);
-        $critter = self::getContainer()->get(CritterRepository::class)->of($user);
-        self::assertSame(['Pip', Tint::Sprout], [$critter->name(), $critter->tint()]);
+        self::assertSame([0, 1], [$player->xp(), $player->level()]);
     }
 
     public function testAFirstSignInFallsBackOnTheEmailAndParis(): void
@@ -64,7 +60,7 @@ final class AccountUseCasesTest extends KernelTestCase
 
         self::assertSame($existing->id()->toBase32(), $user->id()->toBase32());
         self::assertSame(['account-1', 'Louis', 'Europe/Paris'], [$user->accountId(), $user->displayName(), $user->timezone()]);
-        self::assertSame('Pip', self::getContainer()->get(CritterRepository::class)->of($user)->name());
+        self::assertSame(1, self::getContainer()->get(PlayerRepository::class)->of($user)->level());
     }
 
     public function testTheAccountIsFoundAgainAfterItsEmailChanges(): void

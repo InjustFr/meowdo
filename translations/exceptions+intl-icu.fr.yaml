@@ -25,11 +25,6 @@ task:
     cannot_nest_under_itself: '« {title} » ne peut pas être sa propre sous-tâche.'
     with_subtasks_cannot_be_nested: '« {title} » a ses propres sous-tâches : elle ne peut pas devenir une sous-tâche.'
 game:
-    not_enough_coins: 'Il vous faut {price} pièces, vous en avez {coins}.'
-    level_too_low: 'Atteignez le niveau {level} pour débloquer cet objet.'
-    unknown_cosmetic: 'Cet objet n’est pas dans la boutique.'
-    already_owned: 'Votre bestiole possède déjà cet objet.'
-    not_owned: 'Achetez d’abord cet objet dans la boutique.'
-    empty_critter_name: 'Donnez un nom à votre bestiole.'
+    unknown_species: 'Cette mousse n’est pas dans l’herbier.'
 identity:
     invalid_theme_color: 'Couleur invalide « {color} » : utilisez un code hexadécimal comme #5b7f3a.'

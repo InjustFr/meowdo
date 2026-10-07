@@ -41,7 +41,7 @@ final class AppShellController extends AbstractController
             'matrix' => ['/api/matrix'],
             'done' => ['/api/tasks/done'],
             'stats' => ['/api/stats'],
-            'shop' => ['/api/shop'],
+            'herbarium' => ['/api/herbarium'],
             'achievements' => ['/api/achievements'],
             default => [],
         };

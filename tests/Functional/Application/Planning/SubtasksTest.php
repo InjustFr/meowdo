@@ -66,13 +66,13 @@ final class SubtasksTest extends KernelTestCase
         self::clear();
 
         $first = self::completeTask($sketch);
-        self::assertEquals(new Reward(8, 2), $first->reward);
+        self::assertEquals(new Reward(8), $first->reward);
         self::assertNotNull($first->parent);
         self::assertSame([false, 2, 1], [$first->parent->done, $first->parent->subtaskCount, $first->parent->subtasksDone]);
         self::clear();
 
         $last = self::completeTask($render);
-        self::assertEquals(new Reward(34, 9), $last->reward);
+        self::assertEquals(new Reward(34), $last->reward);
         self::assertNotNull($last->parent);
         self::assertTrue($last->parent->done);
         self::assertSame(42, $last->player->xp);

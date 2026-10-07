@@ -1,6 +1,8 @@
 <script setup>
 import { useI18n } from 'vue-i18n';
 import PageHeader from '../components/ui/PageHeader.vue';
+import PageSection from '../components/ui/PageSection.vue';
+import { allSpecies } from '../herbarium/catalog.js';
 
 const { t } = useI18n();
 
@@ -17,18 +19,27 @@ const CREDITS = [
 <template>
     <div class="page">
         <PageHeader :title="t('credits.title')" :subtitle="t('credits.subtitle')" />
-        <p class="credits__critter">{{ t('credits.critter') }}</p>
+        <p class="credits__note">{{ t('credits.sound') }}</p>
         <ul class="credits">
             <li v-for="credit in CREDITS" :key="credit.name" class="credits__item">
                 <a :href="credit.url" rel="noopener" target="_blank">{{ credit.name }}</a>
                 <span>{{ credit.author }} · {{ credit.license }}</span>
             </li>
         </ul>
+        <PageSection :title="t('credits.photos')">
+            <p class="credits__note">{{ t('credits.photosIntro') }}</p>
+            <ul class="credits">
+                <li v-for="species in allSpecies()" :key="species.slug" class="credits__item">
+                    <a :href="species.source" rel="noopener" target="_blank">{{ species.scientificName }}</a>
+                    <span>{{ species.attribution }} · {{ species.licenseLabel }}</span>
+                </li>
+            </ul>
+        </PageSection>
     </div>
 </template>
 
 <style scoped>
-.credits__critter { max-width: 40rem; color: var(--color-muted); }
+.credits__note { max-width: 40rem; color: var(--color-muted); }
 .credits { display: flex; flex-direction: column; gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
 .credits__item { display: flex; flex-direction: column; }
 .credits__item span { color: var(--color-muted); font-size: var(--font-size-sm); }

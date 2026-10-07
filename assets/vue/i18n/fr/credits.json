@@ -1,5 +1,7 @@
 {
     "title": "Crédits",
-    "subtitle": "Polices, icônes et bibliothèques utilisées par MossyDew.",
-    "critter": "Le tardigrade, ses tenues et ses décors sont dessinés à la main en SVG pour MossyDew. Le son de goutte est synthétisé dans votre navigateur."
+    "subtitle": "Polices, icônes, bibliothèques et photos utilisées par MossyDew.",
+    "sound": "Le son de goutte est synthétisé dans votre navigateur.",
+    "photos": "Photos de mousses",
+    "photosIntro": "Les photos de l’herbier viennent d’observateurs d’iNaturalist, sous licence CC0 ou CC BY."
 }

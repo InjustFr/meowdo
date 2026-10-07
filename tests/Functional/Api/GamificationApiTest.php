@@ -21,48 +21,17 @@ final class GamificationApiTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSame(1, Json::int(self::body($client), 'level'));
-        self::assertSame(['name' => 'Pip', 'tint' => 'sprout', 'mood' => 'dormant', 'outfit' => ['hat' => null, 'neckwear' => null, 'toy' => null, 'backdrop' => null]], Json::array(self::body($client), 'critter'));
+        self::assertSame([0, 48, null], [Json::int(self::body($client), 'speciesCollected'), Json::int(self::body($client), 'speciesTotal'), Json::at(self::body($client), 'latestSpecimen')]);
     }
 
-    public function testShopAndOutfit(): void
+    public function testListHerbarium(): void
     {
         $client = self::signedInClient();
 
-        $client->jsonRequest('GET', '/api/shop');
+        $client->jsonRequest('GET', '/api/herbarium');
+
         self::assertResponseIsSuccessful();
-        self::assertSame(['slug' => 'acorn-cap', 'slot' => 'hat', 'price' => 30, 'minLevel' => 1, 'owned' => false, 'worn' => false], Json::array(self::body($client), 0));
-
-        $client->jsonRequest('POST', '/api/shop/acorn-cap/buy');
-        self::assertResponseStatusCodeSame(422);
-        $client->jsonRequest('POST', '/api/shop/jetpack/buy');
-        self::assertResponseStatusCodeSame(422);
-        $client->jsonRequest('POST', '/api/critter/wear/acorn-cap');
-        self::assertResponseStatusCodeSame(422);
-
-        $client->jsonRequest('POST', '/api/critter/take-off/hat');
-        self::assertResponseStatusCodeSame(204);
-        $client->jsonRequest('POST', '/api/critter/take-off/tail');
-        self::assertResponseStatusCodeSame(404);
-    }
-
-    public function testRenameAndRetintTheCritter(): void
-    {
-        $client = self::signedInClient();
-
-        $client->jsonRequest('PUT', '/api/critter/name', ['name' => 'Bramble']);
-        self::assertResponseStatusCodeSame(204);
-        $client->jsonRequest('PUT', '/api/critter/tint', ['tint' => 'frost']);
-        self::assertResponseStatusCodeSame(204);
-
-        $client->jsonRequest('GET', '/api/player');
-        self::assertSame(['Bramble', 'frost'], [Json::string(self::body($client), 'critter', 'name'), Json::string(self::body($client), 'critter', 'tint')]);
-
-        $client->jsonRequest('PUT', '/api/critter/name', ['name' => '']);
-        self::assertResponseStatusCodeSame(422);
-        $client->jsonRequest('PUT', '/api/critter/name', ['name' => str_repeat('n', 31)]);
-        self::assertResponseStatusCodeSame(422);
-        $client->jsonRequest('PUT', '/api/critter/tint', ['tint' => 'rainbow']);
-        self::assertResponseStatusCodeSame(422);
+        self::assertSame(['total' => 48, 'specimens' => []], self::body($client));
     }
 
     public function testAchievementsAreCelebratedOnce(): void
@@ -73,7 +42,7 @@ final class GamificationApiTest extends WebTestCase
 
         $client->jsonRequest('GET', '/api/achievements');
         self::assertResponseIsSuccessful();
-        self::assertCount(13, self::body($client));
+        self::assertCount(12, self::body($client));
         self::assertSame('first_drop', Json::string(self::body($client), 0, 'id'));
         self::assertIsString(Json::at(self::body($client), 0, 'unlockedAt'));
 

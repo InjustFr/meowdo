@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Application\Planning\CompleteTask;
 
 use App\Application\Gamification\AchievementCheck;
+use App\Application\Gamification\CollectSpecies;
 use App\Application\Gamification\ShowPlayer\ShowPlayerHandler;
 use App\Application\Identity\CurrentUser;
 use App\Application\Planning\TaskView;
 use App\Application\Planning\Today;
 use App\Application\Transaction;
+use App\Domain\Gamification\Herbarium\Species;
 use App\Domain\Gamification\PlayerRepository;
 use App\Domain\Gamification\RewardPolicy;
 use App\Domain\Planning\TaskRepository;
@@ -27,6 +29,7 @@ final readonly class CompleteTaskHandler
         private AchievementCheck $achievements,
         private ShowPlayerHandler $showPlayer,
         private ContinueSeries $continueSeries,
+        private CollectSpecies $collectSpecies,
     ) {
     }
 
@@ -38,6 +41,7 @@ final readonly class CompleteTaskHandler
 
         $reward = null;
         $leveledUpTo = null;
+        $newSpecies = [];
         $player = $this->players->of($this->currentUser->get());
         foreach ($completed as $done) {
             ($this->continueSeries)($done);
@@ -49,13 +53,24 @@ final readonly class CompleteTaskHandler
             $reward = null === $reward ? $earned : $reward->plus($earned);
         }
         if (null !== $reward) {
+            $levelBefore = $player->level();
             $leveledUpTo = $player->earn($reward);
+            if (null !== $leveledUpTo) {
+                $newSpecies = ($this->collectSpecies)($player->owner(), $leveledUpTo - $levelBefore);
+            }
         }
         $this->transaction->commit();
         ($this->achievements)();
 
         $parent = $task->parent();
 
-        return new CompletionView(TaskView::of($task), $reward, $leveledUpTo, ($this->showPlayer)(), null === $parent ? null : TaskView::of($parent));
+        return new CompletionView(
+            TaskView::of($task),
+            $reward,
+            $leveledUpTo,
+            array_map(static fn (Species $species): string => $species->slug, $newSpecies),
+            ($this->showPlayer)(),
+            null === $parent ? null : TaskView::of($parent),
+        );
     }
 }

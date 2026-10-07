@@ -1,5 +1,7 @@
 {
     "title": "Credits",
-    "subtitle": "Fonts, icons and libraries used in MossyDew.",
-    "critter": "The moss piglet, its outfits and scenes are drawn by hand in SVG for MossyDew. The dewdrop sound is synthesised in your browser."
+    "subtitle": "Fonts, icons, libraries and photos used in MossyDew.",
+    "sound": "The dewdrop sound is synthesised in your browser.",
+    "photos": "Moss photos",
+    "photosIntro": "Herbarium photos come from iNaturalist observers, under CC0 or CC BY."
 }

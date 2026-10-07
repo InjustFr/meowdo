@@ -12,13 +12,14 @@ final readonly class PlayerView
     public function __construct(
         public string $displayName,
         public int $xp,
-        public int $coins,
         public int $level,
         public int $levelStartXp,
         public int $nextLevelXp,
         public int $streak,
         public int $bestStreak,
-        public CritterView $critter,
+        public int $speciesCollected,
+        public int $speciesTotal,
+        public ?SpecimenView $latestSpecimen,
         public array $newAchievements,
     ) {
     }

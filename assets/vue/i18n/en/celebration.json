@@ -1,6 +1,7 @@
 {
     "levelUp": "Level {level}!",
-    "levelUpHint": "New items may be waiting in the shop.",
+    "newSpecies": "A new moss joins your herbarium. | New mosses join your herbarium.",
+    "herbariumComplete": "Your herbarium is complete: every moss has been found.",
     "achievement": "New achievement | New achievements",
     "continue": "Continue"
 }

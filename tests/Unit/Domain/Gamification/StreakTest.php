@@ -57,16 +57,6 @@ final class StreakTest extends TestCase
         self::assertSame(0, new Streak()->asOf(Day::of('2026-10-07')));
     }
 
-    public function testIdleDays(): void
-    {
-        $streak = $this->activeOn('2026-10-04');
-
-        self::assertNull(new Streak()->idleDays(Day::of('2026-10-06')));
-        self::assertSame(0, $streak->idleDays(Day::of('2026-10-04')));
-        self::assertSame(2, $streak->idleDays(Day::of('2026-10-06')));
-        self::assertSame(0, $streak->idleDays(Day::of('2026-10-01')));
-    }
-
     private function activeOn(string ...$days): Streak
     {
         $streak = new Streak();

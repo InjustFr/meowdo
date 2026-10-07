@@ -4,8 +4,8 @@ import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { CalendarDays, Grid2x2, Inbox, Menu, Sun } from '@lucide/vue';
 import { ConfigProvider, TooltipProvider } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
-import CritterDesk from '../components/critter/CritterDesk.vue';
-import CelebrationLayer from '../components/critter/CelebrationLayer.vue';
+import CelebrationLayer from '../components/herbarium/CelebrationLayer.vue';
+import HerbariumDesk from '../components/herbarium/HerbariumDesk.vue';
 import NavDrawer from '../components/nav/NavDrawer.vue';
 import NavMenu from '../components/nav/NavMenu.vue';
 import ProjectEditor from '../components/projects/ProjectEditor.vue';
@@ -63,11 +63,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', focusComposer));
                 </nav>
 
                 <main id="main" class="shell__main">
-                    <div class="shell__strip"><CritterDesk compact /></div>
+                    <div class="shell__strip"><HerbariumDesk compact /></div>
                     <RouterView />
                 </main>
 
-                <div class="shell__desk"><CritterDesk /></div>
+                <div class="shell__desk"><HerbariumDesk /></div>
 
                 <nav class="shell__tabs" :aria-label="t('nav.label')">
                     <RouterLink v-for="tab in TABS" :key="tab.to" :to="tab.to" :class="['shell__tab', { 'shell__tab--active': tabActive(tab) }]" active-class="" exact-active-class="">

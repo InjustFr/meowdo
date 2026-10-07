@@ -1,36 +1,53 @@
 import { expect, test } from '@playwright/test';
-import { row, signIn, unique } from './support/session.js';
+import { row, signIn, signInWithAccount, unique } from './support/session.js';
 
-test('completing a task earns xp and coins once', async ({ page }) => {
+test('completing a task earns xp once', async ({ page }) => {
     await signIn(page);
     const task = unique('Take out the bins');
     await page.getByLabel('New task').fill(task);
     await page.getByLabel('New task').press('Enter');
 
-    const coins = page.locator('.shell__desk [data-test=coins]');
-    const before = Number(await coins.textContent());
-
+    const bursts = page.locator('.shell__desk .herbarium-desk__burst');
     await row(page, task).getByRole('checkbox', { name: `Complete “${task}”` }).click();
-    await expect(page.locator('.shell__desk .critter-desk__burst').first()).toContainText('XP');
-    await expect(coins).not.toHaveText(String(before));
-    const after = Number(await coins.textContent());
-    expect(after).toBeGreaterThan(before);
+    await expect(bursts.first()).toContainText('XP');
+    await expect(bursts).toHaveCount(0);
 
     await row(page, task).getByRole('checkbox', { name: `Reopen “${task}”` }).click();
     await row(page, task).getByRole('checkbox', { name: `Complete “${task}”` }).click();
     await page.waitForTimeout(500);
-    await expect(coins).toHaveText(String(after));
+    await expect(bursts).toHaveCount(0);
 });
 
-test('buying an item puts it on the critter', async ({ page }) => {
-    await signIn(page);
-    await page.goto('/shop');
-    const item = page.locator('.shop__item', { hasText: 'Smooth pebble' });
-    if (await item.getByRole('button', { name: 'Buy' }).count()) {
-        await item.getByRole('button', { name: 'Buy' }).click();
-    } else if (await item.getByRole('button', { name: 'Wear' }).count()) {
-        await item.getByRole('button', { name: 'Wear' }).click();
+test('crossing a level reveals a new moss for the herbarium', async ({ page }) => {
+    const account = unique('moss').replace(' ', '-');
+    await page.goto('/login');
+    await signInWithAccount(page, account, { email: `${account}@mossyleaf.test`, name: 'Moss' });
+    await page.waitForURL('/');
+    await expect(page.locator('.shell__desk [data-test=species]')).toHaveText('0/48');
+
+    const titles = ['Prune the ferns', 'Repot the cactus', 'Sow the basil', 'Mulch the beds'].map(unique);
+    const ids = [];
+    for (const title of titles) {
+        const created = await page.request.post('/api/tasks', { data: { title, plan: 'today', quadrant: 'schedule' } });
+        expect(created.ok()).toBeTruthy();
+        ids.push((await created.json()).id);
     }
-    await expect(item.getByRole('button', { name: 'Take off' })).toBeVisible();
-    await expect(item).toContainText('Wearing');
+    for (const id of ids.slice(0, 3)) {
+        expect((await page.request.post(`/api/tasks/${id}/complete`)).ok()).toBeTruthy();
+    }
+    await page.request.post('/api/achievements/seen');
+    await page.reload();
+
+    await row(page, titles[3]).getByRole('checkbox', { name: `Complete “${titles[3]}”` }).click();
+    const celebration = page.getByRole('dialog', { name: 'Level 2!' });
+    await expect(celebration).toBeVisible();
+    await expect(celebration.locator('[data-test=species-card]')).toHaveCount(1);
+    await expect(celebration).toContainText('A new moss joins your herbarium.');
+    await celebration.getByRole('button', { name: 'Continue' }).click();
+
+    await expect(page.locator('.shell__desk [data-test=species]')).toHaveText('1/48');
+    await page.goto('/herbarium');
+    await expect(page.getByRole('heading', { level: 1, name: 'Herbarium' })).toBeVisible();
+    await expect(page.locator('.shell__main [data-test=species-card]')).toHaveCount(1);
+    await expect(page.locator('.herbarium__slot')).toHaveCount(47);
 });

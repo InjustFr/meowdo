@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace App\Application\Identity\SignIn;
 
 use App\Application\Transaction;
-use App\Domain\Gamification\Critter;
-use App\Domain\Gamification\CritterRepository;
 use App\Domain\Gamification\Player;
 use App\Domain\Gamification\PlayerRepository;
-use App\Domain\Gamification\Tint;
 use App\Domain\Identity\Exception\EmailAlreadyTaken;
 use App\Domain\Identity\Exception\InvalidEmail;
 use App\Domain\Identity\User;
@@ -19,12 +16,10 @@ use Psr\Clock\ClockInterface;
 final readonly class SignInHandler
 {
     private const string DEFAULT_TIMEZONE = 'Europe/Paris';
-    private const string CRITTER_NAME = 'Pip';
 
     public function __construct(
         private UserRepository $users,
         private PlayerRepository $players,
-        private CritterRepository $critters,
         private ClockInterface $clock,
         private Transaction $transaction,
     ) {
@@ -65,7 +60,6 @@ final readonly class SignInHandler
         $user = User::join($command->accountId, $email, $this->displayName($command, $email), $this->timezone($command), $this->clock->now());
         $this->users->add($user);
         $this->players->add(Player::start($user));
-        $this->critters->add(Critter::adopt($user, self::CRITTER_NAME, Tint::Sprout));
 
         return $user;
     }

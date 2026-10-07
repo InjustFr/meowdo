@@ -25,11 +25,6 @@ task:
     cannot_nest_under_itself: '“{title}” cannot be a subtask of itself.'
     with_subtasks_cannot_be_nested: '“{title}” has subtasks of its own: it cannot become a subtask.'
 game:
-    not_enough_coins: 'You need {price} coins for this, you have {coins}.'
-    level_too_low: 'Reach level {level} to unlock this.'
-    unknown_cosmetic: 'This item is not in the shop.'
-    already_owned: 'Your critter already owns this.'
-    not_owned: 'Buy this item in the shop first.'
-    empty_critter_name: 'Give your critter a name.'
+    unknown_species: 'This moss is not in the herbarium.'
 identity:
     invalid_theme_color: 'Invalid colour “{color}”: use a hexadecimal code such as #5b7f3a.'

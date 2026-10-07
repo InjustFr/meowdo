@@ -54,7 +54,7 @@ final class StoredDaysTest extends KernelTestCase
         $task = self::createTask('Due today', dueOn: '2026-10-06', quadrant: Quadrant::DoFirst);
         self::nextRequest();
 
-        self::assertEquals(new Reward(26, 7), self::completeTask($task)->reward, 'A deadline read back from the database is compared to a UTC day: the on-time bonus is lost.');
+        self::assertEquals(new Reward(26), self::completeTask($task)->reward, 'A deadline read back from the database is compared to a UTC day: the on-time bonus is lost.');
     }
 
     public function testASecondCompletionTheSameDayKeepsTheStreak(): void

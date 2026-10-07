@@ -30,6 +30,16 @@ final class ShellTest extends WebTestCase
         self::assertResponseRedirects('/login');
     }
 
+    public function testTheHerbariumPagePreloadsTheHerbarium(): void
+    {
+        $client = self::signedInClient();
+
+        $crawler = $client->request('GET', '/herbarium');
+
+        self::assertResponseIsSuccessful();
+        self::assertSame(['/api/projects', '/api/player', '/api/herbarium'], array_keys(Json::decode($crawler->filter('#app-preload')->text())));
+    }
+
     public function testSignedInUsersGetTheShell(): void
     {
         $client = self::signedInClient('louis@mossydew.test');
@@ -39,7 +49,7 @@ final class ShellTest extends WebTestCase
         self::assertResponseIsSuccessful();
         $preloaded = Json::decode($crawler->filter('#app-preload')->text());
         self::assertSame(['/api/projects', '/api/player', '/api/tasks/today'], array_keys($preloaded));
-        self::assertSame('Pip', Json::string($preloaded, '/api/player', 'critter', 'name'));
+        self::assertSame(1, Json::int($preloaded, '/api/player', 'level'));
         $session = Json::decode($crawler->filter('#app-session')->text());
         self::assertSame(['louis@mossydew.test', 'https://accounts.test'], [Json::string($session, 'email'), Json::string($session, 'accountsUrl')]);
     }

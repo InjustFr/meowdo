@@ -39,9 +39,4 @@ final readonly class Streak
 
         return $this->current;
     }
-
-    public function idleDays(\DateTimeImmutable $today): ?int
-    {
-        return null === $this->lastActiveOn ? null : max(0, Day::daysBetween($this->lastActiveOn, $today));
-    }
 }

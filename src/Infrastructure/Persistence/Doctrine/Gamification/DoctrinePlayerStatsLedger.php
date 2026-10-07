@@ -28,7 +28,6 @@ final readonly class DoctrinePlayerStatsLedger implements PlayerStatsLedger
              FROM task WHERE owner_id = :owner',
             ['owner' => $owner, 'doFirst' => Quadrant::DoFirst->value, 'schedule' => Quadrant::Schedule->value],
         );
-        $purchases = $this->connection->fetchOne('SELECT COUNT(*) FROM cosmetic_ownership WHERE owner_id = :owner', ['owner' => $owner]);
 
         return new PlayerStats(
             tasksCompleted: self::int($tasks['completed'] ?? 0),
@@ -37,7 +36,6 @@ final readonly class DoctrinePlayerStatsLedger implements PlayerStatsLedger
             tasksClassified: self::int($tasks['classified'] ?? 0),
             bestStreak: $player->streak()->best,
             level: $player->level(),
-            purchases: self::int($purchases),
         );
     }
 

@@ -7,11 +7,10 @@
     "matrix": "Matrix",
     "done": "Done",
     "projects": "Projects",
-    "shop": "Shop",
+    "herbarium": "Herbarium",
     "achievements": "Achievements",
     "stats": "Statistics",
     "settings": "Settings",
-    "critter": "Critter",
     "noProjects": "Group tasks by theme with a project.",
     "menu": "Menu"
 }

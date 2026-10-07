@@ -1,0 +1,18 @@
+{
+    "title": "Herbier",
+    "subtitle": "{collected} mousses récoltées sur {total}. Chaque nouveau niveau en ajoute une, tirée au hasard.",
+    "left": "Plus aucune mousse à trouver | 1 mousse à trouver | {count} mousses à trouver",
+    "deskLabel": "Votre herbier",
+    "firstHint": "Atteignez le niveau 2 pour récolter votre première mousse.",
+    "open": "Ouvrir l’herbier",
+    "species": "Mousses récoltées",
+    "speciesCount": "{collected}/{total}",
+    "collectedOn": "Récoltée le {date}",
+    "photoBy": "Photo {attribution}",
+    "level": "Niveau {level}",
+    "xpProgress": "Progression vers le niveau suivant",
+    "toNextLevel": "{xp} XP avant le niveau {level}",
+    "streak": "Série",
+    "days": "pas de série | 1 jour | {count} jours",
+    "burstXp": "+{xp} XP"
+}

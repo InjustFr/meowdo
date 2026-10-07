@@ -13,7 +13,6 @@ final readonly class PlayerStats
         public int $tasksClassified = 0,
         public int $bestStreak = 0,
         public int $level = 1,
-        public int $purchases = 0,
     ) {
     }
 }

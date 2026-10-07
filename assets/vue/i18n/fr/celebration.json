@@ -1,6 +1,7 @@
 {
     "levelUp": "Niveau {level} !",
-    "levelUpHint": "De nouveaux objets vous attendent peut-être à la boutique.",
+    "newSpecies": "Une nouvelle mousse rejoint votre herbier. | De nouvelles mousses rejoignent votre herbier.",
+    "herbariumComplete": "Votre herbier est complet : toutes les mousses ont été trouvées.",
     "achievement": "Nouveau succès | Nouveaux succès",
     "continue": "Continuer"
 }

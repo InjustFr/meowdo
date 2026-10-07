@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
-use App\Domain\Gamification\Critter;
 use App\Domain\Gamification\Player;
-use App\Domain\Gamification\Tint;
 use App\Domain\Identity\User;
 use App\Infrastructure\Security\SecurityUser;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,14 +14,13 @@ use Symfony\Component\Uid\Ulid;
 
 trait ActsAsUser
 {
-    protected static function createUser(?string $email = null, string $timezone = 'Europe/Paris', string $critterName = 'Pip'): User
+    protected static function createUser(?string $email = null, string $timezone = 'Europe/Paris'): User
     {
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $id = strtolower((string) new Ulid());
         $user = User::join($id, $email ?? \sprintf('%s@mossydew.test', $id), 'Louis', $timezone, Clock::get()->now());
         $entityManager->persist($user);
         $entityManager->persist(Player::start($user));
-        $entityManager->persist(Critter::adopt($user, $critterName, Tint::Sprout));
         $entityManager->flush();
 
         return $user;

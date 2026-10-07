@@ -7,11 +7,10 @@ namespace App\Fixtures\Story;
 use App\Application\Gamification\PlayerStatsLedger;
 use App\Domain\Gamification\Achievement\AchievementReferee;
 use App\Domain\Gamification\Achievement\UnlockedAchievement;
-use App\Domain\Gamification\Cosmetic\CosmeticCatalog;
-use App\Domain\Gamification\Critter;
+use App\Domain\Gamification\Herbarium\SpeciesCatalog;
+use App\Domain\Gamification\Herbarium\Specimen;
 use App\Domain\Gamification\Player;
 use App\Domain\Gamification\RewardPolicy;
-use App\Domain\Gamification\Tint;
 use App\Domain\Identity\User;
 use App\Domain\Planning\Project;
 use App\Domain\Planning\ProjectColor;
@@ -20,7 +19,6 @@ use App\Domain\Planning\Recurrence;
 use App\Domain\Planning\RecurrenceUnit;
 use App\Domain\Planning\Task;
 use App\Domain\Shared\Day;
-use App\Fixtures\Factory\CritterFactory;
 use App\Fixtures\Factory\PlayerFactory;
 use App\Fixtures\Factory\ProjectFactory;
 use App\Fixtures\Factory\TaskFactory;
@@ -33,7 +31,6 @@ final class DemoStory extends Story
 {
     private User $user;
     private Player $player;
-    private Critter $critter;
     private \DateTimeImmutable $now;
     private \DateTimeImmutable $today;
 
@@ -60,7 +57,6 @@ final class DemoStory extends Story
             'now' => $this->now->modify('-3 weeks'),
         ]);
         $this->player = PlayerFactory::createOne(['owner' => $this->user]);
-        $this->critter = CritterFactory::createOne(['owner' => $this->user, 'name' => 'Pip', 'tint' => Tint::Sprout]);
         $this->today = $this->user->today($this->now);
 
         $home = $this->project('Home', ProjectColor::Berry);
@@ -103,10 +99,8 @@ final class DemoStory extends Story
         $this->subtask($cover, 'Colouring', '09:02', planned: 0);
         $this->subtask($cover, 'Render and export', '09:03');
 
-        foreach (['leaf-collar', 'pebble'] as $slug) {
-            $ownership = $this->player->buy(CosmeticCatalog::get($slug), $this->now);
-            $this->entityManager->persist($ownership);
-            $this->critter->wear($ownership);
+        foreach (\array_slice(SpeciesCatalog::all(), 0, $this->player->level() - 1) as $species) {
+            $this->entityManager->persist(Specimen::collect($this->user, $species, $this->now));
         }
         $this->entityManager->flush();
 

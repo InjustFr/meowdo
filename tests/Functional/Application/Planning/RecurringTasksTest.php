@@ -117,7 +117,7 @@ final class RecurringTasksTest extends KernelTestCase
 
         $completion = self::completeTask(self::single(self::open()));
 
-        self::assertEquals(new Reward(26, 7), $completion->reward);
+        self::assertEquals(new Reward(26), $completion->reward);
         self::assertSame('2026-10-20', self::single(self::open())->plannedOn);
     }
 

@@ -36,9 +36,10 @@ final class CompleteTaskTest extends KernelTestCase
         $completion = self::completeTask(self::createTask('Plan the holidays', quadrant: Quadrant::Schedule));
 
         self::assertTrue($completion->task->done);
-        self::assertEquals(new Reward(26, 7), $completion->reward);
+        self::assertEquals(new Reward(26), $completion->reward);
         self::assertNull($completion->leveledUpTo);
-        self::assertSame([26, 7, 1, 1, 'lively'], [$completion->player->xp, $completion->player->coins, $completion->player->level, $completion->player->streak, $completion->player->critter->mood]);
+        self::assertSame([], $completion->newSpecies);
+        self::assertSame([26, 1, 1, 0], [$completion->player->xp, $completion->player->level, $completion->player->streak, $completion->player->speciesCollected]);
     }
 
     public function testRewardIsEarnedOncePerTask(): void
@@ -60,19 +61,43 @@ final class CompleteTaskTest extends KernelTestCase
             $completion = self::completeTask(self::createTask('Water the fern '.$day, quadrant: Quadrant::DoFirst));
         }
 
-        self::assertEquals(new Reward(23, 6), $completion->reward);
+        self::assertEquals(new Reward(23), $completion->reward);
         self::assertSame([3, 3], [$completion->player->streak, $completion->player->bestStreak]);
     }
 
     public function testLevellingUpIsReported(): void
     {
-        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(90, 0));
+        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(90));
         self::getContainer()->get(EntityManagerInterface::class)->flush();
 
         $completion = self::completeTask(self::createTask('Vet', quadrant: Quadrant::Schedule));
 
         self::assertSame(2, $completion->leveledUpTo);
         self::assertSame([2, 100, 300], [$completion->player->level, $completion->player->levelStartXp, $completion->player->nextLevelXp]);
+    }
+
+    public function testCrossingALevelCollectsOneNewSpecies(): void
+    {
+        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(90));
+        self::getContainer()->get(EntityManagerInterface::class)->flush();
+
+        $completion = self::completeTask(self::createTask('Vet', quadrant: Quadrant::Schedule));
+
+        self::assertCount(1, $completion->newSpecies);
+        self::assertSame(1, $completion->player->speciesCollected);
+        self::assertSame($completion->newSpecies[0], $completion->player->latestSpecimen?->species);
+    }
+
+    public function testLevelsReachedWithoutCrossingThemHereCollectNothing(): void
+    {
+        self::getContainer()->get(PlayerRepository::class)->of($this->user)->earn(new Reward(400));
+        self::getContainer()->get(EntityManagerInterface::class)->flush();
+
+        $completion = self::completeTask(self::createTask('Vet', quadrant: Quadrant::Schedule));
+
+        self::assertNull($completion->leveledUpTo);
+        self::assertSame([], $completion->newSpecies);
+        self::assertSame(0, $completion->player->speciesCollected);
     }
 
     public function testFirstCompletionUnlocksFirstDrop(): void

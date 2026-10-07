@@ -8,7 +8,7 @@ use App\Domain\Gamification\Achievement\AchievementReferee;
 use App\Domain\Gamification\Achievement\AchievementRule;
 use App\Domain\Gamification\Achievement\PlayerStats;
 use App\Domain\Gamification\Achievement\Rule\FirstDrop;
-use App\Domain\Gamification\Achievement\Rule\FirstPurchase;
+use App\Domain\Gamification\Achievement\Rule\LevelFive;
 use App\Domain\Gamification\Achievement\Rule\TenTasks;
 use App\Domain\Gamification\Achievement\Rule\ThreeDayStreak;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ final class AchievementRefereeTest extends TestCase
 {
     public function testReturnsOnlyRulesMetAndNotYetUnlocked(): void
     {
-        $referee = new AchievementReferee(new \ArrayIterator([new FirstDrop(), new TenTasks(), new ThreeDayStreak(), new FirstPurchase()]));
+        $referee = new AchievementReferee(new \ArrayIterator([new FirstDrop(), new TenTasks(), new ThreeDayStreak(), new LevelFive()]));
 
         $newlyMet = $referee->newlyMet(new PlayerStats(tasksCompleted: 12, bestStreak: 1), ['first_drop']);
 

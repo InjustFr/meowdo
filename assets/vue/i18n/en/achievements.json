@@ -43,10 +43,6 @@
         "title": "Tidy patch",
         "description": "Place 20 tasks in the matrix."
     },
-    "first_purchase": {
-        "title": "Treat yourself",
-        "description": "Buy your first item in the shop."
-    },
     "level_5": {
         "title": "Well rooted",
         "description": "Reach level 5."

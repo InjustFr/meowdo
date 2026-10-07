@@ -7,7 +7,6 @@ namespace App\Tests\Unit\Domain\Gamification\Achievement;
 use App\Domain\Gamification\Achievement\AchievementRule;
 use App\Domain\Gamification\Achievement\PlayerStats;
 use App\Domain\Gamification\Achievement\Rule\FirstDrop;
-use App\Domain\Gamification\Achievement\Rule\FirstPurchase;
 use App\Domain\Gamification\Achievement\Rule\FiveHundredTasks;
 use App\Domain\Gamification\Achievement\Rule\HundredTasks;
 use App\Domain\Gamification\Achievement\Rule\LevelFive;
@@ -53,7 +52,6 @@ final class AchievementRuleTest extends TestCase
         yield 'month streak' => [new MonthStreak(), 'streak_30', static fn (int $days): PlayerStats => new PlayerStats(bestStreak: $days), 30];
         yield 'level five' => [new LevelFive(), 'level_5', static fn (int $level): PlayerStats => new PlayerStats(level: $level), 5];
         yield 'level ten' => [new LevelTen(), 'level_10', static fn (int $level): PlayerStats => new PlayerStats(level: $level), 10];
-        yield 'first purchase' => [new FirstPurchase(), 'first_purchase', static fn (int $count): PlayerStats => new PlayerStats(purchases: $count), 1];
     }
 
     public function testCompletedTasksDoNotCountForOtherRules(): void
@@ -62,6 +60,6 @@ final class AchievementRuleTest extends TestCase
 
         self::assertFalse(new TenWaterings()->isMetBy($stats));
         self::assertFalse(new WeekStreak()->isMetBy($stats));
-        self::assertFalse(new FirstPurchase()->isMetBy($stats));
+        self::assertFalse(new LevelFive()->isMetBy($stats));
     }
 }
