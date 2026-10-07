@@ -54,9 +54,9 @@ function heading(day) {
 <template>
     <div class="page">
         <PageHeader :title="t('upcoming.title')" :subtitle="t('upcoming.subtitle')">
-            <IconButton :icon="ChevronLeft" :label="t('upcoming.previous')" @click="shift(-7)" />
+            <IconButton :icon="ChevronLeft" :label="t('upcoming.previous')" :disabled="!view" @click="shift(-7)" />
             <BaseButton v-if="from" variant="ghost" @click="router.replace({ query: {} })">{{ t('upcoming.thisWeek') }}</BaseButton>
-            <IconButton :icon="ChevronRight" :label="t('upcoming.next')" @click="shift(7)" />
+            <IconButton :icon="ChevronRight" :label="t('upcoming.next')" :disabled="!view" @click="shift(7)" />
         </PageHeader>
         <div v-if="view" class="upcoming">
             <section v-for="column in columns" :key="column.day" :class="['upcoming__day', { 'upcoming__day--today': column.day === view.today }]">
