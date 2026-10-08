@@ -5,7 +5,7 @@ This folder is all a server needs: `compose.yaml` runs the app image (FrankenPHP
 ## Prerequisites
 
 - Docker Engine with the Compose plugin (`docker compose version`).
-- A [mossyleaf accounts](../../mossyleaf-accounts/deploy/README.md) server (Authentik) with the `mossydew` OIDC application: people sign in there.
+- A [mossyleaf accounts](../../accounts/deploy/README.md) server (Authentik) with the `mossydew` OIDC application: people sign in there.
 - A reverse proxy (Caddy, nginx, Traefik…) that terminates HTTPS and forwards to the port you choose below.
 
 ## First install
@@ -45,7 +45,7 @@ On every start the app waits for the database, runs pending migrations, warms th
 
 ## Accounts
 
-There is no sign-up, password or invitation in MossyDew: people sign in with their mossyleaf account. To let someone in, invite them in mossyleaf accounts with the `mossydew` group (`make invite EMAIL=… NAME=… GROUPS=mossydew` in `mossyleaf-accounts`). Their first sign-in creates their MossyDew profile.
+There is no sign-up, password or invitation in MossyDew: people sign in with their mossyleaf account. To let someone in, invite them in mossyleaf accounts with the `mossydew` group (`make invite EMAIL=… NAME=… GROUPS=mossydew` in `accounts`). Their first sign-in creates their MossyDew profile.
 
 Users created before mossyleaf accounts keep all their data: the first time they sign in with an account that has **the same email**, MossyDew links it to them. So invite every existing user with the email they already use here (`docker compose exec -T database psql -U app app -c 'select email from app_user where account_id is null'` lists those not linked yet).
 

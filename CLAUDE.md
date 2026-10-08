@@ -5,7 +5,7 @@ UI languages: **English and French**. URLs, code, commits: **English**.
 
 **Business rules live in [`docs/business/`](docs/business/README.md)** — read the relevant page before touching a domain concept, and update it in the same commit when a rule changes.
 
-Architecture and conventions mirror `~/Sites/MossyTrunk` (read its `CLAUDE.md` when in doubt); deliberate differences are listed at the end of this file.
+Architecture and conventions mirror `~/Sites/mossyleaf-studio/mossytrunk` (read its `CLAUDE.md` when in doubt); deliberate differences are listed at the end of this file.
 
 ## Code style
 
@@ -53,7 +53,7 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 
 ## Accounts & security
 
-- **Sign-in = mossyleaf accounts** (Authentik at `accounts.mossyleaf.studio`, project `~/Sites/mossyleaf-accounts`, shared with MossyTrunk): no password, sign-up or invitation code here. Accounts are invited in Authentik and need its `mossydew` group. `/login` redirects there (OIDC code flow + PKCE, `OidcSingleSignOn`), `/login/check` (`AccountsAuthenticator`) exchanges the code, reads userinfo and runs `SignInHandler`: user found by `accountId` (OIDC `sub`), else an existing user with the same email is linked, else a new user + player is created. Config: `ACCOUNTS_URL`, `OIDC_*` env vars.
+- **Sign-in = mossyleaf accounts** (Authentik at `accounts.mossyleaf.studio`, project `~/Sites/mossyleaf-studio/accounts`, shared with MossyTrunk): no password, sign-up or invitation code here. Accounts are invited in Authentik and need its `mossydew` group. `/login` redirects there (OIDC code flow + PKCE, `OidcSingleSignOn`), `/login/check` (`AccountsAuthenticator`) exchanges the code, reads userinfo and runs `SignInHandler`: user found by `accountId` (OIDC `sub`), else an existing user with the same email is linked, else a new user + player is created. Config: `ACCOUNTS_URL`, `OIDC_*` env vars.
 - Dev and e2e use a mock OIDC server (`oidc` service, http://localhost:8091): type `demo` (fixture account) or any name plus claims `{"email": "…", "name": "…"}` for a new account. PHPUnit uses `Tests\Support\FakeAccounts` (`https://accounts.test`).
 - Session firewall with the `AccountsAuthenticator`, sessions in PostgreSQL (`PdoSessionHandler`), remember-me always on (so phones stay signed in), CSRF logout that also ends the mossyleaf session. The JSON API uses the session cookie; `SameOriginGuard` rejects cross-site writes.
 - Sync between devices = same account; the server is the source of truth, the SPA refetches on focus and every minute while visible.
