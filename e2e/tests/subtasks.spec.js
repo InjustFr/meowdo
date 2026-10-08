@@ -85,3 +85,44 @@ test('steps are added from the task menu, dragged onto a task and made tasks aga
     await expect(row(page, ink)).toBeVisible();
     await expect(row(page, page1)).toContainText('0/2');
 });
+
+test('moving steps between tasks leaves every task once on the page', async ({ page }) => {
+    await signIn(page);
+    const project = unique('Zine');
+    const [cover, pages, binding] = [unique('Cover'), unique('Pages'), unique('Binding')];
+    const fold = unique('Fold');
+
+    await page.locator('.shell__rail').getByRole('button', { name: 'New project' }).click();
+    await page.getByRole('dialog').getByLabel('Name').fill(project);
+    await page.getByRole('button', { name: 'Create project' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: project })).toBeVisible();
+    for (const title of [cover, pages, binding]) {
+        await page.getByLabel('New task').fill(title);
+        await page.getByLabel('New task').press('Enter');
+        await expect(row(page, title)).toBeVisible();
+    }
+    const subtasks = page.locator('.task-list__subtasks .task-row');
+
+    await row(page, pages).getByRole('button', { name: `More for “${pages}”` }).click();
+    await page.getByRole('menuitem', { name: 'Add a subtask' }).click();
+    await page.getByLabel('New subtask').fill(fold);
+    await page.getByLabel('New subtask').press('Enter');
+    await expect(subtasks.filter({ hasText: fold })).toBeVisible();
+    await page.getByLabel('New subtask').press('Escape');
+
+    await subtasks.filter({ hasText: fold }).dragTo(row(page, cover).getByRole('button', { name: cover, exact: true }));
+    await expect(row(page, cover)).toContainText('0/1');
+    await expect(row(page, pages)).toHaveCount(1);
+    await expect(row(page, fold)).toHaveCount(1);
+
+    await row(page, binding).dragTo(row(page, pages).getByRole('button', { name: pages, exact: true }));
+    await expect(subtasks.filter({ hasText: binding })).toBeVisible();
+    await subtasks.filter({ hasText: binding }).getByRole('button', { name: `More for “${binding}”` }).click();
+    await page.getByRole('menuitem', { name: 'Make it a task' }).click();
+    await expect(subtasks.filter({ hasText: binding })).toHaveCount(0);
+
+    for (const title of [cover, pages, binding, fold]) {
+        await expect(row(page, title)).toHaveCount(1);
+    }
+    await expect(subtasks).toHaveText([new RegExp(fold)]);
+});

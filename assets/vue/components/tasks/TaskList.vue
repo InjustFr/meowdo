@@ -20,13 +20,16 @@ const { t } = useI18n();
 const composer = useSubtaskComposer();
 const nested = computed(() => nestSubtasks(props.sorted ? sortTasks(props.tasks) : props.tasks));
 const composing = (task) => props.nestable && composer.state.parentId === task.id;
+const items = computed(() => nested.value.flatMap(({ task, subtasks }) => [
+    { key: `${task.id}:row`, task },
+    ...(subtasks.length || composing(task) ? [{ key: `${task.id}:subtasks`, task, subtasks }] : []),
+]));
 </script>
 
 <template>
     <TransitionGroup tag="ul" name="task-list" class="task-list">
-        <template v-for="{ task, subtasks } in nested" :key="task.id">
-            <TaskRow :task="task" :show-project="showProject" :show-planned="showPlanned" :nestable="nestable" />
-            <li v-if="subtasks.length || composing(task)" class="task-list__subtasks">
+        <template v-for="{ key, task, subtasks } in items" :key="key">
+            <li v-if="subtasks" class="task-list__subtasks">
                 <ul v-if="subtasks.length" class="task-list">
                     <TaskRow v-for="subtask in subtasks" :key="subtask.id" :task="subtask" :show-project="false" :show-planned="showPlanned" :nestable="nestable" nested />
                 </ul>
@@ -35,6 +38,7 @@ const composing = (task) => props.nestable && composer.state.parentId === task.i
                     <Plus size="1rem" aria-hidden="true" />{{ t('tasks.subtasks.more') }}
                 </button>
             </li>
+            <TaskRow v-else :task="task" :show-project="showProject" :show-planned="showPlanned" :nestable="nestable" />
         </template>
     </TransitionGroup>
 </template>
