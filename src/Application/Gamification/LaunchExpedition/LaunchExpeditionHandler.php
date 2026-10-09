@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Gamification\LaunchExpedition;
 
+use App\Application\AtomicChange;
 use App\Application\Gamification\AchievementCheck;
 use App\Application\Gamification\CollectSpecies;
 use App\Application\Gamification\SpeciesView;
@@ -21,6 +22,7 @@ final readonly class LaunchExpeditionHandler
         private GreenhouseRepository $greenhouses,
         private SpecimenRepository $specimens,
         private CollectSpecies $collectSpecies,
+        private AtomicChange $atomicChange,
         private Transaction $transaction,
         private AchievementCheck $achievements,
     ) {
@@ -29,15 +31,19 @@ final readonly class LaunchExpeditionHandler
     public function __invoke(): ExpeditionView
     {
         $user = $this->currentUser->get();
-        if (\count($this->specimens->of($user)) >= \count(SpeciesCatalog::all())) {
-            throw new HerbariumComplete();
-        }
-        $greenhouse = $this->greenhouses->of($user);
-        $greenhouse->fundExpedition();
-        $found = ($this->collectSpecies)($user, 1)[0] ?? throw new HerbariumComplete();
-        $this->transaction->commit();
+        $expedition = $this->atomicChange->apply(function () use ($user): ExpeditionView {
+            $greenhouse = $this->greenhouses->lockedOf($user);
+            if (\count($this->specimens->of($user)) >= \count(SpeciesCatalog::all())) {
+                throw new HerbariumComplete();
+            }
+            $greenhouse->fundExpedition();
+            $found = ($this->collectSpecies)($user, 1)[0] ?? throw new HerbariumComplete();
+            $this->transaction->commit();
+
+            return new ExpeditionView(SpeciesView::of($found), $greenhouse->expeditionCost());
+        });
         ($this->achievements)();
 
-        return new ExpeditionView(SpeciesView::of($found), $greenhouse->expeditionCost());
+        return $expedition;
     }
 }

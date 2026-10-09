@@ -11,4 +11,6 @@ interface GreenhouseRepository
     public function add(Greenhouse $greenhouse): void;
 
     public function of(User $owner): Greenhouse;
+
+    public function lockedOf(User $owner): Greenhouse;
 }

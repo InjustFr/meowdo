@@ -86,6 +86,7 @@ const { number } = useDew();
 
 .player-progress--compact { flex-direction: row; align-items: center; gap: var(--space-4); padding: 0; }
 .player-progress--compact .player-progress__bar { flex: 1; min-width: 0; }
+.player-progress--compact .player-progress__burst { top: 100%; bottom: auto; }
 .player-progress--compact .player-progress__links { align-items: flex-end; gap: var(--space-1); }
 .player-progress--compact .player-progress__meta { justify-content: flex-end; gap: var(--space-3); }
 </style>

@@ -52,24 +52,28 @@
         "then": "then",
         "max": "Max level",
         "upgrade": "Upgrade",
-        "upgradeTo": "Upgrade the {name} to level {level}",
         "confirm": "This spends {cost}. Levels never drop, so it cannot be undone.",
         "short": "{n} dew short",
-        "upgraded": "{name} raised to level {level}.",
         "glasshouse": {
             "name": "Glasshouse",
             "description": "One more pot per level",
-            "effect": "{n} pot | {n} pots"
+            "effect": "{n} pot | {n} pots",
+            "upgradeTo": "Upgrade the Glasshouse to level {level}",
+            "upgraded": "Glasshouse raised to level {level}."
         },
         "misters": {
             "name": "Misters",
             "description": "+10% yield per level",
-            "effect": "+{n}%"
+            "effect": "+{n}%",
+            "upgradeTo": "Upgrade the Misters to level {level}",
+            "upgraded": "Misters raised to level {level}."
         },
         "rain_barrel": {
             "name": "Rain barrel",
             "description": "Bigger watering on Plant and Water tasks",
-            "effect": "× {n}"
+            "effect": "× {n}",
+            "upgradeTo": "Upgrade the Rain barrel to level {level}",
+            "upgraded": "Rain barrel raised to level {level}."
         }
     },
     "expedition": {

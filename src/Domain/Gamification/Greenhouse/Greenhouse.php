@@ -176,11 +176,6 @@ class Greenhouse
         return $this->dewGathered;
     }
 
-    public function expeditions(): int
-    {
-        return $this->expeditions;
-    }
-
     public function facilities(): Facilities
     {
         return $this->facilities;

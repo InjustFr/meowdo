@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DewSources from '../components/greenhouse/DewSources.vue';
 import ExpeditionPanel from '../components/greenhouse/ExpeditionPanel.vue';
@@ -36,6 +36,7 @@ const busy = ref(false);
 const plantingPot = ref(null);
 const plantOpen = ref(false);
 const potTable = ref(null);
+const facilityTable = ref(null);
 const found = ref(null);
 
 async function act(action, success = null) {
@@ -75,9 +76,11 @@ function returnToPot(event) {
     window.setTimeout(() => potTable.value?.focusPot(pot), 0);
 }
 
-function upgrade(id) {
+async function upgrade(id) {
     const facility = greenhouse.value.facilities.find((candidate) => candidate.id === id);
-    act(() => api.post(`/api/greenhouse/facilities/${id}/upgrade`), () => t('greenhouse.facilities.upgraded', { name: t(`greenhouse.facilities.${id}.name`), level: facility.level + 1 }));
+    await act(() => api.post(`/api/greenhouse/facilities/${id}/upgrade`), () => t(`greenhouse.facilities.${id}.upgraded`, { level: facility.level + 1 }));
+    await nextTick();
+    facilityTable.value?.focusFacility(id);
 }
 
 async function launch() {
@@ -87,9 +90,6 @@ async function launch() {
     else releaseAchievements();
 }
 
-watch(found, (expedition) => {
-    if (expedition === null) releaseAchievements();
-});
 onUnmounted(releaseAchievements);
 </script>
 
@@ -105,12 +105,12 @@ onUnmounted(releaseAchievements);
             </PageSection>
 
             <PageSection :title="t('greenhouse.facilities.title')">
-                <FacilityTable :facilities="greenhouse.facilities" :dew="greenhouse.dew" :busy="busy" @upgrade="upgrade" />
+                <FacilityTable ref="facilityTable" :facilities="greenhouse.facilities" :dew="greenhouse.dew" :busy="busy" @upgrade="upgrade" />
             </PageSection>
 
             <div class="greenhouse__columns">
                 <PageSection :title="t('greenhouse.expedition.section')">
-                    <ExpeditionPanel v-model:found="found" :expedition="greenhouse.expedition" :dew="greenhouse.dew" :busy="busy" @launch="launch" />
+                    <ExpeditionPanel v-model:found="found" :expedition="greenhouse.expedition" :dew="greenhouse.dew" :busy="busy" @launch="launch" @returned="releaseAchievements" />
                 </PageSection>
                 <PageSection :title="t('greenhouse.sources.title')">
                     <DewSources :sources="greenhouse.taskDew" :yield-tenths="greenhouse.yieldTenths" :watering-multiplier="greenhouse.wateringMultiplier" />

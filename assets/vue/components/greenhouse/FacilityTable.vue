@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { ArrowRight, CloudDrizzle, CloudRain, Warehouse } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import ConfirmButton from '../ui/ConfirmButton.vue';
@@ -17,6 +17,15 @@ const emit = defineEmits(['upgrade']);
 const { t } = useI18n();
 const { number, dew: dewAmount } = useDew();
 
+const frame = ref(null);
+
+function focusFacility(id) {
+    const row = frame.value?.querySelector(`[data-test="facility-${id}"]`);
+    (row?.querySelector('.facilities__action button:not(:disabled)') ?? row?.querySelector('.facilities__name'))?.focus();
+}
+
+defineExpose({ focusFacility });
+
 const effect = (id, value) => t(`greenhouse.facilities.${id}.effect`, { n: number(value) }, value);
 
 const rows = computed(() => props.facilities.map((facility) => ({
@@ -30,7 +39,7 @@ const rows = computed(() => props.facilities.map((facility) => ({
 </script>
 
 <template>
-    <div class="facilities-frame">
+    <div ref="frame" class="facilities-frame">
         <table class="facilities">
             <thead class="facilities__head">
                 <tr>
@@ -43,7 +52,7 @@ const rows = computed(() => props.facilities.map((facility) => ({
             </thead>
             <tbody>
                 <tr v-for="facility in rows" :key="facility.id" class="facilities__row" :data-test="`facility-${facility.id}`">
-                    <th scope="row" class="facilities__name">
+                    <th scope="row" class="facilities__name" tabindex="-1">
                         <span class="facilities__facility">
                             <span class="facilities__icon" aria-hidden="true"><component :is="facility.icon" size="1.125rem" :stroke-width="1.75" /></span>
                             <span class="facilities__label">
@@ -69,7 +78,7 @@ const rows = computed(() => props.facilities.map((facility) => ({
                         <template v-else>
                             <ConfirmButton
                                 :label="t('greenhouse.facilities.upgrade')"
-                                :title="t('greenhouse.facilities.upgradeTo', { name: facility.name, level: facility.level + 1 })"
+                                :title="t(`greenhouse.facilities.${facility.id}.upgradeTo`, { level: facility.level + 1 })"
                                 :message="t('greenhouse.facilities.confirm', { cost: dewAmount(facility.cost) })"
                                 :confirm-label="t('greenhouse.facilities.upgrade')"
                                 :variant="facility.missing ? 'secondary' : 'primary'"

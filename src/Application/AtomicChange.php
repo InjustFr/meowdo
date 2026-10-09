@@ -7,7 +7,11 @@ namespace App\Application;
 interface AtomicChange
 {
     /**
-     * @param callable(): void $change
+     * @template T
+     *
+     * @param callable(): T $change
+     *
+     * @return T
      */
-    public function apply(callable $change): void;
+    public function apply(callable $change): mixed;
 }

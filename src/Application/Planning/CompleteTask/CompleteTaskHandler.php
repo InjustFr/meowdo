@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Planning\CompleteTask;
 
+use App\Application\AtomicChange;
 use App\Application\Gamification\AchievementCheck;
 use App\Application\Gamification\CollectSpecies;
 use App\Application\Gamification\GatherTaskDew;
@@ -13,6 +14,7 @@ use App\Application\Identity\CurrentUser;
 use App\Application\Planning\TaskView;
 use App\Application\Planning\Today;
 use App\Application\Transaction;
+use App\Domain\Gamification\Greenhouse\DewGain;
 use App\Domain\Gamification\Herbarium\Species;
 use App\Domain\Gamification\PlayerRepository;
 use App\Domain\Gamification\RewardPolicy;
@@ -33,6 +35,7 @@ final readonly class CompleteTaskHandler
         private ContinueSeries $continueSeries,
         private CollectSpecies $collectSpecies,
         private GatherTaskDew $gatherTaskDew,
+        private AtomicChange $atomicChange,
     ) {
     }
 
@@ -64,8 +67,12 @@ final readonly class CompleteTaskHandler
                 $newSpecies = ($this->collectSpecies)($player->owner(), $leveledUpTo - $levelBefore);
             }
         }
-        $dew = ($this->gatherTaskDew)($player->owner(), $rewarded);
-        $this->transaction->commit();
+        $dew = $this->atomicChange->apply(function () use ($player, $rewarded): ?DewGain {
+            $dew = ($this->gatherTaskDew)($player->owner(), $rewarded);
+            $this->transaction->commit();
+
+            return $dew;
+        });
         ($this->achievements)();
 
         $parent = $task->parent();

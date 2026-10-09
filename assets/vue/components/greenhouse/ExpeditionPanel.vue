@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { Compass } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import BaseButton from '../ui/BaseButton.vue';
@@ -13,17 +13,27 @@ const props = defineProps({
     busy: { type: Boolean, default: false },
 });
 const found = defineModel('found', { type: Object, default: null });
-const emit = defineEmits(['launch']);
+const emit = defineEmits(['launch', 'returned']);
 
 const { t } = useI18n();
 const { number, dew: dewAmount } = useDew();
 
 const missing = computed(() => Math.max(0, props.expedition.cost - props.dew));
+const panel = ref(null);
+
+function returnToPanel(event) {
+    event.preventDefault();
+    window.setTimeout(() => {
+        (panel.value?.querySelector('[data-test="expedition"]:not(:disabled)') ?? panel.value)?.focus();
+        emit('returned');
+    }, 0);
+}
+
 const revealOpen = computed({ get: () => found.value !== null, set: (open) => { if (!open) found.value = null; } });
 </script>
 
 <template>
-    <div class="expedition">
+    <div ref="panel" class="expedition" tabindex="-1">
         <span class="expedition__icon" aria-hidden="true"><Compass size="1.5rem" :stroke-width="1.75" /></span>
         <div class="expedition__text">
             <p class="expedition__title">{{ t('greenhouse.expedition.title') }}</p>
@@ -40,7 +50,7 @@ const revealOpen = computed({ get: () => found.value !== null, set: (open) => { 
         </div>
     </div>
 
-    <BaseModal v-model:open="revealOpen" :title="t('greenhouse.expedition.back')">
+    <BaseModal v-model:open="revealOpen" :title="t('greenhouse.expedition.back')" @close-auto-focus="returnToPanel">
         <template v-if="found">
             <SpeciesCard :slug="found.species.slug" :rarity="found.species.rarity" />
             <p class="expedition__next">{{ t('greenhouse.expedition.next', { cost: dewAmount(found.nextCost) }) }}</p>

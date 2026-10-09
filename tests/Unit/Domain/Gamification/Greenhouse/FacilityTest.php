@@ -55,7 +55,7 @@ final class FacilityTest extends TestCase
     #[DataProvider('levels')]
     public function testLevelsStartSmallAndStopAtTheirMaximum(Facility $facility, int $start, int $max): void
     {
-        self::assertSame([$start, $max], [$facility->startLevel(), $facility->maxLevel()]);
+        self::assertSame($max, $facility->maxLevel());
         self::assertNull($facility->upgradeCost($start));
         self::assertNotNull($facility->upgradeCost($start + 1));
         self::assertNull($facility->upgradeCost($max + 1));

@@ -13,10 +13,20 @@ final readonly class DoctrineAtomicChange implements AtomicChange
     {
     }
 
-    public function apply(callable $change): void
+    public function apply(callable $change): mixed
     {
-        $this->entityManager->wrapInTransaction(static function () use ($change): void {
-            $change();
-        });
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
+        try {
+            $result = $change();
+            $connection->commit();
+        } catch (\Throwable $failure) {
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
+            throw $failure;
+        }
+
+        return $result;
     }
 }

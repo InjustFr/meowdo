@@ -16,14 +16,6 @@ enum Facility: string
     private const int MISTERS_PERCENT_PER_LEVEL = 10;
     private const int BASE_WATERING_MULTIPLIER = 2;
 
-    public function startLevel(): int
-    {
-        return match ($this) {
-            self::Glasshouse => 1,
-            self::Misters, self::RainBarrel => 0,
-        };
-    }
-
     public function maxLevel(): int
     {
         return (int) array_key_last($this->costs());

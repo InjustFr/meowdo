@@ -67,9 +67,27 @@ test('completed tasks feed a greenhouse whose mosses raise every task reward', a
     await expect(page.getByTestId('dew-balance')).toHaveText(String(before - 80));
     await expect(page.getByTestId('facility-glasshouse')).toContainText('2 / 11');
     await expect(page.getByTestId('pot-3')).toContainText('Empty pot');
+    await expect(page.locator('[data-test=facility-glasshouse] :focus')).toHaveCount(1);
 
     await page.getByTestId('pot-1').getByRole('button', { name: /^Unplant / }).click();
     await expect(page.getByTestId('pot-1')).toContainText('Empty pot');
     await expect(page.getByTestId('pot-1').getByRole('button', { name: 'Plant a moss' })).toBeFocused();
     await expect(page.getByTestId('yield')).toHaveText('0 / task');
+
+    while ((await (await page.request.get('/api/greenhouse')).json()).dew < 150) {
+        const id = await createPlantTask(page, unique('Weed the path'));
+        expect((await page.request.post(`/api/tasks/${id}/complete`)).ok()).toBeTruthy();
+    }
+    await page.request.post('/api/achievements/seen');
+    await page.reload();
+    await page.getByTestId('expedition').click();
+    const reveal = page.getByRole('dialog', { name: 'Back from the field' });
+    await expect(reveal).toBeVisible();
+    await reveal.getByRole('button', { name: 'Continue' }).click();
+    await expect(reveal).toBeHidden();
+    const fieldTrip = page.getByRole('dialog', { name: 'New achievement' });
+    await expect(fieldTrip).toContainText('Field trip');
+    await page.keyboard.press('Escape');
+    await expect(fieldTrip).toBeHidden();
+    await expect(page.locator('.expedition:focus, .expedition :focus')).toHaveCount(1);
 });

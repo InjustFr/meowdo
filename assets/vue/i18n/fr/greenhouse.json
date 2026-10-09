@@ -52,24 +52,28 @@
         "then": "puis",
         "max": "Niveau max",
         "upgrade": "Améliorer",
-        "upgradeTo": "Passer {name} au niveau {level}",
         "confirm": "Cela coûte {cost}. Un niveau ne redescend jamais : impossible d’annuler.",
         "short": "Il manque {n} goutte | Il manque {n} gouttes",
-        "upgraded": "{name} passe au niveau {level}.",
         "glasshouse": {
             "name": "Verrière",
             "description": "Un pot de plus par niveau",
-            "effect": "{n} pot | {n} pots"
+            "effect": "{n} pot | {n} pots",
+            "upgradeTo": "Passer la verrière au niveau {level}",
+            "upgraded": "La verrière passe au niveau {level}."
         },
         "misters": {
             "name": "Brumisateurs",
             "description": "+10 % de rendement par niveau",
-            "effect": "+{n} %"
+            "effect": "+{n} %",
+            "upgradeTo": "Passer les brumisateurs au niveau {level}",
+            "upgraded": "Les brumisateurs passent au niveau {level}."
         },
         "rain_barrel": {
             "name": "Récupérateur d’eau de pluie",
             "description": "Arrosage plus généreux avec les tâches Planter et Arroser",
-            "effect": "× {n}"
+            "effect": "× {n}",
+            "upgradeTo": "Passer le récupérateur d’eau de pluie au niveau {level}",
+            "upgraded": "Le récupérateur d’eau de pluie passe au niveau {level}."
         }
     },
     "expedition": {

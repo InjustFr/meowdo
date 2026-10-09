@@ -10,13 +10,11 @@ use PHPUnit\Framework\TestCase;
 
 final class FacilitiesTest extends TestCase
 {
-    public function testFacilitiesStartAtTheirStartLevel(): void
+    public function testFacilitiesStartWithAOneLevelGlasshouseAndNothingElse(): void
     {
         $facilities = new Facilities();
 
-        foreach (Facility::cases() as $facility) {
-            self::assertSame($facility->startLevel(), $facilities->levelOf($facility));
-        }
+        self::assertSame([1, 0, 0], array_map($facilities->levelOf(...), Facility::cases()));
     }
 
     public function testRaisingOneFacilityLeavesTheOthersAlone(): void

@@ -36,7 +36,6 @@ use App\Tests\Support\PlansTasks;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Clock\Clock;
 
@@ -224,17 +223,50 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         self::assertContains('dew_1000', $this->unlocked());
     }
 
-    public function testASpendRacingAnotherChangeOfTheGreenhouseIsRefused(): void
+    public function testASpendWaitsForAndKeepsAChangeSavedMeanwhile(): void
     {
         $this->credit(300);
         $this->changeMeanwhile('UPDATE greenhouse SET dew = dew + 12, dew_gathered = dew_gathered + 12, version = version + 1 WHERE owner_id = ?');
 
-        try {
-            self::getContainer()->get(LaunchExpeditionHandler::class)();
-            self::fail('The stale expedition should have been refused.');
-        } catch (OptimisticLockException) {
-            self::assertSame([312, 0, 0], [$this->stored('SELECT dew FROM greenhouse WHERE owner_id = ?'), $this->stored('SELECT expeditions FROM greenhouse WHERE owner_id = ?'), $this->stored('SELECT COUNT(*) FROM specimen WHERE owner_id = ?')]);
-        }
+        self::getContainer()->get(LaunchExpeditionHandler::class)();
+
+        self::assertSame([162, 312, 1, 1], [
+            $this->stored('SELECT dew FROM greenhouse WHERE owner_id = ?'),
+            $this->stored('SELECT dew_gathered FROM greenhouse WHERE owner_id = ?'),
+            $this->stored('SELECT expeditions FROM greenhouse WHERE owner_id = ?'),
+            $this->stored('SELECT COUNT(*) FROM specimen WHERE owner_id = ?'),
+        ]);
+    }
+
+    public function testACompletionWaitsForAndKeepsAChangeSavedMeanwhile(): void
+    {
+        $this->credit(300);
+        $task = self::createTask('Compost', quadrant: Quadrant::Eliminate);
+        $this->changeMeanwhile('UPDATE greenhouse SET dew = dew - 150, expeditions = expeditions + 1, version = version + 1 WHERE owner_id = ?');
+
+        $completion = self::completeTask($task);
+
+        self::assertSame([1, 151, 301, 1], [
+            $completion->dew?->amount,
+            $this->stored('SELECT dew FROM greenhouse WHERE owner_id = ?'),
+            $this->stored('SELECT dew_gathered FROM greenhouse WHERE owner_id = ?'),
+            $this->stored('SELECT expeditions FROM greenhouse WHERE owner_id = ?'),
+        ]);
+        self::assertNotNull($completion->task->completedAt);
+    }
+
+    public function testEveryChangeOfTheGreenhouseWaitsForTheOneBeforeIt(): void
+    {
+        $this->credit(1000);
+        $this->collect('polytrichum-commune');
+        $task = self::createTask('Plant', quadrant: Quadrant::Schedule);
+
+        self::assertTrue($this->locksTheGreenhouse(static fn () => self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'polytrichum-commune'))));
+        self::assertTrue($this->locksTheGreenhouse(static fn () => self::getContainer()->get(UnplantMossHandler::class)(1)));
+        self::assertTrue($this->locksTheGreenhouse(static fn () => self::getContainer()->get(UpgradeFacilityHandler::class)(Facility::Glasshouse)));
+        self::assertTrue($this->locksTheGreenhouse(static fn () => self::getContainer()->get(LaunchExpeditionHandler::class)()));
+        self::assertTrue($this->locksTheGreenhouse(static fn () => self::completeTask($task)));
+        self::assertFalse($this->locksTheGreenhouse(fn () => $this->greenhouse()));
     }
 
     public function testTwoPotsNeverHoldTheSameMoss(): void
@@ -246,6 +278,16 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         $this->expectException(UniqueConstraintViolationException::class);
 
         self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(2, 'polytrichum-commune'));
+    }
+
+    private function locksTheGreenhouse(\Closure $change): bool
+    {
+        $queries = self::getContainer()->get('doctrine.debug_data_holder');
+        $queries->reset();
+        $change();
+        $sql = array_column(array_merge([], ...array_values($queries->getData())), 'sql');
+
+        return [] !== preg_grep('/\bFROM greenhouse\b.*\bFOR UPDATE\b/s', array_filter($sql, is_string(...)));
     }
 
     private function changeMeanwhile(string $sql): void
