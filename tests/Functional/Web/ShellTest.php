@@ -49,7 +49,7 @@ final class ShellTest extends WebTestCase
         self::assertResponseIsSuccessful();
         $preloaded = Json::decode($crawler->filter('#app-preload')->text());
         self::assertSame(['/api/projects', '/api/player', '/api/greenhouse'], array_keys($preloaded));
-        self::assertSame(100, Json::int($preloaded, '/api/greenhouse', 'capacity'));
+        self::assertSame(2, Json::int($preloaded, '/api/greenhouse', 'wateringMultiplier'));
     }
 
     public function testSignedInUsersGetTheShell(): void

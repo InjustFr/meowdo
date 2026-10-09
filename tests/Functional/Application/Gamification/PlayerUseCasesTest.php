@@ -42,7 +42,7 @@ final class PlayerUseCasesTest extends KernelTestCase
     {
         $player = $this->player();
 
-        self::assertSame(['Louis', 0, 1, 0, 150, 0, 0, 0, \count(SpeciesCatalog::all()), 0, false, []], [$player->displayName, $player->xp, $player->level, $player->levelStartXp, $player->nextLevelXp, $player->streak, $player->bestStreak, $player->speciesCollected, $player->speciesTotal, $player->dew, $player->tankFull, $player->newAchievements]);
+        self::assertSame(['Louis', 0, 1, 0, 150, 0, 0, 0, \count(SpeciesCatalog::all()), 0, []], [$player->displayName, $player->xp, $player->level, $player->levelStartXp, $player->nextLevelXp, $player->streak, $player->bestStreak, $player->speciesCollected, $player->speciesTotal, $player->dew, $player->newAchievements]);
     }
 
     public function testStreakFadesAfterAMissedDay(): void
@@ -95,7 +95,7 @@ final class PlayerUseCasesTest extends KernelTestCase
         self::assertSame(2, $this->player()->speciesCollected);
     }
 
-    public function testThePlayerShowsTheirDewAndAFullTank(): void
+    public function testThePlayerShowsTheirDew(): void
     {
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
         $entityManager->persist(Specimen::collect($this->user, SpeciesCatalog::get('buxbaumia-aphylla'), Clock::get()->now()));
@@ -103,11 +103,8 @@ final class PlayerUseCasesTest extends KernelTestCase
         self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'buxbaumia-aphylla'));
         self::completeTask(self::createTask('Vet', quadrant: Quadrant::Schedule));
 
-        self::freezeAt('2026-10-06 20:00 UTC');
-        self::assertSame([28, false], [$this->player()->dew, $this->player()->tankFull]);
-
-        self::freezeAt('2026-10-06 20:30 UTC');
-        self::assertSame([28, true], [$this->player()->dew, $this->player()->tankFull]);
+        self::freezeAt('2026-10-07 20:00 UTC');
+        self::assertSame(28, $this->player()->dew);
     }
 
     private function player(): PlayerView

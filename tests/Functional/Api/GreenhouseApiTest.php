@@ -36,15 +36,15 @@ final class GreenhouseApiTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         $greenhouse = self::body($client);
-        self::assertSame(['asOf', 'dew', 'dewGathered', 'tank', 'tankMilli', 'capacity', 'rateMilliPerHour', 'fullAt', 'wateringHours', 'pots', 'maxPots', 'facilities', 'expedition', 'plantable', 'taskDew'], array_keys($greenhouse));
-        self::assertSame(['number' => 1, 'species' => null, 'rarity' => null, 'dewPerHour' => 0, 'plantedAt' => null], Json::array($greenhouse, 'pots', 0));
+        self::assertSame(['dew', 'dewGathered', 'yieldTenths', 'wateringMultiplier', 'pots', 'maxPots', 'facilities', 'expedition', 'plantable', 'taskDew'], array_keys($greenhouse));
+        self::assertSame(['number' => 1, 'species' => null, 'rarity' => null, 'yield' => 0, 'plantedAt' => null], Json::array($greenhouse, 'pots', 0));
+        self::assertSame(['glasshouse', 'misters', 'rain_barrel'], array_column(Json::array($greenhouse, 'facilities'), 'id'));
         self::assertSame(['id' => 'glasshouse', 'level' => 1, 'maxLevel' => 11, 'effect' => 2, 'nextEffect' => 3, 'cost' => 80], Json::array($greenhouse, 'facilities', 0));
-        self::assertSame(['cost' => 200, 'speciesLeft' => 48], Json::array($greenhouse, 'expedition'));
+        self::assertSame(['cost' => 150, 'speciesLeft' => 48], Json::array($greenhouse, 'expedition'));
         self::assertSame(['quadrant' => 'schedule', 'base' => 12, 'watering' => 0, 'mist' => 0, 'amount' => 12], Json::array($greenhouse, 'taskDew', 0));
-        self::assertNull($greenhouse['fullAt']);
     }
 
-    public function testPlantDewIsCollectedAndSpent(): void
+    public function testTaskDewGrowsWithTheGreenhouseAndIsSpent(): void
     {
         [$client, $user] = self::client();
         self::collect($user, 'polytrichum-commune');
@@ -52,29 +52,24 @@ final class GreenhouseApiTest extends WebTestCase
         $client->jsonRequest('PUT', '/api/greenhouse/pots/1', ['species' => 'polytrichum-commune']);
         self::assertResponseStatusCodeSame(204);
 
-        $client->jsonRequest('POST', '/api/tasks', ['title' => 'Plan the holidays', 'quadrant' => 'schedule']);
-        $client->jsonRequest('POST', '/api/tasks/'.Json::string(self::body($client), 'id').'/complete');
-        self::assertSame(['amount' => 16, 'watering' => 4, 'mist' => 0], Json::array(self::body($client), 'dew'));
-        self::assertSame([16, false], [Json::int(self::body($client), 'player', 'dew'), Json::at(self::body($client), 'player', 'tankFull')]);
+        self::assertSame(['amount' => 16, 'base' => 12, 'watering' => 4, 'mist' => 0], self::completePlantTask($client));
+        self::assertSame(16, Json::int(self::body($client), 'player', 'dew'));
 
-        self::freezeAt('2026-10-06 11:00 UTC');
-        $client->jsonRequest('POST', '/api/greenhouse/collect');
-        self::assertResponseIsSuccessful();
-        self::assertSame(['collected' => 6, 'dew' => 22], self::body($client));
-
-        $client->jsonRequest('POST', '/api/greenhouse/facilities/condenser/upgrade');
+        $client->jsonRequest('POST', '/api/greenhouse/facilities/rain_barrel/upgrade');
         self::assertResponseStatusCodeSame(422);
-        self::credit($user, 40);
-        $client->jsonRequest('POST', '/api/greenhouse/facilities/condenser/upgrade');
+        self::credit($user, 134);
+        $client->jsonRequest('POST', '/api/greenhouse/facilities/rain_barrel/upgrade');
         self::assertResponseStatusCodeSame(204);
+
+        self::assertSame(['amount' => 18, 'base' => 12, 'watering' => 6, 'mist' => 0], self::completePlantTask($client));
 
         $client->jsonRequest('DELETE', '/api/greenhouse/pots/1');
         self::assertResponseStatusCodeSame(204);
 
         $client->jsonRequest('GET', '/api/greenhouse');
         $greenhouse = self::body($client);
-        self::assertSame([2, 62, 0, 160], [Json::int($greenhouse, 'dew'), Json::int($greenhouse, 'dewGathered'), Json::int($greenhouse, 'tank'), Json::int($greenhouse, 'capacity')]);
-        self::assertSame(['species' => 'polytrichum-commune', 'rarity' => 'common', 'dewPerHour' => 2, 'pot' => null], Json::array($greenhouse, 'plantable', 0));
+        self::assertSame([18, 168, 0, 3], [Json::int($greenhouse, 'dew'), Json::int($greenhouse, 'dewGathered'), Json::int($greenhouse, 'yieldTenths'), Json::int($greenhouse, 'wateringMultiplier')]);
+        self::assertSame(['species' => 'polytrichum-commune', 'rarity' => 'common', 'yield' => 2, 'pot' => null], Json::array($greenhouse, 'plantable', 0));
     }
 
     public function testInvalidPlantingsAre422InEveryLanguage(): void
@@ -136,7 +131,7 @@ final class GreenhouseApiTest extends WebTestCase
         self::assertResponseStatusCodeSame(201);
         $expedition = self::body($client);
         self::assertSame(['species', 'nextCost'], array_keys($expedition));
-        self::assertSame(260, Json::int($expedition, 'nextCost'));
+        self::assertSame(198, Json::int($expedition, 'nextCost'));
         self::assertSame(SpeciesCatalog::get(Json::string($expedition, 'species', 'slug'))->rarity->value, Json::string($expedition, 'species', 'rarity'));
 
         $client->jsonRequest('POST', '/api/greenhouse/expeditions');
@@ -181,8 +176,20 @@ final class GreenhouseApiTest extends WebTestCase
 
     private static function credit(User $user, int $dew): void
     {
-        self::getContainer()->get(GreenhouseRepository::class)->of($user)->receive(new DewGain($dew), Clock::get()->now());
+        self::getContainer()->get(GreenhouseRepository::class)->of($user)->receive(new DewGain($dew));
         self::getContainer()->get(EntityManagerInterface::class)->flush();
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    private static function completePlantTask(KernelBrowser $client): array
+    {
+        $client->jsonRequest('POST', '/api/tasks', ['title' => 'Plan the holidays', 'quadrant' => 'schedule']);
+        $client->jsonRequest('POST', '/api/tasks/'.Json::string(self::body($client), 'id').'/complete');
+        self::assertResponseIsSuccessful();
+
+        return Json::array(self::body($client), 'dew');
     }
 
     /**

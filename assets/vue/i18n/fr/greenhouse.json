@@ -1,30 +1,21 @@
 {
     "title": "Serre",
-    "subtitle": "Verrière niveau {level} · {pots} · {rate} gouttes par heure",
+    "subtitle": "Verrière niveau {level} · {pots} · rendement de {yield} gouttes par tâche",
     "potCount": "aucun pot | 1 pot | {count} pots",
     "amount": "{n} goutte | {n} gouttes",
-    "collected": "{n} goutte récoltée. | {n} gouttes récoltées.",
-    "duration": {
-        "days": "{days} j {hours} h",
-        "hours": "{hours} h {minutes} min",
-        "minutes": "{minutes} min"
-    },
     "resources": {
         "dew": "Rosée",
         "gathered": "{gathered} récoltées en tout",
-        "tank": "Réservoir",
-        "tankLevel": "{tank} / {capacity}",
-        "collect": "Récolter {n} goutte | Récolter {n} gouttes",
-        "full": "Plein : récoltez-le pour que les mousses continuent de condenser.",
-        "idle": "Plantez une mousse pour commencer à condenser.",
-        "fullIn": "Plein dans {duration}",
-        "production": "Production",
-        "perHour": "{rate} /h",
+        "yield": "Rendement",
+        "perTask": "{yield} / tâche",
         "misters": "Brumisateurs +{bonus} %",
         "noMisters": "Pas encore de brumisateurs",
         "pots": "Pots",
         "potsUsed": "{used} / {total}",
-        "potsMax": "Jusqu’à {max} avec la verrière"
+        "potsMax": "Jusqu’à {max} avec la verrière",
+        "watering": "Arrosage",
+        "multiplier": "× {n}",
+        "wateringHint": "Planter × {n}, Arroser × {half}"
     },
     "pots": {
         "title": "Pots",
@@ -34,7 +25,7 @@
         "yield": "Rendement",
         "since": "Plantée",
         "actions": "Actions",
-        "perHour": "{dew} /h",
+        "perTask": "{dew} / tâche",
         "change": "Changer",
         "unplant": "Dépoter {name}",
         "unplanted": "Le pot {pot} est de nouveau vide.",
@@ -70,20 +61,15 @@
             "description": "Un pot de plus par niveau",
             "effect": "{n} pot | {n} pots"
         },
-        "condenser": {
-            "name": "Condenseur de rosée",
-            "description": "Un réservoir plus grand",
-            "effect": "{n} goutte | {n} gouttes"
-        },
         "misters": {
             "name": "Brumisateurs",
-            "description": "+10 % de production par niveau",
+            "description": "+10 % de rendement par niveau",
             "effect": "+{n} %"
         },
         "rain_barrel": {
             "name": "Récupérateur d’eau de pluie",
-            "description": "Arrosage plus long avec les tâches Planter",
-            "effect": "{n} h"
+            "description": "Arrosage plus généreux avec les tâches Planter et Arroser",
+            "effect": "× {n}"
         }
     },
     "expedition": {
@@ -102,14 +88,14 @@
         "base": "Rosée",
         "extra": "Bonus",
         "total": "Total",
-        "watering": "+{n} d’arrosage ({hours} h)",
-        "mist": "+{n} de brume, dans le réservoir",
+        "watering": "+{n} d’arrosage (rendement × {multiplier})",
+        "halfWatering": "+{n} de demi-arrosage (rendement × {multiplier} ÷ 2)",
+        "mist": "+{n} de brume (rendement × 1)",
         "none": "Aucun",
-        "note": "L’arrosage ajoute {hours} h de production directement à votre rosée, même réservoir plein. La brume remplit le réservoir d’une heure de production. Séries et échéances ne changent pas la rosée."
+        "note": "Chaque tâche terminée rapporte sa rosée une seule fois. Les mousses en pot fixent le rendement de la serre ({yield} gouttes par tâche en ce moment) : les tâches Planter sont arrosées du rendement × {multiplier}, les tâches Arroser de la moitié, les tâches Tailler reçoivent une brume du rendement × 1. Les tâches Composter et non classées restent à 1. Séries et échéances ne changent pas la rosée."
     },
     "rail": {
-        "label": "Rosée de la serre :",
-        "tankFull": "le réservoir est plein"
+        "label": "Rosée de la serre :"
     },
     "burst": {
         "dew": "+{n} goutte | +{n} gouttes",

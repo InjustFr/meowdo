@@ -5,16 +5,16 @@ import { useDew } from '../../composables/useDew.js';
 
 const props = defineProps({
     sources: { type: Array, required: true },
-    wateringHours: { type: Number, required: true },
+    yieldTenths: { type: Number, required: true },
+    wateringMultiplier: { type: Number, required: true },
 });
 
 const { t } = useI18n();
-const { number } = useDew();
-
-const HOURS = { schedule: 1, do_first: 0.5 };
+const { number, yieldOf } = useDew();
 
 function extra(source) {
-    if (source.quadrant in HOURS) return t('greenhouse.sources.watering', { n: number(source.watering), hours: number(props.wateringHours * HOURS[source.quadrant]) });
+    if (source.quadrant === 'schedule') return t('greenhouse.sources.watering', { n: number(source.watering), multiplier: props.wateringMultiplier });
+    if (source.quadrant === 'do_first') return t('greenhouse.sources.halfWatering', { n: number(source.watering), multiplier: props.wateringMultiplier });
     if (source.quadrant === 'delegate') return t('greenhouse.sources.mist', { n: number(source.mist) });
     return t('greenhouse.sources.none');
 }
@@ -26,7 +26,7 @@ const rows = computed(() => props.sources.map((source) => {
         name: source.quadrant ? t(`matrix.quadrants.${source.quadrant}.name`) : t('matrix.unsorted'),
         base: number(source.base),
         extra: extra(source),
-        total: number(source.amount + source.mist),
+        total: number(source.amount),
         color: `var(--quadrant-${key.replace('_', '-')})`,
     };
 }));
@@ -52,7 +52,7 @@ const rows = computed(() => props.sources.map((source) => {
                 </tr>
             </tbody>
         </table>
-        <p class="sources__note">{{ t('greenhouse.sources.note', { hours: number(wateringHours) }) }}</p>
+        <p class="sources__note">{{ t('greenhouse.sources.note', { yield: yieldOf(yieldTenths), multiplier: wateringMultiplier }) }}</p>
     </div>
 </template>
 

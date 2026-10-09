@@ -117,12 +117,12 @@ final class CompleteTaskTest extends KernelTestCase
     }
 
     #[DataProvider('dewByQuadrant')]
-    public function testCompletingATaskCondensesDewByQuadrant(?Quadrant $quadrant, int $dew): void
+    public function testCompletingATaskBringsDewByQuadrant(?Quadrant $quadrant, int $dew): void
     {
         $completion = self::completeTask(self::createTask('Vet', quadrant: $quadrant));
 
         self::assertEquals(new DewGain($dew), $completion->dew);
-        self::assertSame([$dew, false], [$completion->player->dew, $completion->player->tankFull]);
+        self::assertSame($dew, $completion->player->dew);
     }
 
     /** @return iterable<array{?Quadrant, int}> */
@@ -135,7 +135,27 @@ final class CompleteTaskTest extends KernelTestCase
         yield 'unsorted' => [null, 1];
     }
 
-    public function testDewIsCondensedOncePerTask(): void
+    public function testABiggerGreenhouseGrowsEveryTaskRewardButCompost(): void
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        foreach (['polytrichum-commune', 'sphagnum-palustre'] as $slug) {
+            $entityManager->persist(Specimen::collect($this->user, SpeciesCatalog::get($slug), Clock::get()->now()));
+        }
+        $entityManager->flush();
+        $plant = self::getContainer()->get(PlantMossHandler::class);
+        $plant(new PlantMoss(1, 'polytrichum-commune'));
+        $plant(new PlantMoss(2, 'sphagnum-palustre'));
+
+        self::assertSame(
+            [26, 13, 10, 1],
+            array_map(
+                static fn (Quadrant $quadrant): ?int => self::completeTask(self::createTask($quadrant->value, quadrant: $quadrant))->dew?->amount,
+                [Quadrant::Schedule, Quadrant::DoFirst, Quadrant::Delegate, Quadrant::Eliminate],
+            ),
+        );
+    }
+
+    public function testDewIsBroughtOncePerTask(): void
     {
         $task = self::createTask('Vet', quadrant: Quadrant::DoFirst);
         self::completeTask($task);
@@ -147,7 +167,7 @@ final class CompleteTaskTest extends KernelTestCase
         self::assertSame(6, $again->player->dew);
     }
 
-    public function testASubtaskAndTheParentItCompletesEachCondenseDew(): void
+    public function testASubtaskAndTheParentItCompletesEachBringDew(): void
     {
         $parent = self::createTask('Fox drawing', quadrant: Quadrant::Schedule);
         $subtask = self::addSubtask($parent, 'Sketch');
@@ -155,6 +175,7 @@ final class CompleteTaskTest extends KernelTestCase
         $completion = self::completeTask($subtask);
 
         self::assertEquals(new DewGain(13), $completion->dew);
+        self::assertSame(13, $completion->player->dew);
     }
 
     public function testPottedMossesWaterPlantAndWaterTasksAndMistTrimTasks(): void
@@ -164,12 +185,13 @@ final class CompleteTaskTest extends KernelTestCase
         $entityManager->flush();
         self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'polytrichum-commune'));
 
-        self::assertEquals(new DewGain(16, 4), self::completeTask(self::createTask('Plant', quadrant: Quadrant::Schedule))->dew);
-        self::assertEquals(new DewGain(8, 2), self::completeTask(self::createTask('Water', quadrant: Quadrant::DoFirst))->dew);
+        self::assertEquals(new DewGain(12, 4), self::completeTask(self::createTask('Plant', quadrant: Quadrant::Schedule))->dew);
+        self::assertEquals(new DewGain(6, 2), self::completeTask(self::createTask('Water', quadrant: Quadrant::DoFirst))->dew);
         self::assertEquals(new DewGain(3, mist: 2), self::completeTask(self::createTask('Trim', quadrant: Quadrant::Delegate))->dew);
         self::assertEquals(new DewGain(1), self::completeTask(self::createTask('Compost', quadrant: Quadrant::Eliminate))->dew);
+        self::assertEquals(new DewGain(1), self::completeTask(self::createTask('Unsorted'))->dew);
 
         $greenhouse = self::getContainer()->get(GreenhouseRepository::class)->of($this->user);
-        self::assertSame([28, 28, 2000], [$greenhouse->dew(), $greenhouse->dewGathered(), $greenhouse->tankMilliAt(Clock::get()->now())]);
+        self::assertSame([31, 31], [$greenhouse->dew(), $greenhouse->dewGathered()]);
     }
 }

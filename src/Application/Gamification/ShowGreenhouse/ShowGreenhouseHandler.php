@@ -14,7 +14,6 @@ use App\Domain\Gamification\Herbarium\SpeciesCatalog;
 use App\Domain\Gamification\Herbarium\Specimen;
 use App\Domain\Gamification\Herbarium\SpecimenRepository;
 use App\Domain\Planning\Quadrant;
-use Psr\Clock\ClockInterface;
 
 final readonly class ShowGreenhouseHandler
 {
@@ -25,7 +24,6 @@ final readonly class ShowGreenhouseHandler
         private GreenhouseRepository $greenhouses,
         private SpecimenRepository $specimens,
         private DewPolicy $policy,
-        private ClockInterface $clock,
     ) {
     }
 
@@ -34,18 +32,12 @@ final readonly class ShowGreenhouseHandler
         $user = $this->currentUser->get();
         $greenhouse = $this->greenhouses->of($user);
         $specimens = $this->specimens->of($user);
-        $now = $this->clock->now();
 
         return new GreenhouseView(
-            $now->format(\DATE_ATOM),
             $greenhouse->dew(),
             $greenhouse->dewGathered(),
-            $greenhouse->tankAt($now),
-            $greenhouse->tankMilliAt($now),
-            $greenhouse->capacity(),
-            $greenhouse->ratePerHourMilli(),
-            $greenhouse->fullAt()?->format(\DATE_ATOM),
-            $greenhouse->wateringHours(),
+            $greenhouse->yieldTenths(),
+            $greenhouse->wateringMultiplier(),
             array_map(static fn (Pot $pot): PotView => PotView::of($pot), $greenhouse->pots()),
             Facility::Glasshouse->effectAt(Facility::Glasshouse->maxLevel()),
             array_map(static fn (Facility $facility): FacilityView => FacilityView::of($facility, $greenhouse->facilities()), Facility::cases()),
@@ -63,7 +55,7 @@ final readonly class ShowGreenhouseHandler
     private function plantable(Greenhouse $greenhouse, array $specimens): array
     {
         $plantable = array_map(static fn (Specimen $specimen): PlantableView => PlantableView::of($specimen->species(), $greenhouse->potOf($specimen->species())), $specimens);
-        usort($plantable, static fn (PlantableView $one, PlantableView $other): int => $other->dewPerHour <=> $one->dewPerHour);
+        usort($plantable, static fn (PlantableView $one, PlantableView $other): int => $other->yield <=> $one->yield);
 
         return $plantable;
     }

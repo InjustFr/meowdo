@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from 'vue';
-import { ArrowRight, CloudDrizzle, CloudRain, Container, Warehouse } from '@lucide/vue';
+import { ArrowRight, CloudDrizzle, CloudRain, Warehouse } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import ConfirmButton from '../ui/ConfirmButton.vue';
 import { useDew } from '../../composables/useDew.js';
 
-const ICONS = { glasshouse: Warehouse, condenser: Container, misters: CloudDrizzle, rain_barrel: CloudRain };
+const ICONS = { glasshouse: Warehouse, misters: CloudDrizzle, rain_barrel: CloudRain };
 
 const props = defineProps({
     facilities: { type: Array, required: true },

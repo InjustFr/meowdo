@@ -9,7 +9,7 @@ async function createPlantTask(page, title) {
     return (await created.json()).id;
 }
 
-test('plant tasks feed a greenhouse that grows mosses and buys upgrades', async ({ page }) => {
+test('completed tasks feed a greenhouse whose mosses raise every task reward', async ({ page }) => {
     const account = unique('greenhouse').replace(' ', '-');
     await page.goto('/login');
     await signInWithAccount(page, account, { email: `${account}@mossyleaf.test`, name: 'Gardener' });
@@ -26,10 +26,12 @@ test('plant tasks feed a greenhouse that grows mosses and buys upgrades', async 
     await expect(page.getByRole('heading', { level: 1, name: 'Greenhouse' })).toBeVisible();
     await expect(page.getByTestId('dew-balance')).toHaveText('72');
     await expect(railDew(page)).toHaveText('72');
+    await expect(page.getByTestId('yield')).toHaveText('0 / task');
+    await expect(page.getByTestId('watering')).toHaveText('× 2');
     await expect(page.getByTestId('dew-source-schedule')).toContainText('12');
     await expect(page.getByTestId('dew-source-eliminate')).toContainText('1');
     await expect(page.getByTestId('expedition')).toBeDisabled();
-    await expect(page.locator('.expedition')).toContainText('128 dew short');
+    await expect(page.locator('.expedition')).toContainText('78 dew short');
 
     await page.getByTestId('pot-1').getByRole('button', { name: 'Plant a moss' }).click();
     const dialog = page.getByRole('dialog', { name: 'Plant a moss in pot 1' });
@@ -38,6 +40,8 @@ test('plant tasks feed a greenhouse that grows mosses and buys upgrades', async 
     await expect(dialog).toBeHidden();
     await expect(page.getByTestId('pot-1')).not.toContainText('Empty pot');
     await expect(page.getByTestId('pot-1').getByRole('button', { name: 'Change' })).toBeFocused();
+    await expect(page.getByTestId('yield')).not.toHaveText('0 / task');
+    await expect(page.getByTestId('dew-source-schedule')).toContainText('watering');
 
     await page.getByTestId('pot-2').getByRole('button', { name: 'Plant a moss' }).click();
     const second = page.getByRole('dialog', { name: 'Plant a moss in pot 2' });
@@ -45,27 +49,27 @@ test('plant tasks feed a greenhouse that grows mosses and buys upgrades', async 
     await expect(second.getByRole('button', { name: 'Close' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('pot-2').getByRole('button', { name: 'Plant a moss' })).toBeFocused();
-    await expect(page.locator('.resources')).toContainText('Full in');
-
-    await page.getByTestId('facility-condenser').getByRole('button', { name: 'Upgrade the Dew condenser to level 2' }).click();
-    const confirm = page.getByRole('alertdialog', { name: 'Upgrade the Dew condenser to level 2' });
-    await expect(confirm).toContainText('This spends 60 dew.');
-    await expect(page.getByTestId('dew-balance')).toHaveText('72');
-    await confirm.getByRole('button', { name: 'Upgrade' }).click();
-    await expect(page.getByTestId('dew-balance')).toHaveText('12');
-    await expect(page.getByTestId('facility-condenser')).toContainText('2 / 10');
-    await expect(page.getByTestId('tank')).toContainText('/ 160');
 
     const title = unique('Plan the seedlings');
     await createPlantTask(page, title);
     await page.goto('/');
     await row(page, title).getByRole('checkbox', { name: `Complete “${title}”` }).click();
     await expect(page.locator('.shell__rail [data-test=dew-burst]').first()).toContainText(/\+\d+ dew · watered/);
-    await expect.poll(async () => Number((await railDew(page).textContent()).replace(/\D/g, ''))).toBeGreaterThanOrEqual(28);
+    await expect.poll(async () => Number((await railDew(page).textContent()).replace(/\D/g, ''))).toBeGreaterThanOrEqual(88);
 
     await page.request.post('/api/achievements/seen');
     await page.goto('/greenhouse');
+    const before = Number((await page.getByTestId('dew-balance').textContent()).replace(/\D/g, ''));
+    await page.getByTestId('facility-glasshouse').getByRole('button', { name: 'Upgrade the Glasshouse to level 2' }).click();
+    const confirm = page.getByRole('alertdialog', { name: 'Upgrade the Glasshouse to level 2' });
+    await expect(confirm).toContainText('This spends 80 dew.');
+    await confirm.getByRole('button', { name: 'Upgrade' }).click();
+    await expect(page.getByTestId('dew-balance')).toHaveText(String(before - 80));
+    await expect(page.getByTestId('facility-glasshouse')).toContainText('2 / 11');
+    await expect(page.getByTestId('pot-3')).toContainText('Empty pot');
+
     await page.getByTestId('pot-1').getByRole('button', { name: /^Unplant / }).click();
     await expect(page.getByTestId('pot-1')).toContainText('Empty pot');
     await expect(page.getByTestId('pot-1').getByRole('button', { name: 'Plant a moss' })).toBeFocused();
+    await expect(page.getByTestId('yield')).toHaveText('0 / task');
 });

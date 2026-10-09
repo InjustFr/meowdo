@@ -20,7 +20,6 @@ final readonly class PlayerView
         public int $speciesCollected,
         public int $speciesTotal,
         public int $dew,
-        public bool $tankFull,
         public array $newAchievements,
     ) {
     }

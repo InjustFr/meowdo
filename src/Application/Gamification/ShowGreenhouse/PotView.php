@@ -12,7 +12,7 @@ final readonly class PotView
         public int $number,
         public ?string $species,
         public ?string $rarity,
-        public int $dewPerHour,
+        public int $yield,
         public ?string $plantedAt,
     ) {
     }
@@ -25,7 +25,7 @@ final readonly class PotView
             $pot->number(),
             $species?->slug,
             $species?->rarity->value,
-            $species?->rarity->dewPerHour() ?? 0,
+            $pot->yield(),
             $pot->plantedAt()?->format(\DATE_ATOM),
         );
     }

@@ -57,7 +57,7 @@ const locked = computed(() => (props.pots.length < props.maxPots ? { number: pro
                             </span>
                         </td>
                         <td class="pots__rarity"><RarityMark :rarity="pot.rarity" /></td>
-                        <td class="pots__yield pots__numeric tabular">{{ t('greenhouse.pots.perHour', { dew: pot.dewPerHour }) }}</td>
+                        <td class="pots__yield pots__numeric tabular">{{ t('greenhouse.pots.perTask', { dew: pot.yield }) }}</td>
                         <td class="pots__since">{{ pot.plantedAt ? dates.short(pot.plantedAt.slice(0, 10)) : '' }}</td>
                         <td class="pots__actions">
                             <BaseButton class="pots__main" variant="secondary" :disabled="busy" @click="emit('plant', pot.number)">{{ t('greenhouse.pots.change') }}</BaseButton>

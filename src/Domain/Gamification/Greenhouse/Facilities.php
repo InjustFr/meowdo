@@ -13,8 +13,6 @@ final readonly class Facilities
         #[ORM\Column]
         public int $glasshouse = 1,
         #[ORM\Column]
-        public int $condenser = 1,
-        #[ORM\Column]
         public int $misters = 0,
         #[ORM\Column]
         public int $rainBarrel = 0,
@@ -25,7 +23,6 @@ final readonly class Facilities
     {
         return match ($facility) {
             Facility::Glasshouse => $this->glasshouse,
-            Facility::Condenser => $this->condenser,
             Facility::Misters => $this->misters,
             Facility::RainBarrel => $this->rainBarrel,
         };
@@ -40,7 +37,6 @@ final readonly class Facilities
     {
         return new self(
             $this->glasshouse + (Facility::Glasshouse === $facility ? 1 : 0),
-            $this->condenser + (Facility::Condenser === $facility ? 1 : 0),
             $this->misters + (Facility::Misters === $facility ? 1 : 0),
             $this->rainBarrel + (Facility::RainBarrel === $facility ? 1 : 0),
         );

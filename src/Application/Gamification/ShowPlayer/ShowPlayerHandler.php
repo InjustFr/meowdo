@@ -46,7 +46,6 @@ final readonly class ShowPlayerHandler
             \count($this->specimens->of($user)),
             \count(SpeciesCatalog::all()),
             $greenhouse->dew(),
-            $greenhouse->isFullAt($this->today->now()),
             array_values(array_map(static fn (UnlockedAchievement $achievement): string => $achievement->achievement(), $unseen)),
         );
     }

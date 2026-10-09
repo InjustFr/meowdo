@@ -82,8 +82,8 @@ class Pot
         return $this->plantedAt;
     }
 
-    public function dewPerHourMilli(): int
+    public function yield(): int
     {
-        return 1000 * ($this->species()?->rarity->dewPerHour() ?? 0);
+        return $this->species()?->rarity->dewYield() ?? 0;
     }
 }

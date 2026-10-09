@@ -22,7 +22,7 @@ trait ActsAsUser
         $user = User::join($id, $email ?? \sprintf('%s@mossydew.test', $id), 'Louis', $timezone, Clock::get()->now());
         $entityManager->persist($user);
         $entityManager->persist(Player::start($user));
-        $entityManager->persist(Greenhouse::open($user, Clock::get()->now()));
+        $entityManager->persist(Greenhouse::open($user));
         $entityManager->flush();
 
         return $user;

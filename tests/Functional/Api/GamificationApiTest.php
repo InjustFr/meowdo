@@ -22,7 +22,7 @@ final class GamificationApiTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSame(1, Json::int(self::body($client), 'level'));
         self::assertSame([0, 48], [Json::int(self::body($client), 'speciesCollected'), Json::int(self::body($client), 'speciesTotal')]);
-        self::assertSame([0, false], [Json::int(self::body($client), 'dew'), Json::at(self::body($client), 'tankFull')]);
+        self::assertSame(0, Json::int(self::body($client), 'dew'));
     }
 
     public function testListHerbarium(): void

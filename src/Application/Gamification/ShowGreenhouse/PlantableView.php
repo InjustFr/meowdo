@@ -12,13 +12,13 @@ final readonly class PlantableView
     private function __construct(
         public string $species,
         public string $rarity,
-        public int $dewPerHour,
+        public int $yield,
         public ?int $pot,
     ) {
     }
 
     public static function of(Species $species, ?Pot $pot): self
     {
-        return new self($species->slug, $species->rarity->value, $species->rarity->dewPerHour(), $pot?->number());
+        return new self($species->slug, $species->rarity->value, $species->rarity->dewYield(), $pot?->number());
     }
 }

@@ -1,30 +1,21 @@
 {
     "title": "Greenhouse",
-    "subtitle": "Glasshouse level {level} · {pots} · {rate} dew an hour",
+    "subtitle": "Glasshouse level {level} · {pots} · {yield} dew yield per task",
     "potCount": "no pot | 1 pot | {count} pots",
     "amount": "{n} dew",
-    "collected": "{n} dew collected.",
-    "duration": {
-        "days": "{days} d {hours} h",
-        "hours": "{hours} h {minutes} min",
-        "minutes": "{minutes} min"
-    },
     "resources": {
         "dew": "Dew",
         "gathered": "{gathered} gathered in all",
-        "tank": "Tank",
-        "tankLevel": "{tank} / {capacity}",
-        "collect": "Collect {n} dew",
-        "full": "Full: collect it so the mosses keep condensing.",
-        "idle": "Plant a moss to start condensing.",
-        "fullIn": "Full in {duration}",
-        "production": "Production",
-        "perHour": "{rate} /h",
+        "yield": "Yield",
+        "perTask": "{yield} / task",
         "misters": "Misters +{bonus}%",
         "noMisters": "No misters yet",
         "pots": "Pots",
         "potsUsed": "{used} / {total}",
-        "potsMax": "Up to {max} with the glasshouse"
+        "potsMax": "Up to {max} with the glasshouse",
+        "watering": "Watering",
+        "multiplier": "× {n}",
+        "wateringHint": "Plant × {n}, Water × {half}"
     },
     "pots": {
         "title": "Pots",
@@ -34,7 +25,7 @@
         "yield": "Yield",
         "since": "Planted",
         "actions": "Actions",
-        "perHour": "{dew} /h",
+        "perTask": "{dew} / task",
         "change": "Change",
         "unplant": "Unplant {name}",
         "unplanted": "Pot {pot} is empty again.",
@@ -70,20 +61,15 @@
             "description": "One more pot per level",
             "effect": "{n} pot | {n} pots"
         },
-        "condenser": {
-            "name": "Dew condenser",
-            "description": "A bigger tank",
-            "effect": "{n} dew"
-        },
         "misters": {
             "name": "Misters",
-            "description": "+10% production per level",
+            "description": "+10% yield per level",
             "effect": "+{n}%"
         },
         "rain_barrel": {
             "name": "Rain barrel",
-            "description": "Longer watering from Plant tasks",
-            "effect": "{n} h"
+            "description": "Bigger watering on Plant and Water tasks",
+            "effect": "× {n}"
         }
     },
     "expedition": {
@@ -102,14 +88,14 @@
         "base": "Dew",
         "extra": "Extra",
         "total": "Total",
-        "watering": "+{n} watering ({hours} h)",
-        "mist": "+{n} mist, into the tank",
+        "watering": "+{n} watering (yield × {multiplier})",
+        "halfWatering": "+{n} half watering (yield × {multiplier} ÷ 2)",
+        "mist": "+{n} mist (yield × 1)",
         "none": "None",
-        "note": "Watering adds {hours} h of production straight to your dew, even when the tank is full. Mist tops up the tank with one hour of production. Streaks and deadlines do not change dew."
+        "note": "Each completed task pays its dew once. Potted mosses set the greenhouse yield ({yield} dew per task now): Plant tasks are watered with the yield × {multiplier}, Water tasks with half of it, Trim tasks are misted with the yield once. Compost and unsorted tasks stay at 1. Streaks and deadlines do not change dew."
     },
     "rail": {
-        "label": "Dew in the greenhouse:",
-        "tankFull": "the tank is full"
+        "label": "Dew in the greenhouse:"
     },
     "burst": {
         "dew": "+{n} dew",

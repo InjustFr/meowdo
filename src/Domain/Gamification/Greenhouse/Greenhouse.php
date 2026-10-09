@@ -23,11 +23,10 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Table(name: 'greenhouse')]
 class Greenhouse
 {
-    public const int MILLI = 1000;
-    public const int EXPEDITION_BASE_COST = 200;
-    public const int EXPEDITION_COST_PER_TRIP = 50;
-    public const int EXPEDITION_COST_PER_TRIP_SQUARED = 10;
-    private const int SECONDS_PER_HOUR = 3600;
+    public const int TENTHS = 10;
+    public const int EXPEDITION_BASE_COST = 150;
+    public const int EXPEDITION_COST_PER_TRIP = 40;
+    public const int EXPEDITION_COST_PER_TRIP_SQUARED = 8;
     private const int PERCENT = 100;
 
     #[ORM\Id]
@@ -45,12 +44,6 @@ class Greenhouse
     private int $dewGathered = 0;
 
     #[ORM\Column]
-    private int $tankMilli = 0;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private \DateTimeImmutable $settledAt;
-
-    #[ORM\Column]
     private int $expeditions = 0;
 
     #[ORM\Version]
@@ -65,11 +58,10 @@ class Greenhouse
     #[ORM\OrderBy(['number' => 'ASC'])]
     private Collection $pots;
 
-    private function __construct(User $owner, \DateTimeImmutable $now)
+    private function __construct(User $owner)
     {
         $this->id = new Ulid();
         $this->owner = $owner;
-        $this->settledAt = $now;
         $this->facilities = new Facilities();
         $this->pots = new ArrayCollection();
         for ($number = 1; $number <= $this->facilities->effectOf(Facility::Glasshouse); ++$number) {
@@ -77,31 +69,15 @@ class Greenhouse
         }
     }
 
-    public static function open(User $owner, \DateTimeImmutable $now): self
+    public static function open(User $owner): self
     {
-        return new self($owner, $now);
+        return new self($owner);
     }
 
-    public function receive(DewGain $gain, \DateTimeImmutable $now): DewGain
+    public function receive(DewGain $gain): void
     {
-        $this->settle($now);
-        $mist = min(intdiv(max(0, $this->capacity() * self::MILLI - $this->tankMilli), self::MILLI), $gain->mist);
-        $this->tankMilli += $mist * self::MILLI;
         $this->dew += $gain->amount;
         $this->dewGathered += $gain->amount;
-
-        return new DewGain($gain->amount, $gain->watering, $mist);
-    }
-
-    public function collect(\DateTimeImmutable $now): int
-    {
-        $this->settle($now);
-        $collected = intdiv($this->tankMilli, self::MILLI);
-        $this->tankMilli -= $collected * self::MILLI;
-        $this->dew += $collected;
-        $this->dewGathered += $collected;
-
-        return $collected;
     }
 
     public function plant(int $number, Specimen $specimen, \DateTimeImmutable $now): void
@@ -115,24 +91,21 @@ class Greenhouse
         if (null !== $current) {
             throw new MossAlreadyPlanted($current->number());
         }
-        $this->settle($now);
         $pot->grow($species, $now);
     }
 
-    public function unplant(int $number, \DateTimeImmutable $now): void
+    public function unplant(int $number): void
     {
         $pot = $this->pot($number);
         if ($pot->isEmpty()) {
             throw new PotIsEmpty($number);
         }
-        $this->settle($now);
         $pot->empty();
     }
 
-    public function upgrade(Facility $facility, \DateTimeImmutable $now): void
+    public function upgrade(Facility $facility): void
     {
         $this->spend($facility->upgradeCost($this->facilities->levelOf($facility) + 1) ?? throw new FacilityAtMaxLevel($facility));
-        $this->settle($now);
         $this->facilities = $this->facilities->raised($facility);
         if (Facility::Glasshouse === $facility) {
             $this->pots->add(Pot::make($this, $this->pots->count() + 1));
@@ -145,50 +118,14 @@ class Greenhouse
         ++$this->expeditions;
     }
 
-    public function tankMilliAt(\DateTimeImmutable $now): int
+    public function yieldTenths(): int
     {
-        $seconds = max(0, $now->getTimestamp() - $this->settledAt->getTimestamp());
+        $base = array_sum(array_map(static fn (Pot $pot): int => $pot->yield(), $this->pots()));
 
-        return min($this->capacity() * self::MILLI, $this->tankMilli + intdiv($this->ratePerHourMilli() * $seconds, self::SECONDS_PER_HOUR));
+        return intdiv($base * self::TENTHS * (self::PERCENT + $this->facilities->effectOf(Facility::Misters)), self::PERCENT);
     }
 
-    public function tankAt(\DateTimeImmutable $now): int
-    {
-        return intdiv($this->tankMilliAt($now), self::MILLI);
-    }
-
-    public function isFullAt(\DateTimeImmutable $now): bool
-    {
-        return $this->tankMilliAt($now) >= $this->capacity() * self::MILLI;
-    }
-
-    public function fullAt(): ?\DateTimeImmutable
-    {
-        $missing = $this->capacity() * self::MILLI - $this->tankMilli;
-        if ($missing <= 0) {
-            return $this->settledAt;
-        }
-        $rate = $this->ratePerHourMilli();
-        if (0 === $rate) {
-            return null;
-        }
-
-        return $this->settledAt->modify(\sprintf('+%d seconds', intdiv($missing * self::SECONDS_PER_HOUR + $rate - 1, $rate)));
-    }
-
-    public function capacity(): int
-    {
-        return $this->facilities->effectOf(Facility::Condenser);
-    }
-
-    public function ratePerHourMilli(): int
-    {
-        $base = array_sum(array_map(static fn (Pot $pot): int => $pot->dewPerHourMilli(), $this->pots()));
-
-        return intdiv($base * (self::PERCENT + $this->facilities->effectOf(Facility::Misters)), self::PERCENT);
-    }
-
-    public function wateringHours(): int
+    public function wateringMultiplier(): int
     {
         return $this->facilities->effectOf(Facility::RainBarrel);
     }
@@ -266,14 +203,5 @@ class Greenhouse
             throw new NotEnoughDew($cost, $this->dew);
         }
         $this->dew -= $cost;
-    }
-
-    private function settle(\DateTimeImmutable $now): void
-    {
-        if ($now <= $this->settledAt) {
-            return;
-        }
-        $this->tankMilli = $this->tankMilliAt($now);
-        $this->settledAt = $now;
     }
 }

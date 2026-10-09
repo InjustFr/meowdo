@@ -21,7 +21,7 @@ enum Rarity: string
         };
     }
 
-    public function dewPerHour(): int
+    public function dewYield(): int
     {
         return match ($this) {
             self::Common => 2,

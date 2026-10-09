@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Application\Gamification;
 
-use App\Application\Gamification\CollectDew\CollectDewHandler;
 use App\Application\Gamification\CollectSpecies;
 use App\Application\Gamification\LaunchExpedition\LaunchExpeditionHandler;
 use App\Application\Gamification\PlantMoss\PlantMoss;
@@ -30,8 +29,10 @@ use App\Domain\Gamification\Herbarium\SpeciesCatalog;
 use App\Domain\Gamification\Herbarium\Specimen;
 use App\Domain\Gamification\Herbarium\SpecimenRepository;
 use App\Domain\Identity\User;
+use App\Domain\Planning\Quadrant;
 use App\Tests\Support\ActsAsUser;
 use App\Tests\Support\FreezesClock;
+use App\Tests\Support\PlansTasks;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,6 +44,7 @@ final class GreenhouseUseCasesTest extends KernelTestCase
 {
     use ActsAsUser;
     use FreezesClock;
+    use PlansTasks;
 
     private User $user;
 
@@ -56,13 +58,13 @@ final class GreenhouseUseCasesTest extends KernelTestCase
     {
         $greenhouse = $this->greenhouse();
 
-        self::assertSame(['2026-10-06T08:00:00+00:00', 0, 0, 0, 0, 100, 0, null, 2, 12], [$greenhouse->asOf, $greenhouse->dew, $greenhouse->dewGathered, $greenhouse->tank, $greenhouse->tankMilli, $greenhouse->capacity, $greenhouse->rateMilliPerHour, $greenhouse->fullAt, $greenhouse->wateringHours, $greenhouse->maxPots]);
+        self::assertSame([0, 0, 0, 2, 12], [$greenhouse->dew, $greenhouse->dewGathered, $greenhouse->yieldTenths, $greenhouse->wateringMultiplier, $greenhouse->maxPots]);
         self::assertSame([[1, null], [2, null]], array_map(static fn (PotView $pot): array => [$pot->number, $pot->species], $greenhouse->pots));
         self::assertSame(
-            [['glasshouse', 1, 11, 2, 3, 80], ['condenser', 1, 10, 100, 160, 60], ['misters', 0, 10, 0, 10, 120], ['rain_barrel', 0, 4, 2, 3, 200]],
+            [['glasshouse', 1, 11, 2, 3, 80], ['misters', 0, 10, 0, 10, 100], ['rain_barrel', 0, 4, 2, 3, 150]],
             array_map(static fn (FacilityView $facility): array => [$facility->id, $facility->level, $facility->maxLevel, $facility->effect, $facility->nextEffect, $facility->cost], $greenhouse->facilities),
         );
-        self::assertSame([200, \count(SpeciesCatalog::all())], [$greenhouse->expedition->cost, $greenhouse->expedition->speciesLeft]);
+        self::assertSame([150, \count(SpeciesCatalog::all())], [$greenhouse->expedition->cost, $greenhouse->expedition->speciesLeft]);
         self::assertSame([], $greenhouse->plantable);
         self::assertSame(
             [['schedule', 12], ['do_first', 6], ['delegate', 3], ['eliminate', 1], [null, 1]],
@@ -70,22 +72,22 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         );
     }
 
-    public function testAPottedMossFillsTheTankAndCollectingKeepsTheDew(): void
+    public function testPottedMossesRaiseWhatEachTaskPays(): void
     {
         $this->collect('polytrichum-commune');
-        self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'polytrichum-commune'));
-
-        self::freezeAt('2026-10-06 11:00 UTC');
-        $greenhouse = $this->greenhouse();
-        self::assertSame([6, 6000, 2000, '2026-10-08T10:00:00+00:00'], [$greenhouse->tank, $greenhouse->tankMilli, $greenhouse->rateMilliPerHour, $greenhouse->fullAt]);
-        self::assertSame(['polytrichum-commune', 'common', 2, '2026-10-06T08:00:00+00:00'], [$greenhouse->pots[0]->species, $greenhouse->pots[0]->rarity, $greenhouse->pots[0]->dewPerHour, $greenhouse->pots[0]->plantedAt]);
-
-        $collected = self::getContainer()->get(CollectDewHandler::class)();
+        $this->collect('buxbaumia-aphylla');
+        $plant = self::getContainer()->get(PlantMossHandler::class);
+        $plant(new PlantMoss(1, 'polytrichum-commune'));
+        $plant(new PlantMoss(2, 'buxbaumia-aphylla'));
         self::getContainer()->get(EntityManagerInterface::class)->clear();
 
-        self::assertSame([6, 6], [$collected->collected, $collected->dew]);
         $greenhouse = $this->greenhouse();
-        self::assertSame([6, 6, 0], [$greenhouse->dew, $greenhouse->dewGathered, $greenhouse->tankMilli]);
+        self::assertSame(100, $greenhouse->yieldTenths);
+        self::assertSame(['polytrichum-commune', 'common', 2, '2026-10-06T08:00:00+00:00'], [$greenhouse->pots[0]->species, $greenhouse->pots[0]->rarity, $greenhouse->pots[0]->yield, $greenhouse->pots[0]->plantedAt]);
+        self::assertSame(
+            [['schedule', 12, 20, 0, 32], ['do_first', 6, 10, 0, 16], ['delegate', 3, 0, 10, 13], ['eliminate', 1, 0, 0, 1], [null, 1, 0, 0, 1]],
+            array_map(static fn (TaskDewView $dew): array => [$dew->quadrant, $dew->base, $dew->watering, $dew->mist, $dew->amount], $greenhouse->taskDew),
+        );
     }
 
     public function testPlantableMossesAreTheCollectedOnesByYield(): void
@@ -97,21 +99,20 @@ final class GreenhouseUseCasesTest extends KernelTestCase
 
         self::assertSame(
             [['buxbaumia-aphylla', 'very_rare', 8, null], ['thuidium-tamariscinum', 'uncommon', 3, 2], ['polytrichum-commune', 'common', 2, null]],
-            array_map(static fn (PlantableView $moss): array => [$moss->species, $moss->rarity, $moss->dewPerHour, $moss->pot], $this->greenhouse()->plantable),
+            array_map(static fn (PlantableView $moss): array => [$moss->species, $moss->rarity, $moss->yield, $moss->pot], $this->greenhouse()->plantable),
         );
     }
 
-    public function testUnplantingStopsTheProduction(): void
+    public function testUnplantingTakesTheMossYieldAway(): void
     {
         $this->collect('buxbaumia-aphylla');
         self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'buxbaumia-aphylla'));
-        self::freezeAt('2026-10-06 09:00 UTC');
 
         self::getContainer()->get(UnplantMossHandler::class)(1);
+        self::getContainer()->get(EntityManagerInterface::class)->clear();
 
-        self::freezeAt('2026-10-06 12:00 UTC');
         $greenhouse = $this->greenhouse();
-        self::assertSame([8, 0, null], [$greenhouse->tank, $greenhouse->rateMilliPerHour, $greenhouse->pots[0]->species]);
+        self::assertSame([0, null, 12], [$greenhouse->yieldTenths, $greenhouse->pots[0]->species, $greenhouse->taskDew[0]->amount]);
     }
 
     public function testOnlyCollectedMossesCanBePlanted(): void
@@ -142,9 +143,9 @@ final class GreenhouseUseCasesTest extends KernelTestCase
 
     public function testAnUnaffordableUpgradeIsRefused(): void
     {
-        $this->expectExceptionObject(new NotEnoughDew(60, 0));
+        $this->expectExceptionObject(new NotEnoughDew(150, 0));
 
-        self::getContainer()->get(UpgradeFacilityHandler::class)(Facility::Condenser);
+        self::getContainer()->get(UpgradeFacilityHandler::class)(Facility::RainBarrel);
     }
 
     public function testAnExpeditionFindsANewMossForDew(): void
@@ -157,9 +158,9 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         $specimens = self::getContainer()->get(SpecimenRepository::class)->of($this->user);
         self::assertCount(1, $specimens);
         self::assertSame($specimens[0]->species()->slug, $expedition->species->slug);
-        self::assertSame(260, $expedition->nextCost);
+        self::assertSame(198, $expedition->nextCost);
         $greenhouse = $this->greenhouse();
-        self::assertSame([100, 260, \count(SpeciesCatalog::all()) - 1], [$greenhouse->dew, $greenhouse->expedition->cost, $greenhouse->expedition->speciesLeft]);
+        self::assertSame([150, 198, \count(SpeciesCatalog::all()) - 1], [$greenhouse->dew, $greenhouse->expedition->cost, $greenhouse->expedition->speciesLeft]);
     }
 
     public function testACompleteHerbariumRefusesExpeditionsForFree(): void
@@ -180,16 +181,16 @@ final class GreenhouseUseCasesTest extends KernelTestCase
 
     public function testAnExpeditionNeedsEnoughDew(): void
     {
-        $this->credit(199);
+        $this->credit(149);
 
-        $this->expectExceptionObject(new NotEnoughDew(200, 199));
+        $this->expectExceptionObject(new NotEnoughDew(150, 149));
 
         self::getContainer()->get(LaunchExpeditionHandler::class)();
     }
 
     public function testTheFirstExpeditionUnlocksFieldTrip(): void
     {
-        $this->credit(200);
+        $this->credit(150);
 
         self::getContainer()->get(LaunchExpeditionHandler::class)();
 
@@ -210,18 +211,17 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         self::assertSame(['glasshouse_5'], $this->unlocked());
     }
 
-    public function testCollectingTheThousandthDewUnlocksMorningDew(): void
+    public function testTheTaskThatBringsTheThousandthDewUnlocksMorningDew(): void
     {
-        $this->credit(998);
+        $this->credit(985);
         $this->collect('polytrichum-commune');
         self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'polytrichum-commune'));
-        self::freezeAt('2026-10-06 09:00 UTC');
-        $collect = self::getContainer()->get(CollectDewHandler::class);
 
-        self::assertSame([], $this->unlocked());
-        $collect();
+        self::completeTask(self::createTask('Compost', quadrant: Quadrant::Eliminate));
+        self::assertNotContains('dew_1000', $this->unlocked());
 
-        self::assertSame(['dew_1000'], $this->unlocked());
+        self::completeTask(self::createTask('Plant', quadrant: Quadrant::Schedule));
+        self::assertContains('dew_1000', $this->unlocked());
     }
 
     public function testASpendRacingAnotherChangeOfTheGreenhouseIsRefused(): void
@@ -286,7 +286,7 @@ final class GreenhouseUseCasesTest extends KernelTestCase
 
     private function credit(int $dew): void
     {
-        self::getContainer()->get(GreenhouseRepository::class)->of($this->user)->receive(new DewGain($dew), Clock::get()->now());
+        self::getContainer()->get(GreenhouseRepository::class)->of($this->user)->receive(new DewGain($dew));
         self::getContainer()->get(EntityManagerInterface::class)->flush();
     }
 }

@@ -12,42 +12,27 @@ import PageSection from '../components/ui/PageSection.vue';
 import { useApi } from '../composables/useApi.js';
 import { useCelebration } from '../composables/useCelebration.js';
 import { useDew } from '../composables/useDew.js';
-import { useNow } from '../composables/useNow.js';
 import { useToast } from '../composables/useToast.js';
-import { receivedAt } from '../greenhouse/received.js';
-import { fillRatio, secondsUntilFull, tankAt } from '../greenhouse/tank.js';
 
 const { t } = useI18n();
 const api = useApi();
 const toast = useToast();
-const { rate } = useDew();
-const now = useNow();
+const { yieldOf } = useDew();
 const { holdAchievements, releaseAchievements } = useCelebration();
 
 const greenhouse = ref(null);
 api.load('/api/greenhouse', greenhouse);
-
-const viewReceivedAt = ref(Date.now());
-watch(greenhouse, (view) => {
-    if (view) viewReceivedAt.value = receivedAt(view);
-}, { immediate: true });
-
-const elapsed = computed(() => Math.max(0, now.value - viewReceivedAt.value));
-const tank = computed(() => (greenhouse.value ? tankAt(greenhouse.value, elapsed.value) : 0));
-const ratio = computed(() => (greenhouse.value ? fillRatio(greenhouse.value, elapsed.value) : 0));
-const untilFull = computed(() => (greenhouse.value ? secondsUntilFull(greenhouse.value, elapsed.value) : null));
 
 const glasshouse = computed(() => greenhouse.value?.facilities.find((facility) => facility.id === 'glasshouse')?.level ?? 1);
 const subtitle = computed(() => (greenhouse.value
     ? t('greenhouse.subtitle', {
         level: glasshouse.value,
         pots: t('greenhouse.potCount', greenhouse.value.pots.length),
-        rate: rate(greenhouse.value.rateMilliPerHour),
+        yield: yieldOf(greenhouse.value.yieldTenths),
     })
     : null));
 
 const busy = ref(false);
-const collecting = ref(false);
 const plantingPot = ref(null);
 const plantOpen = ref(false);
 const potTable = ref(null);
@@ -65,12 +50,6 @@ async function act(action, success = null) {
     } finally {
         busy.value = false;
     }
-}
-
-async function collect() {
-    collecting.value = true;
-    await act(() => api.post('/api/greenhouse/collect'), (data) => t('greenhouse.collected', { n: data.collected }, data.collected));
-    collecting.value = false;
 }
 
 function choosePot(pot) {
@@ -118,7 +97,7 @@ onUnmounted(releaseAchievements);
     <div class="page page--wide greenhouse">
         <PageHeader :title="t('greenhouse.title')" :subtitle="subtitle" />
         <template v-if="greenhouse">
-            <GreenhouseResources :greenhouse="greenhouse" :tank="tank" :ratio="ratio" :seconds-until-full="untilFull" :collecting="collecting" @collect="collect" />
+            <GreenhouseResources :greenhouse="greenhouse" />
 
             <PageSection :title="t('greenhouse.pots.title')">
                 <p v-if="!greenhouse.plantable.length" class="greenhouse__hint">{{ t('greenhouse.pots.noMoss') }}</p>
@@ -134,7 +113,7 @@ onUnmounted(releaseAchievements);
                     <ExpeditionPanel v-model:found="found" :expedition="greenhouse.expedition" :dew="greenhouse.dew" :busy="busy" @launch="launch" />
                 </PageSection>
                 <PageSection :title="t('greenhouse.sources.title')">
-                    <DewSources :sources="greenhouse.taskDew" :watering-hours="greenhouse.wateringHours" />
+                    <DewSources :sources="greenhouse.taskDew" :yield-tenths="greenhouse.yieldTenths" :watering-multiplier="greenhouse.wateringMultiplier" />
                 </PageSection>
             </div>
 

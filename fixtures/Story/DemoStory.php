@@ -64,7 +64,7 @@ final class DemoStory extends Story
             'now' => $this->now->modify('-3 weeks'),
         ]);
         $this->player = PlayerFactory::createOne(['owner' => $this->user]);
-        $this->greenhouse = GreenhouseFactory::createOne(['owner' => $this->user, 'now' => $this->now->modify('-3 weeks')]);
+        $this->greenhouse = GreenhouseFactory::createOne(['owner' => $this->user]);
         $this->dew = new DewGain(0);
         $this->today = $this->user->today($this->now);
 
@@ -114,7 +114,7 @@ final class DemoStory extends Story
             $this->entityManager->persist($specimen);
             $specimens[] = $specimen;
         }
-        $this->tendGreenhouse($specimens, $this->now->modify('-6 hours'));
+        $this->tendGreenhouse($specimens, $this->now->modify('-2 days'));
         $this->entityManager->flush();
 
         foreach ($this->referee->newlyMet($this->ledger->statsOf($this->player), []) as $rule) {
@@ -130,8 +130,8 @@ final class DemoStory extends Story
      */
     private function tendGreenhouse(array $specimens, \DateTimeImmutable $since): void
     {
-        $this->greenhouse->receive($this->dew, $since);
-        usort($specimens, static fn (Specimen $one, Specimen $other): int => $other->species()->rarity->dewPerHour() <=> $one->species()->rarity->dewPerHour());
+        $this->greenhouse->receive($this->dew);
+        usort($specimens, static fn (Specimen $one, Specimen $other): int => $other->species()->rarity->dewYield() <=> $one->species()->rarity->dewYield());
         foreach (\array_slice($specimens, 0, \count($this->greenhouse->pots())) as $index => $specimen) {
             $this->greenhouse->plant($index + 1, $specimen, $since);
         }

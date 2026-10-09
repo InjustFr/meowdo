@@ -27,7 +27,7 @@ task:
 game:
     unknown_species: 'This moss is not in the herbarium.'
     not_enough_dew: 'This costs {cost, number} dew and you have {dew, number}.'
-    facility_at_max_level: '{facility, select, glasshouse {The glasshouse} condenser {The dew condenser} misters {The misters} rain_barrel {The rain barrel} other {This facility}} is already at its highest level.'
+    facility_at_max_level: '{facility, select, glasshouse {The glasshouse} misters {The misters} rain_barrel {The rain barrel} other {This facility}} is already at its highest level.'
     unknown_pot: 'There is no pot {pot} in your greenhouse yet.'
     pot_is_empty: 'Pot {pot} is already empty.'
     moss_not_collected: 'Find this moss for your herbarium before planting it.'

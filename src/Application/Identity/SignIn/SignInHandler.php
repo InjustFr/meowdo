@@ -63,7 +63,7 @@ final readonly class SignInHandler
         $user = User::join($command->accountId, $email, $this->displayName($command, $email), $this->timezone($command), $this->clock->now());
         $this->users->add($user);
         $this->players->add(Player::start($user));
-        $this->greenhouses->add(Greenhouse::open($user, $this->clock->now()));
+        $this->greenhouses->add(Greenhouse::open($user));
 
         return $user;
     }

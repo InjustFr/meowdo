@@ -31,7 +31,7 @@ final class OtherUserStory extends Story
             'now' => $now,
         ]);
         PlayerFactory::createOne(['owner' => $user]);
-        GreenhouseFactory::createOne(['owner' => $user, 'now' => $now]);
+        GreenhouseFactory::createOne(['owner' => $user]);
         $today = $user->today($now);
 
         $plans = ProjectFactory::createOne(['owner' => $user, 'name' => 'Secret plans', 'color' => ProjectColor::Rust, 'now' => $now]);

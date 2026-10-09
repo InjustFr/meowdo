@@ -13,15 +13,10 @@ final readonly class GreenhouseView
      * @param list<TaskDewView>   $taskDew
      */
     public function __construct(
-        public string $asOf,
         public int $dew,
         public int $dewGathered,
-        public int $tank,
-        public int $tankMilli,
-        public int $capacity,
-        public int $rateMilliPerHour,
-        public ?string $fullAt,
-        public int $wateringHours,
+        public int $yieldTenths,
+        public int $wateringMultiplier,
         public array $pots,
         public int $maxPots,
         public array $facilities,

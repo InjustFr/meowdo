@@ -40,7 +40,7 @@ const mosses = computed(() => props.plantable.map((moss) => ({ ...moss, photo: s
                         <RarityMark :rarity="moss.rarity" />
                     </span>
                     <span class="plant-dialog__yield tabular">
-                        {{ t('greenhouse.pots.perHour', { dew: moss.dewPerHour }) }}
+                        {{ t('greenhouse.pots.perTask', { dew: moss.yield }) }}
                         <span v-if="moss.pot !== null" class="plant-dialog__where">{{ t('greenhouse.plant.inPot', { pot: moss.pot }) }}</span>
                     </span>
                 </button>

@@ -43,16 +43,18 @@ final class DewPolicyTest extends TestCase
     /** @return iterable<array{int, int, int, ?Quadrant, DewGain}> */
     public static function extras(): iterable
     {
-        yield 'plant waters two hours of two commons' => [2, 0, 0, Quadrant::Schedule, new DewGain(20, 8)];
-        yield 'water waters one hour of two commons' => [2, 0, 0, Quadrant::DoFirst, new DewGain(10, 4)];
-        yield 'trim mists one hour of two commons' => [2, 0, 0, Quadrant::Delegate, new DewGain(3, mist: 4)];
+        yield 'plant waters twice the yield of two commons' => [2, 0, 0, Quadrant::Schedule, new DewGain(12, 8)];
+        yield 'water waters once the yield of two commons' => [2, 0, 0, Quadrant::DoFirst, new DewGain(6, 4)];
+        yield 'trim mists once the yield of two commons' => [2, 0, 0, Quadrant::Delegate, new DewGain(3, mist: 4)];
         yield 'compost gets nothing more' => [2, 0, 0, Quadrant::Eliminate, new DewGain(1)];
         yield 'unsorted gets nothing more' => [2, 0, 0, null, new DewGain(1)];
-        yield 'rain barrel lengthens the watering' => [1, 0, 1, Quadrant::Schedule, new DewGain(18, 6)];
-        yield 'rain barrel lengthens the half watering' => [1, 0, 1, Quadrant::DoFirst, new DewGain(9, 3)];
-        yield 'misters raise the watering' => [1, 1, 0, Quadrant::Schedule, new DewGain(16, 4)];
-        yield 'half watering is floored' => [1, 1, 0, Quadrant::DoFirst, new DewGain(8, 2)];
-        yield 'mist is floored' => [1, 1, 0, Quadrant::Delegate, new DewGain(3, mist: 2)];
+        yield 'a rare moss raises every extra' => [3, 0, 0, Quadrant::DoFirst, new DewGain(6, 9)];
+        yield 'rain barrel raises the watering' => [1, 0, 1, Quadrant::Schedule, new DewGain(12, 6)];
+        yield 'rain barrel raises the half watering' => [1, 0, 1, Quadrant::DoFirst, new DewGain(6, 3)];
+        yield 'rain barrel leaves the mist alone' => [1, 0, 1, Quadrant::Delegate, new DewGain(3, mist: 2)];
+        yield 'misters raise the watering, floored' => [1, 3, 0, Quadrant::Schedule, new DewGain(12, 5)];
+        yield 'half watering is floored' => [1, 3, 0, Quadrant::DoFirst, new DewGain(6, 2)];
+        yield 'mist is floored' => [1, 3, 0, Quadrant::Delegate, new DewGain(3, mist: 2)];
     }
 
     public function testDewForATaskFollowsItsQuadrant(): void
@@ -64,6 +66,12 @@ final class DewPolicyTest extends TestCase
         self::assertEquals(new DewGain(12), new DewPolicy()->dewFor($task, self::greenhouse()));
     }
 
+    public function testAGainAddsUpItsParts(): void
+    {
+        self::assertSame(19, new DewGain(12, 4, 3)->amount);
+        self::assertEquals(new DewGain(18, 4, 3), new DewGain(12, 4)->plus(new DewGain(6, mist: 3)));
+    }
+
     public function testPlantAlwaysPaysStrictlyMostThenWaterThenTrimThenCompost(): void
     {
         $policy = new DewPolicy();
@@ -72,7 +80,7 @@ final class DewPolicyTest extends TestCase
                 foreach (range(0, 12) as $pots) {
                     $greenhouse = self::greenhouse($pots, $misters, $rainBarrel);
                     $worth = array_map(
-                        static fn (?Quadrant $quadrant): int => $policy->forQuadrant($quadrant, $greenhouse)->amount + $policy->forQuadrant($quadrant, $greenhouse)->mist,
+                        static fn (?Quadrant $quadrant): int => $policy->forQuadrant($quadrant, $greenhouse)->amount,
                         [Quadrant::Schedule, Quadrant::DoFirst, Quadrant::Delegate, Quadrant::Eliminate, null],
                     );
                     $label = \sprintf('%d pots, misters %d, rain barrel %d', $pots, $misters, $rainBarrel);
@@ -89,11 +97,11 @@ final class DewPolicyTest extends TestCase
     {
         $now = new \DateTimeImmutable('2026-10-06 09:00');
         $owner = User::join('account', 'louis@example.com', 'Louis', 'Europe/Paris', $now);
-        $greenhouse = Greenhouse::open($owner, $now);
-        $greenhouse->receive(new DewGain(1_000_000), $now);
+        $greenhouse = Greenhouse::open($owner);
+        $greenhouse->receive(new DewGain(1_000_000));
         foreach ([[Facility::Glasshouse, max(0, $pots - 2)], [Facility::Misters, $misters], [Facility::RainBarrel, $rainBarrel]] as [$facility, $upgrades]) {
             for ($upgrade = 0; $upgrade < $upgrades; ++$upgrade) {
-                $greenhouse->upgrade($facility, $now);
+                $greenhouse->upgrade($facility);
             }
         }
         foreach (\array_slice(SpeciesCatalog::all(), 0, $pots) as $index => $species) {

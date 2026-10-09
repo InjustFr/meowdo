@@ -23,10 +23,10 @@ final class FacilitiesTest extends TestCase
     {
         $facilities = new Facilities();
 
-        $raised = $facilities->raised(Facility::Misters)->raised(Facility::Misters)->raised(Facility::Condenser);
+        $raised = $facilities->raised(Facility::Misters)->raised(Facility::Misters)->raised(Facility::RainBarrel);
 
-        self::assertSame([1, 2, 2, 0], [$raised->glasshouse, $raised->condenser, $raised->misters, $raised->rainBarrel]);
-        self::assertSame([1, 1, 0, 0], [$facilities->glasshouse, $facilities->condenser, $facilities->misters, $facilities->rainBarrel]);
-        self::assertSame(160, $raised->effectOf(Facility::Condenser));
+        self::assertSame([1, 2, 1], [$raised->glasshouse, $raised->misters, $raised->rainBarrel]);
+        self::assertSame([1, 0, 0], [$facilities->glasshouse, $facilities->misters, $facilities->rainBarrel]);
+        self::assertSame(20, $raised->effectOf(Facility::Misters));
     }
 }

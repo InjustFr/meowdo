@@ -20,6 +20,6 @@ final readonly class TaskDewView
 
     public static function of(?Quadrant $quadrant, DewGain $gain): self
     {
-        return new self($quadrant?->value, $gain->amount - $gain->watering, $gain->watering, $gain->mist, $gain->amount);
+        return new self($quadrant?->value, $gain->base, $gain->watering, $gain->mist, $gain->amount);
     }
 }

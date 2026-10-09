@@ -39,7 +39,6 @@ const { number } = useDew();
                     <Droplet size="1rem" :stroke-width="1.75" aria-hidden="true" />
                     <span class="visually-hidden">{{ t('greenhouse.rail.label') }}</span>
                     <span class="tabular">{{ number(player.dew) }}</span>
-                    <span v-if="player.tankFull" class="player-progress__full" data-test="tank-full"><span class="visually-hidden">{{ t('greenhouse.rail.tankFull') }}</span></span>
                 </RouterLink>
                 <span :class="['player-progress__streak', { 'player-progress__streak--cold': player.streak === 0 }]">
                     <Droplets size="1rem" :stroke-width="1.75" aria-hidden="true" />
@@ -65,7 +64,6 @@ const { number } = useDew();
 .player-progress__dew svg { color: var(--color-dew); }
 .player-progress__dew:hover { text-decoration: underline; text-underline-offset: 0.2em; }
 .player-progress__dew.router-link-active { color: color-mix(in oklch, var(--color-dew) 65%, var(--color-ink)); }
-.player-progress__full { width: 0.5rem; height: 0.5rem; margin-left: 0.125rem; border-radius: 50%; background: var(--color-dew); box-shadow: 0 0 0 0.125rem color-mix(in oklch, var(--color-dew) 25%, transparent); animation: tank-full 2s ease-in-out infinite; }
 
 .player-progress__streak { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--color-muted); font-weight: 500; }
 .player-progress__streak svg { color: var(--color-dew); }
@@ -82,13 +80,8 @@ const { number } = useDew();
     100% { opacity: 0; transform: translateY(-1rem); }
 }
 
-@keyframes tank-full {
-    50% { box-shadow: 0 0 0 0.25rem color-mix(in oklch, var(--color-dew) 10%, transparent); }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .player-progress__burst { animation: none; opacity: 0; }
-    .player-progress__full { animation: none; }
 }
 
 .player-progress--compact { flex-direction: row; align-items: center; gap: var(--space-4); padding: 0; }

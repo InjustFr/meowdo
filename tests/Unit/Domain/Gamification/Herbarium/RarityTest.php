@@ -13,7 +13,7 @@ final class RarityTest extends TestCase
     {
         self::assertSame(
             [2, 3, 5, 8],
-            array_map(static fn (Rarity $rarity): int => $rarity->dewPerHour(), [Rarity::Common, Rarity::Uncommon, Rarity::Rare, Rarity::VeryRare]),
+            array_map(static fn (Rarity $rarity): int => $rarity->dewYield(), [Rarity::Common, Rarity::Uncommon, Rarity::Rare, Rarity::VeryRare]),
         );
     }
 }

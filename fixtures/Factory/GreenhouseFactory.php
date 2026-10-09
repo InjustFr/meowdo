@@ -18,7 +18,7 @@ final class GreenhouseFactory extends PersistentObjectFactory
 
     protected function defaults(): array
     {
-        return ['owner' => UserFactory::new(), 'now' => new \DateTimeImmutable()];
+        return ['owner' => UserFactory::new()];
     }
 
     protected function initialize(): static
