@@ -5,17 +5,17 @@
     "amount": "{n} goutte | {n} gouttes",
     "resources": {
         "dew": "Rosée",
-        "gathered": "{gathered} récoltées en tout",
+        "gathered": "À dépenser en installations et sorties · {gathered} récoltées en tout",
         "yield": "Rendement",
         "perTask": "{yield} / tâche",
-        "misters": "Brumisateurs +{bonus} %",
-        "noMisters": "Pas encore de brumisateurs",
+        "misters": "Mousses en pot, +{bonus} % grâce aux brumisateurs",
+        "noMisters": "Somme de vos mousses en pot",
         "pots": "Pots",
         "potsUsed": "{used} / {total}",
-        "potsMax": "Jusqu’à {max} avec la verrière",
+        "potsMax": "Chaque mousse augmente le rendement · jusqu’à {max} avec une verrière plus grande",
         "watering": "Arrosage",
         "multiplier": "× {n}",
-        "wateringHint": "Planter × {n}, Arroser × {half}"
+        "wateringHint": "Planter reçoit le rendement × {n}, Arroser × {half}"
     },
     "pots": {
         "title": "Pots",
@@ -32,7 +32,8 @@
         "empty": "Pot vide",
         "plant": "Planter une mousse",
         "locked": "S’ouvre au niveau {level} de la verrière",
-        "noMoss": "Votre herbier est encore vide : franchissez le niveau 2 pour récolter votre première mousse, puis plantez-la ici."
+        "noMoss": "Votre herbier est encore vide : franchissez le niveau 2 pour récolter votre première mousse, puis plantez-la ici.",
+        "hint": "Chaque mousse en pot augmente le rendement selon sa rareté : commune 2, peu commune 3, rare 5, très rare 8 gouttes par tâche. Un pot vide n’ajoute rien. Une mousse en pot reste dans votre herbier, et en changer est gratuit."
     },
     "plant": {
         "title": "Planter une mousse dans le pot {pot}",
@@ -56,30 +57,31 @@
         "short": "Il manque {n} goutte | Il manque {n} gouttes",
         "glasshouse": {
             "name": "Verrière",
-            "description": "Un pot de plus par niveau",
+            "description": "Un pot de plus par niveau, donc plus de mousses pour le rendement",
             "effect": "{n} pot | {n} pots",
             "upgradeTo": "Passer la verrière au niveau {level}",
             "upgraded": "La verrière passe au niveau {level}."
         },
         "misters": {
             "name": "Brumisateurs",
-            "description": "+10 % de rendement par niveau",
-            "effect": "+{n} %",
+            "description": "+10 % de rendement par niveau, ce qui augmente le bonus de chaque tâche",
+            "effect": "+{n} % de rendement",
             "upgradeTo": "Passer les brumisateurs au niveau {level}",
             "upgraded": "Les brumisateurs passent au niveau {level}."
         },
         "rain_barrel": {
             "name": "Récupérateur d’eau de pluie",
-            "description": "Arrosage plus généreux avec les tâches Planter et Arroser",
-            "effect": "× {n}",
+            "description": "Augmente le multiplicateur d’arrosage de 1 par niveau : bonus plus gros sur les tâches Planter, moitié moins sur Arroser",
+            "effect": "arrosage × {n}",
             "upgradeTo": "Passer le récupérateur d’eau de pluie au niveau {level}",
             "upgraded": "Le récupérateur d’eau de pluie passe au niveau {level}."
-        }
+        },
+        "hint": "Les améliorations sont immédiates et définitives. La verrière ajoute des pots, les brumisateurs augmentent le rendement, le récupérateur rend l’arrosage plus généreux."
     },
     "expedition": {
         "section": "Expédition",
         "title": "Sortie bryologique",
-        "description": "Partez chercher une mousse que vous n’avez pas encore.",
+        "description": "Dépensez de la rosée pour rapporter une mousse que vous n’avez pas encore. Chaque sortie coûte un peu plus que la précédente.",
         "left": "plus aucune mousse à trouver | 1 mousse à trouver | {n} mousses à trouver",
         "complete": "Votre herbier est complet : il n’y a plus de mousse à trouver.",
         "launch": "Partir",
@@ -89,14 +91,14 @@
     "sources": {
         "title": "D’où vient la rosée",
         "task": "Tâche",
-        "base": "Rosée",
-        "extra": "Bonus",
+        "base": "Base",
+        "extra": "Bonus de la serre",
         "total": "Total",
         "watering": "+{n} d’arrosage (rendement × {multiplier})",
         "halfWatering": "+{n} de demi-arrosage (rendement × {multiplier} ÷ 2)",
         "mist": "+{n} de brume (rendement × 1)",
         "none": "Aucun",
-        "note": "Chaque tâche terminée rapporte sa rosée une seule fois. Les mousses en pot fixent le rendement de la serre ({yield} gouttes par tâche en ce moment) : les tâches Planter sont arrosées du rendement × {multiplier}, les tâches Arroser de la moitié, les tâches Tailler reçoivent une brume du rendement × 1. Les tâches Composter et non classées restent à 1. Séries et échéances ne changent pas la rosée."
+        "note": "Chaque tâche terminée rapporte sa rosée une seule fois : une base fixée par son quadrant, plus un bonus de la serre calculé à partir du rendement ({yield} gouttes par tâche en ce moment). Les tâches Planter sont arrosées (rendement × {multiplier}), les tâches Arroser reçoivent un demi-arrosage, les tâches Tailler une brume (rendement × 1), les tâches Composter et non classées aucun bonus. Séries et échéances changent l’XP, pas la rosée."
     },
     "rail": {
         "label": "Rosée de la serre :"
@@ -105,5 +107,6 @@
         "dew": "+{n} goutte | +{n} gouttes",
         "watered": "arrosage",
         "misted": "brume"
-    }
+    },
+    "intro": "Votre serre ne produit jamais de rosée toute seule : chaque tâche terminée en rapporte, et la serre ajoute un bonus par-dessus. Mettez des mousses en pot pour augmenter le rendement, puis dépensez la rosée en installations qui font rapporter davantage à chaque tâche, ou en sorties pour trouver de nouvelles mousses."
 }

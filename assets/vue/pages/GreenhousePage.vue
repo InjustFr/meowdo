@@ -97,14 +97,16 @@ onUnmounted(releaseAchievements);
     <div class="page page--wide greenhouse">
         <PageHeader :title="t('greenhouse.title')" :subtitle="subtitle" />
         <template v-if="greenhouse">
+            <p class="greenhouse__hint">{{ t('greenhouse.intro') }}</p>
             <GreenhouseResources :greenhouse="greenhouse" />
 
             <PageSection :title="t('greenhouse.pots.title')">
-                <p v-if="!greenhouse.plantable.length" class="greenhouse__hint">{{ t('greenhouse.pots.noMoss') }}</p>
+                <p class="greenhouse__hint">{{ t(greenhouse.plantable.length ? 'greenhouse.pots.hint' : 'greenhouse.pots.noMoss') }}</p>
                 <PotTable ref="potTable" :pots="greenhouse.pots" :max-pots="greenhouse.maxPots" :busy="busy" @plant="choosePot" @unplant="unplant" />
             </PageSection>
 
             <PageSection :title="t('greenhouse.facilities.title')">
+                <p class="greenhouse__hint">{{ t('greenhouse.facilities.hint') }}</p>
                 <FacilityTable ref="facilityTable" :facilities="greenhouse.facilities" :dew="greenhouse.dew" :busy="busy" @upgrade="upgrade" />
             </PageSection>
 
@@ -123,7 +125,7 @@ onUnmounted(releaseAchievements);
 </template>
 
 <style scoped>
-.greenhouse__hint { max-width: 40rem; color: var(--color-muted); font-size: var(--font-size-md); }
+.greenhouse__hint { max-width: 48rem; color: var(--color-muted); font-size: var(--font-size-md); }
 .greenhouse__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: var(--space-5); }
 
 @media (max-width: 64rem) {

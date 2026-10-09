@@ -5,17 +5,17 @@
     "amount": "{n} dew",
     "resources": {
         "dew": "Dew",
-        "gathered": "{gathered} gathered in all",
+        "gathered": "Spent on facilities and field trips · {gathered} gathered in all",
         "yield": "Yield",
         "perTask": "{yield} / task",
-        "misters": "Misters +{bonus}%",
-        "noMisters": "No misters yet",
+        "misters": "Potted mosses, +{bonus}% from the misters",
+        "noMisters": "Sum of your potted mosses",
         "pots": "Pots",
         "potsUsed": "{used} / {total}",
-        "potsMax": "Up to {max} with the glasshouse",
+        "potsMax": "Each moss adds to the yield · up to {max} with a bigger glasshouse",
         "watering": "Watering",
         "multiplier": "× {n}",
-        "wateringHint": "Plant × {n}, Water × {half}"
+        "wateringHint": "Plant tasks get the yield × {n}, Water tasks × {half}"
     },
     "pots": {
         "title": "Pots",
@@ -32,7 +32,8 @@
         "empty": "Empty pot",
         "plant": "Plant a moss",
         "locked": "Opens at glasshouse level {level}",
-        "noMoss": "Your herbarium is empty for now: cross level 2 to collect your first moss, then plant it here."
+        "noMoss": "Your herbarium is empty for now: cross level 2 to collect your first moss, then plant it here.",
+        "hint": "Each potted moss adds to the yield by rarity: common 2, uncommon 3, rare 5, very rare 8 dew per task. Empty pots add nothing. A moss stays in your herbarium while potted, and swapping is free."
     },
     "plant": {
         "title": "Plant a moss in pot {pot}",
@@ -56,30 +57,31 @@
         "short": "{n} dew short",
         "glasshouse": {
             "name": "Glasshouse",
-            "description": "One more pot per level",
+            "description": "One more pot per level, so more mosses feed the yield",
             "effect": "{n} pot | {n} pots",
             "upgradeTo": "Upgrade the Glasshouse to level {level}",
             "upgraded": "Glasshouse raised to level {level}."
         },
         "misters": {
             "name": "Misters",
-            "description": "+10% yield per level",
-            "effect": "+{n}%",
+            "description": "+10% yield per level, which grows every task’s bonus",
+            "effect": "+{n}% yield",
             "upgradeTo": "Upgrade the Misters to level {level}",
             "upgraded": "Misters raised to level {level}."
         },
         "rain_barrel": {
             "name": "Rain barrel",
-            "description": "Bigger watering on Plant and Water tasks",
-            "effect": "× {n}",
+            "description": "Raises the watering multiplier by 1 per level: bigger bonus on Plant tasks, half of it on Water tasks",
+            "effect": "watering × {n}",
             "upgradeTo": "Upgrade the Rain barrel to level {level}",
             "upgraded": "Rain barrel raised to level {level}."
-        }
+        },
+        "hint": "Upgrades are instant and permanent. The glasshouse adds pots, the misters raise the yield, the rain barrel makes watering bigger."
     },
     "expedition": {
         "section": "Expedition",
         "title": "Field trip",
-        "description": "Go looking for a moss you do not have yet.",
+        "description": "Spend dew to bring back a moss you do not have yet. Each trip costs a little more than the last.",
         "left": "no moss left to find | 1 moss left to find | {n} mosses left to find",
         "complete": "Your herbarium is complete: there is no moss left to find.",
         "launch": "Set out",
@@ -89,14 +91,14 @@
     "sources": {
         "title": "Where dew comes from",
         "task": "Task",
-        "base": "Dew",
-        "extra": "Extra",
+        "base": "Base",
+        "extra": "Greenhouse bonus",
         "total": "Total",
         "watering": "+{n} watering (yield × {multiplier})",
         "halfWatering": "+{n} half watering (yield × {multiplier} ÷ 2)",
         "mist": "+{n} mist (yield × 1)",
         "none": "None",
-        "note": "Each completed task pays its dew once. Potted mosses set the greenhouse yield ({yield} dew per task now): Plant tasks are watered with the yield × {multiplier}, Water tasks with half of it, Trim tasks are misted with the yield once. Compost and unsorted tasks stay at 1. Streaks and deadlines do not change dew."
+        "note": "Each completed task pays its dew once: a base set by its quadrant, plus a greenhouse bonus computed from the yield ({yield} dew per task now). Plant tasks are watered (yield × {multiplier}), Water tasks get half a watering, Trim tasks are misted (yield × 1), Compost and unsorted tasks get no bonus. Streaks and deadlines change XP, not dew."
     },
     "rail": {
         "label": "Dew in the greenhouse:"
@@ -105,5 +107,6 @@
         "dew": "+{n} dew",
         "watered": "watered",
         "misted": "misted"
-    }
+    },
+    "intro": "Your greenhouse never grows dew on its own: every completed task brings some, and the greenhouse adds a bonus on top. Pot mosses to raise the yield, then spend dew on facilities that make each task bring more, or on field trips for new mosses."
 }
