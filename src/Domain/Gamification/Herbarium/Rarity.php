@@ -20,4 +20,14 @@ enum Rarity: string
             self::VeryRare => 1,
         };
     }
+
+    public function dewPerHour(): int
+    {
+        return match ($this) {
+            self::Common => 2,
+            self::Uncommon => 3,
+            self::Rare => 5,
+            self::VeryRare => 8,
+        };
+    }
 }

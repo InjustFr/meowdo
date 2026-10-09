@@ -1,6 +1,6 @@
 # MossyDew — project guide for Claude
 
-Gamified task manager from the MossyTrunk ecosystem, with a moss herbarium to fill. Tasks (with a planned day and an optional deadline) live in projects or in the inbox; **Today** is a work context that gathers tasks from every project; the **Eisenhower matrix** orders every list; completing tasks earns XP and streaks; every level (flat 150 XP) crossed adds a random moss species (iNaturalist photo, rarity-weighted) to the user's herbarium, alongside achievements.
+Gamified task manager from the MossyTrunk ecosystem, with a moss herbarium to fill. Tasks (with a planned day and an optional deadline) live in projects or in the inbox; **Today** is a work context that gathers tasks from every project; the **Eisenhower matrix** orders every list; completing tasks earns XP and streaks; every level (flat 150 XP) crossed adds a random moss species (iNaturalist photo, rarity-weighted) to the user's herbarium, alongside achievements; collected mosses grow in an upgradable **greenhouse** where they condense dew (tasks earn dew too, Plant most), spent on instant facility upgrades and expeditions for new mosses.
 UI languages: **English and French**. URLs, code, commits: **English**.
 
 **Business rules live in [`docs/business/`](docs/business/README.md)** — read the relevant page before touching a domain concept, and update it in the same commit when a rule changes.
@@ -47,7 +47,7 @@ Contexts: `Identity`, `Planning`, `Gamification`.
 - Doctrine mapping = attributes on Domain entities. Dates without time (`plannedOn`, `dueOn`, streak days) are `date_immutable` built through `Domain\Shared\Day` — never `new \DateTimeImmutable()` for a day.
 - **"Today" depends on the user's time zone** (`User::today($now)`, `Application\Planning\Today`): never compare days with the server clock directly.
 - Invariants throw `DomainException` subclasses (`<Context>/Exception/<Violation>.php`) → 422 `problem+json` (404 for `NotFound`) through `DomainExceptionListener`, message translated from `translations/exceptions+intl-icu.<locale>.yaml`.
-- Handlers are invokable, end with `Transaction::commit()`. No bus, no domain events: `CompleteTaskHandler` orchestrates task → reward → player → `AchievementCheck`.
+- Handlers are invokable, end with `Transaction::commit()`. No bus, no domain events: `CompleteTaskHandler` orchestrates task → reward → player → greenhouse dew → `AchievementCheck`.
 - **Owner scoping**: every user-owned aggregate (`Task`, `Project`, …) has an `owner`; Doctrine repositories/read ports filter through `Infrastructure\Persistence\Doctrine\OwnerScope` (a new query must too). Another user's id answers 404.
 - Achievements: one `AchievementRule` class per achievement (auto-tagged `app.achievement_rule`, listed by `#[AsTaggedItem(priority)]`, highest first), translations for its title/description in `assets/vue/i18n/<locale>/achievements.json`.
 

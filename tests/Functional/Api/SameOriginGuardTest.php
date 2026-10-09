@@ -55,6 +55,15 @@ final class SameOriginGuardTest extends WebTestCase
         yield 'origin header' => [['HTTP_ORIGIN' => 'http://localhost']];
     }
 
+    public function testCrossSiteDewCollectionIsForbidden(): void
+    {
+        $client = self::signedInClient();
+
+        $client->jsonRequest('POST', '/api/greenhouse/collect', server: ['HTTP_SEC_FETCH_SITE' => 'cross-site']);
+
+        self::assertResponseStatusCodeSame(403);
+    }
+
     public function testCrossSiteReadsAreLeftToTheSession(): void
     {
         $client = self::signedInClient();

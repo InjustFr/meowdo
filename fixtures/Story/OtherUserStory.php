@@ -6,6 +6,7 @@ namespace App\Fixtures\Story;
 
 use App\Domain\Planning\ProjectColor;
 use App\Domain\Planning\Quadrant;
+use App\Fixtures\Factory\GreenhouseFactory;
 use App\Fixtures\Factory\PlayerFactory;
 use App\Fixtures\Factory\ProjectFactory;
 use App\Fixtures\Factory\TaskFactory;
@@ -30,6 +31,7 @@ final class OtherUserStory extends Story
             'now' => $now,
         ]);
         PlayerFactory::createOne(['owner' => $user]);
+        GreenhouseFactory::createOne(['owner' => $user, 'now' => $now]);
         $today = $user->today($now);
 
         $plans = ProjectFactory::createOne(['owner' => $user, 'name' => 'Secret plans', 'color' => ProjectColor::Rust, 'now' => $now]);

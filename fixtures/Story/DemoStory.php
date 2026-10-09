@@ -7,6 +7,9 @@ namespace App\Fixtures\Story;
 use App\Application\Gamification\PlayerStatsLedger;
 use App\Domain\Gamification\Achievement\AchievementReferee;
 use App\Domain\Gamification\Achievement\UnlockedAchievement;
+use App\Domain\Gamification\Greenhouse\DewGain;
+use App\Domain\Gamification\Greenhouse\DewPolicy;
+use App\Domain\Gamification\Greenhouse\Greenhouse;
 use App\Domain\Gamification\Herbarium\SpeciesCatalog;
 use App\Domain\Gamification\Herbarium\Specimen;
 use App\Domain\Gamification\Player;
@@ -19,6 +22,7 @@ use App\Domain\Planning\Recurrence;
 use App\Domain\Planning\RecurrenceUnit;
 use App\Domain\Planning\Task;
 use App\Domain\Shared\Day;
+use App\Fixtures\Factory\GreenhouseFactory;
 use App\Fixtures\Factory\PlayerFactory;
 use App\Fixtures\Factory\ProjectFactory;
 use App\Fixtures\Factory\TaskFactory;
@@ -31,6 +35,8 @@ final class DemoStory extends Story
 {
     private User $user;
     private Player $player;
+    private Greenhouse $greenhouse;
+    private DewGain $dew;
     private \DateTimeImmutable $now;
     private \DateTimeImmutable $today;
 
@@ -41,6 +47,7 @@ final class DemoStory extends Story
         private readonly EntityManagerInterface $entityManager,
         private readonly ClockInterface $clock,
         private readonly RewardPolicy $policy,
+        private readonly DewPolicy $dewPolicy,
         private readonly AchievementReferee $referee,
         private readonly PlayerStatsLedger $ledger,
     ) {
@@ -57,6 +64,8 @@ final class DemoStory extends Story
             'now' => $this->now->modify('-3 weeks'),
         ]);
         $this->player = PlayerFactory::createOne(['owner' => $this->user]);
+        $this->greenhouse = GreenhouseFactory::createOne(['owner' => $this->user, 'now' => $this->now->modify('-3 weeks')]);
+        $this->dew = new DewGain(0);
         $this->today = $this->user->today($this->now);
 
         $home = $this->project('Home', ProjectColor::Berry);
@@ -99,9 +108,13 @@ final class DemoStory extends Story
         $this->subtask($cover, 'Colouring', '09:02', planned: 0);
         $this->subtask($cover, 'Render and export', '09:03');
 
+        $specimens = [];
         foreach (\array_slice(SpeciesCatalog::all(), 0, $this->player->level() - 1) as $species) {
-            $this->entityManager->persist(Specimen::collect($this->user, $species, $this->now));
+            $specimen = Specimen::collect($this->user, $species, $this->now);
+            $this->entityManager->persist($specimen);
+            $specimens[] = $specimen;
         }
+        $this->tendGreenhouse($specimens, $this->now->modify('-6 hours'));
         $this->entityManager->flush();
 
         foreach ($this->referee->newlyMet($this->ledger->statsOf($this->player), []) as $rule) {
@@ -110,6 +123,18 @@ final class DemoStory extends Story
             $this->entityManager->persist($achievement);
         }
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param list<Specimen> $specimens
+     */
+    private function tendGreenhouse(array $specimens, \DateTimeImmutable $since): void
+    {
+        $this->greenhouse->receive($this->dew, $since);
+        usort($specimens, static fn (Specimen $one, Specimen $other): int => $other->species()->rarity->dewPerHour() <=> $one->species()->rarity->dewPerHour());
+        foreach (\array_slice($specimens, 0, \count($this->greenhouse->pots())) as $index => $specimen) {
+            $this->greenhouse->plant($index + 1, $specimen, $since);
+        }
     }
 
     private function project(string $name, ProjectColor $color): Project
@@ -165,6 +190,7 @@ final class DemoStory extends Story
         $day = $this->day($offset);
         $this->player->recordActivity($day);
         $this->player->earn($this->policy->rewardFor($task, $day, $this->player->streak()->current));
+        $this->dew = $this->dew->plus($this->dewPolicy->dewFor($task, $this->greenhouse));
     }
 
     private function day(int $offset): \DateTimeImmutable

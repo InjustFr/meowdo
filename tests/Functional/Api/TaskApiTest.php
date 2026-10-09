@@ -48,6 +48,8 @@ final class TaskApiTest extends WebTestCase
         $completion = self::body($client);
         self::assertTrue(Json::at($completion, 'task', 'done'));
         self::assertSame(['xp' => 26], Json::array($completion, 'reward'));
+        self::assertSame(['amount' => 12, 'watering' => 0, 'mist' => 0], Json::array($completion, 'dew'));
+        self::assertSame([12, false], [Json::int($completion, 'player', 'dew'), Json::at($completion, 'player', 'tankFull')]);
         self::assertSame([], Json::array($completion, 'newSpecies'));
         self::assertSame(26, Json::int($completion, 'player', 'xp'));
         self::assertSame(['first_drop'], Json::array($completion, 'player', 'newAchievements'));

@@ -1,5 +1,5 @@
 shared:
-    not_found: '{subject, select, task {Cette tâche n’existe} project {Ce projet n’existe} player {Ce profil de joueur n’existe} critter {Cette bestiole n’existe} other {Cet élément n’existe}} plus.'
+    not_found: '{subject, select, task {Cette tâche n’existe} project {Ce projet n’existe} player {Ce profil de joueur n’existe} greenhouse {Cette serre n’existe} critter {Cette bestiole n’existe} other {Cet élément n’existe}} plus.'
     invalid_day: '« {day} » n’est pas une date valide.'
 user:
     invalid_email: '« {email} » n’est pas une adresse e-mail valide.'
@@ -26,5 +26,12 @@ task:
     with_subtasks_cannot_be_nested: '« {title} » a ses propres sous-tâches : elle ne peut pas devenir une sous-tâche.'
 game:
     unknown_species: 'Cette mousse n’est pas dans l’herbier.'
+    not_enough_dew: 'Cela coûte {cost, plural, one {# goutte} other {# gouttes}} et vous en avez {dew, number}.'
+    facility_at_max_level: '{facility, select, glasshouse {La verrière est déjà à son plus haut niveau} condenser {Le condenseur de rosée est déjà à son plus haut niveau} misters {Les brumisateurs sont déjà à leur plus haut niveau} rain_barrel {Le récupérateur d’eau de pluie est déjà à son plus haut niveau} other {Cette installation est déjà à son plus haut niveau}}.'
+    unknown_pot: 'Votre serre n’a pas encore de pot {pot}.'
+    pot_is_empty: 'Le pot {pot} est déjà vide.'
+    moss_not_collected: 'Trouvez cette mousse pour votre herbier avant de la planter.'
+    moss_already_planted: 'Cette mousse pousse déjà dans le pot {pot}.'
+    herbarium_complete: 'Votre herbier est complet : il ne reste plus de mousse à trouver.'
 identity:
     invalid_theme_color: 'Couleur invalide « {color} » : utilisez un code hexadécimal comme #5b7f3a.'

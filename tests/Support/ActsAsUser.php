@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
+use App\Domain\Gamification\Greenhouse\Greenhouse;
 use App\Domain\Gamification\Player;
 use App\Domain\Identity\User;
 use App\Infrastructure\Security\SecurityUser;
@@ -21,6 +22,7 @@ trait ActsAsUser
         $user = User::join($id, $email ?? \sprintf('%s@mossydew.test', $id), 'Louis', $timezone, Clock::get()->now());
         $entityManager->persist($user);
         $entityManager->persist(Player::start($user));
+        $entityManager->persist(Greenhouse::open($user, Clock::get()->now()));
         $entityManager->flush();
 
         return $user;

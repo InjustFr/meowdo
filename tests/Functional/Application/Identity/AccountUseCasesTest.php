@@ -8,6 +8,7 @@ use App\Application\Identity\ChangeTimezone\ChangeTimezoneHandler;
 use App\Application\Identity\ChooseLanguage\ChooseLanguageHandler;
 use App\Application\Identity\SignIn\SignIn;
 use App\Application\Identity\SignIn\SignInHandler;
+use App\Domain\Gamification\Greenhouse\GreenhouseRepository;
 use App\Domain\Gamification\PlayerRepository;
 use App\Domain\Identity\Exception\EmailAlreadyTaken;
 use App\Domain\Identity\Exception\InvalidEmail;
@@ -36,6 +37,15 @@ final class AccountUseCasesTest extends KernelTestCase
         self::assertSame(['account-1', 'louis@example.com', 'Louis', 'Asia/Tokyo', null], [$user->accountId(), $user->email(), $user->displayName(), $user->timezone(), $user->language()]);
         $player = self::getContainer()->get(PlayerRepository::class)->of($user);
         self::assertSame([0, 1], [$player->xp(), $player->level()]);
+    }
+
+    public function testAFirstSignInOpensASmallGreenhouse(): void
+    {
+        $user = $this->signIn(new SignIn('account-1', 'louis@example.com', 'Louis'));
+
+        $greenhouse = self::getContainer()->get(GreenhouseRepository::class)->of($user);
+        self::assertSame([0, 2, 1, 100], [$greenhouse->dew(), \count($greenhouse->pots()), $greenhouse->facilities()->glasshouse, $greenhouse->capacity()]);
+        self::assertNull($greenhouse->fullAt());
     }
 
     public function testAFirstSignInFallsBackOnTheEmailAndParis(): void

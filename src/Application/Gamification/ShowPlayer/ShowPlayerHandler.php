@@ -9,6 +9,7 @@ use App\Application\Identity\CurrentUser;
 use App\Application\Planning\Today;
 use App\Domain\Gamification\Achievement\UnlockedAchievement;
 use App\Domain\Gamification\Achievement\UnlockedAchievementRepository;
+use App\Domain\Gamification\Greenhouse\GreenhouseRepository;
 use App\Domain\Gamification\Herbarium\SpeciesCatalog;
 use App\Domain\Gamification\Herbarium\SpecimenRepository;
 use App\Domain\Gamification\LevelCurve;
@@ -21,6 +22,7 @@ final readonly class ShowPlayerHandler
         private PlayerRepository $players,
         private SpecimenRepository $specimens,
         private UnlockedAchievementRepository $achievements,
+        private GreenhouseRepository $greenhouses,
         private Today $today,
     ) {
     }
@@ -30,6 +32,7 @@ final readonly class ShowPlayerHandler
         $user = $this->currentUser->get();
         $player = $this->players->of($user);
         $level = $player->level();
+        $greenhouse = $this->greenhouses->of($user);
         $unseen = array_filter($this->achievements->of($user), static fn (UnlockedAchievement $achievement): bool => !$achievement->isSeen());
 
         return new PlayerView(
@@ -42,6 +45,8 @@ final readonly class ShowPlayerHandler
             $player->streak()->best,
             \count($this->specimens->of($user)),
             \count(SpeciesCatalog::all()),
+            $greenhouse->dew(),
+            $greenhouse->isFullAt($this->today->now()),
             array_values(array_map(static fn (UnlockedAchievement $achievement): string => $achievement->achievement(), $unseen)),
         );
     }

@@ -1,5 +1,5 @@
 shared:
-    not_found: 'This {subject, select, task {task} project {project} player {player} critter {critter} other {item}} no longer exists.'
+    not_found: 'This {subject, select, task {task} project {project} player {player} greenhouse {greenhouse} critter {critter} other {item}} no longer exists.'
     invalid_day: '“{day}” is not a valid date.'
 user:
     invalid_email: '“{email}” is not a valid email address.'
@@ -26,5 +26,12 @@ task:
     with_subtasks_cannot_be_nested: '“{title}” has subtasks of its own: it cannot become a subtask.'
 game:
     unknown_species: 'This moss is not in the herbarium.'
+    not_enough_dew: 'This costs {cost, number} dew and you have {dew, number}.'
+    facility_at_max_level: '{facility, select, glasshouse {The glasshouse} condenser {The dew condenser} misters {The misters} rain_barrel {The rain barrel} other {This facility}} is already at its highest level.'
+    unknown_pot: 'There is no pot {pot} in your greenhouse yet.'
+    pot_is_empty: 'Pot {pot} is already empty.'
+    moss_not_collected: 'Find this moss for your herbarium before planting it.'
+    moss_already_planted: 'This moss already grows in pot {pot}.'
+    herbarium_complete: 'Your herbarium is complete: there is no moss left to find.'
 identity:
     invalid_theme_color: 'Invalid colour “{color}”: use a hexadecimal code such as #5b7f3a.'

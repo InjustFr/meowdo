@@ -6,6 +6,7 @@ namespace App\Application\Planning\CompleteTask;
 
 use App\Application\Gamification\AchievementCheck;
 use App\Application\Gamification\CollectSpecies;
+use App\Application\Gamification\CondenseTaskDew;
 use App\Application\Gamification\ShowPlayer\ShowPlayerHandler;
 use App\Application\Gamification\SpeciesView;
 use App\Application\Identity\CurrentUser;
@@ -31,6 +32,7 @@ final readonly class CompleteTaskHandler
         private ShowPlayerHandler $showPlayer,
         private ContinueSeries $continueSeries,
         private CollectSpecies $collectSpecies,
+        private CondenseTaskDew $condenseTaskDew,
     ) {
     }
 
@@ -43,12 +45,14 @@ final readonly class CompleteTaskHandler
         $reward = null;
         $leveledUpTo = null;
         $newSpecies = [];
+        $rewarded = [];
         $player = $this->players->of($this->currentUser->get());
         foreach ($completed as $done) {
             ($this->continueSeries)($done);
             if (!$done->claimReward($this->today->now())) {
                 continue;
             }
+            $rewarded[] = $done;
             $player->recordActivity($today);
             $earned = $this->policy->rewardFor($done, $today, $player->streak()->current);
             $reward = null === $reward ? $earned : $reward->plus($earned);
@@ -60,6 +64,7 @@ final readonly class CompleteTaskHandler
                 $newSpecies = ($this->collectSpecies)($player->owner(), $leveledUpTo - $levelBefore);
             }
         }
+        $dew = ($this->condenseTaskDew)($player->owner(), $rewarded);
         $this->transaction->commit();
         ($this->achievements)();
 
@@ -68,6 +73,7 @@ final readonly class CompleteTaskHandler
         return new CompletionView(
             TaskView::of($task),
             $reward,
+            $dew,
             $leveledUpTo,
             array_map(static fn (Species $species): SpeciesView => SpeciesView::of($species), $newSpecies),
             ($this->showPlayer)(),

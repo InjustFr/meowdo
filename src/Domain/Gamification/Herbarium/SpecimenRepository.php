@@ -14,4 +14,6 @@ interface SpecimenRepository
      * @return list<Specimen>
      */
     public function of(User $owner): array;
+
+    public function ofSpecies(User $owner, Species $species): ?Specimen;
 }

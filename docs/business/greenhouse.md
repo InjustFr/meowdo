@@ -1,0 +1,23 @@
+# Greenhouse
+
+Mosses collected in the herbarium grow in the pots of a greenhouse and condense **dew**. Dew pays for facilities (more pots, a bigger tank, more production, longer watering) and for expeditions that bring back new mosses. Important work done before it is urgent (Plant) feeds the greenhouse most.
+
+- **GH1** Every player has one greenhouse, opened small: glasshouse level 1 (2 pots), dew condenser level 1 (tank of 100 dew), misters and rain barrel level 0, no dew. — `Greenhouse::open()`, `SignInHandler`
+- **GH2** Completing a task condenses dew once per task (G1), by quadrant, on a strict ladder: Plant 12, Water 6, Trim 3, Compost 1, unsorted 1. Streak and deadline do not change dew (they stay XP only). A subtask and the parent it completes each condense their own dew (S3). — `DewPolicy`, `CondenseTaskDew`, `CompleteTaskHandler`
+- **GH3** Each quadrant also brings its own extra: **Plant waters** the greenhouse, adding (2 + rain barrel level) hours of the current production straight to the dew balance, even when the tank is full; **Water** waters half as many hours; **Trim mists** the tank with one hour of production (only up to the tank capacity); Compost and unsorted tasks bring nothing more. Every extra is floored to whole dew, so the ladder always holds: Plant > Water > Trim > Compost. — `DewPolicy`, `Greenhouse::wateringHours()`, `Greenhouse::receive()`
+- **GH4** Any collected moss can be planted in any pot, one pot per species at a time; planting into a pot that already holds a moss replaces it, and emptying a pot is free. A potted moss stays in the herbarium. Only mosses of one's own herbarium can be planted. — `Greenhouse::plant()`, `Greenhouse::unplant()`, `MossAlreadyPlanted`, `MossNotCollected`, `UnknownPot`, `PotIsEmpty`
+- **GH5** A potted moss yields dew every hour by rarity: common 2, uncommon 3, rare 5, very rare 8; each misters level adds 10 % to the whole production. Production is counted in thousandths of dew from the time elapsed, not by ticks. — `Rarity::dewPerHour()`, `Greenhouse::ratePerHourMilli()`
+- **GH6** Production fills the tank up to the condenser capacity (100, 160, 250, 400, 650, 1,000, 1,600, 2,600, 4,000, 6,500 by level). A full tank stops filling; nothing in it is ever lost. Every change to the greenhouse (planting, emptying, upgrading, receiving dew) first settles the tank at the old production and capacity. — `Greenhouse::tankMilliAt()`, `Greenhouse::fullAt()`
+- **GH7** Collecting moves the whole dew of the tank to the balance; the fraction below one dew stays in the tank. — `Greenhouse::collect()`, `CollectDewHandler`
+- **GH8** Upgrades are instant, never timed: paying the cost of the next level raises it at once. Levels never drop. An unaffordable upgrade, or one beyond the last level, changes nothing. Costs to reach each level: — `Facility`, `Greenhouse::upgrade()`, `NotEnoughDew`, `FacilityAtMaxLevel`
+
+  | Facility | Effect | Costs |
+  |---|---|---|
+  | Glasshouse (L1–L11) | level + 1 pots | L2 80 · L3 140 · L4 260 · L5 470 · L6 840 · L7 1,500 · L8 2,700 · L9 4,900 · L10 8,800 · L11 15,800 |
+  | Dew condenser (L1–L10) | tank capacity (GH6) | L2 60 · L3 100 · L4 170 · L5 280 · L6 460 · L7 760 · L8 1,250 · L9 2,050 · L10 3,400 |
+  | Misters (L0–L10) | +10 % production per level | L1 120 · L2 230 · L3 430 · L4 820 · L5 1,560 · L6 2,970 · L7 5,650 · L8 10,700 · L9 20,400 · L10 38,700 |
+  | Rain barrel (L0–L4) | watering lasts 2 + level hours | L1 200 · L2 450 · L3 1,000 · L4 2,200 |
+
+- **GH9** An expedition costs 200 + 50·n + 10·n² dew (n = expeditions already made: 200, 260, 340, 440…) and brings back one species not collected yet, drawn like a level-up species (G7). It is refused, without cost, once the herbarium is complete. — `Greenhouse::fundExpedition()`, `Greenhouse::expeditionCost()`, `LaunchExpeditionHandler`, `HerbariumComplete`
+- **GH10** Dew gathered over a lifetime (task dew, watering, collected tank) never decreases; spending only lowers the balance. — `Greenhouse::dewGathered()`
+- **GH12** When the greenhouse was introduced, every player got one opened as in GH1, with the base dew of GH2 (no watering or mist) for every task already rewarded. — migration `Version20261009043059`

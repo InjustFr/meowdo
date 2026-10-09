@@ -9,15 +9,20 @@ use App\Application\Gamification\ListAchievements\AchievementView;
 use App\Application\Gamification\ListAchievements\ListAchievementsHandler;
 use App\Application\Gamification\ListHerbarium\ListHerbariumHandler;
 use App\Application\Gamification\MarkAchievementsSeen\MarkAchievementsSeenHandler;
+use App\Application\Gamification\PlantMoss\PlantMoss;
+use App\Application\Gamification\PlantMoss\PlantMossHandler;
 use App\Application\Gamification\PlayerView;
 use App\Application\Gamification\ShowPlayer\ShowPlayerHandler;
 use App\Domain\Gamification\Herbarium\SpeciesCatalog;
+use App\Domain\Gamification\Herbarium\Specimen;
 use App\Domain\Identity\User;
+use App\Domain\Planning\Quadrant;
 use App\Tests\Support\ActsAsUser;
 use App\Tests\Support\FreezesClock;
 use App\Tests\Support\PlansTasks;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Clock\Clock;
 
 final class PlayerUseCasesTest extends KernelTestCase
 {
@@ -37,7 +42,7 @@ final class PlayerUseCasesTest extends KernelTestCase
     {
         $player = $this->player();
 
-        self::assertSame(['Louis', 0, 1, 0, 150, 0, 0, 0, \count(SpeciesCatalog::all()), []], [$player->displayName, $player->xp, $player->level, $player->levelStartXp, $player->nextLevelXp, $player->streak, $player->bestStreak, $player->speciesCollected, $player->speciesTotal, $player->newAchievements]);
+        self::assertSame(['Louis', 0, 1, 0, 150, 0, 0, 0, \count(SpeciesCatalog::all()), 0, false, []], [$player->displayName, $player->xp, $player->level, $player->levelStartXp, $player->nextLevelXp, $player->streak, $player->bestStreak, $player->speciesCollected, $player->speciesTotal, $player->dew, $player->tankFull, $player->newAchievements]);
     }
 
     public function testStreakFadesAfterAMissedDay(): void
@@ -88,6 +93,21 @@ final class PlayerUseCasesTest extends KernelTestCase
         self::assertSame(SpeciesCatalog::get($herbarium->specimens[0]->species)->rarity->value, $herbarium->specimens[0]->rarity);
         self::assertSame(\count(SpeciesCatalog::all()) - 2, array_sum($herbarium->remaining));
         self::assertSame(2, $this->player()->speciesCollected);
+    }
+
+    public function testThePlayerShowsTheirDewAndAFullTank(): void
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->persist(Specimen::collect($this->user, SpeciesCatalog::get('buxbaumia-aphylla'), Clock::get()->now()));
+        $entityManager->flush();
+        self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'buxbaumia-aphylla'));
+        self::completeTask(self::createTask('Vet', quadrant: Quadrant::Schedule));
+
+        self::freezeAt('2026-10-06 20:00 UTC');
+        self::assertSame([28, false], [$this->player()->dew, $this->player()->tankFull]);
+
+        self::freezeAt('2026-10-06 20:30 UTC');
+        self::assertSame([28, true], [$this->player()->dew, $this->player()->tankFull]);
     }
 
     private function player(): PlayerView
