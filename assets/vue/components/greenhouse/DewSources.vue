@@ -1,0 +1,77 @@
+<script setup>
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useDew } from '../../composables/useDew.js';
+
+const props = defineProps({
+    sources: { type: Array, required: true },
+    wateringHours: { type: Number, required: true },
+});
+
+const { t } = useI18n();
+const { number } = useDew();
+
+const HOURS = { schedule: 1, do_first: 0.5 };
+
+function extra(source) {
+    if (source.quadrant in HOURS) return t('greenhouse.sources.watering', { n: number(source.watering), hours: number(props.wateringHours * HOURS[source.quadrant]) });
+    if (source.quadrant === 'delegate') return t('greenhouse.sources.mist', { n: number(source.mist) });
+    return t('greenhouse.sources.none');
+}
+
+const rows = computed(() => props.sources.map((source) => {
+    const key = source.quadrant ?? 'unsorted';
+    return {
+        key,
+        name: source.quadrant ? t(`matrix.quadrants.${source.quadrant}.name`) : t('matrix.unsorted'),
+        base: number(source.base),
+        extra: extra(source),
+        total: number(source.amount + source.mist),
+        color: `var(--quadrant-${key.replace('_', '-')})`,
+    };
+}));
+</script>
+
+<template>
+    <div class="sources">
+        <table class="sources__table">
+            <thead>
+                <tr>
+                    <th scope="col">{{ t('greenhouse.sources.task') }}</th>
+                    <th scope="col" class="sources__numeric">{{ t('greenhouse.sources.base') }}</th>
+                    <th scope="col">{{ t('greenhouse.sources.extra') }}</th>
+                    <th scope="col" class="sources__numeric">{{ t('greenhouse.sources.total') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="row in rows" :key="row.key" :class="['sources__row', { 'sources__row--best': row.key === 'schedule' }]" :data-test="`dew-source-${row.key}`">
+                    <th scope="row" class="sources__name"><span class="sources__dot" :style="{ background: row.color }" aria-hidden="true" />{{ row.name }}</th>
+                    <td class="sources__numeric tabular">{{ row.base }}</td>
+                    <td class="sources__extra">{{ row.extra }}</td>
+                    <td class="sources__numeric sources__total tabular">{{ row.total }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="sources__note">{{ t('greenhouse.sources.note', { hours: number(wateringHours) }) }}</p>
+    </div>
+</template>
+
+<style scoped>
+.sources { display: flex; flex-direction: column; gap: var(--space-2); }
+.sources__table { width: 100%; border: 0.0625rem solid var(--color-border); border-radius: var(--radius); border-collapse: separate; border-spacing: 0; background: var(--color-surface); font-size: var(--font-size-md); }
+.sources__table th, .sources__table td { padding: var(--space-2) var(--space-3); border-bottom: 0.0625rem solid var(--color-border); text-align: left; }
+.sources__table tbody tr:last-child > * { border-bottom: none; }
+.sources__table thead th { color: var(--color-subtle); font-size: var(--font-size-xs); font-weight: 600; letter-spacing: var(--tracking-caps); text-transform: uppercase; white-space: nowrap; }
+.sources__numeric { text-align: right !important; }
+.sources__name { color: var(--color-ink); font-weight: 500; white-space: nowrap; }
+.sources__dot { display: inline-block; width: 0.625rem; height: 0.625rem; margin-right: var(--space-2); border-radius: 50%; }
+.sources__extra { color: var(--color-muted); }
+.sources__total { color: color-mix(in oklch, var(--color-dew) 65%, var(--color-ink)); font-weight: 600; }
+.sources__row--best > * { background: var(--color-accent-soft); }
+.sources__row--best .sources__name { font-weight: 700; }
+.sources__note { color: var(--color-subtle); font-size: var(--font-size-xs); }
+
+@media (max-width: 30rem) {
+    .sources__table th, .sources__table td { padding-inline: var(--space-2); }
+}
+</style>

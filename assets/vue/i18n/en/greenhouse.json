@@ -1,0 +1,118 @@
+{
+    "title": "Greenhouse",
+    "subtitle": "Glasshouse level {level} · {pots} · {rate} dew an hour",
+    "potCount": "no pot | 1 pot | {count} pots",
+    "amount": "{n} dew",
+    "collected": "{n} dew collected.",
+    "duration": {
+        "days": "{days} d {hours} h",
+        "hours": "{hours} h {minutes} min",
+        "minutes": "{minutes} min"
+    },
+    "resources": {
+        "dew": "Dew",
+        "gathered": "{gathered} gathered in all",
+        "tank": "Tank",
+        "tankLevel": "{tank} / {capacity}",
+        "collect": "Collect {n} dew",
+        "full": "Full: collect it so the mosses keep condensing.",
+        "idle": "Plant a moss to start condensing.",
+        "fullIn": "Full in {duration}",
+        "production": "Production",
+        "perHour": "{rate} /h",
+        "misters": "Misters +{bonus}%",
+        "noMisters": "No misters yet",
+        "pots": "Pots",
+        "potsUsed": "{used} / {total}",
+        "potsMax": "Up to {max} with the glasshouse"
+    },
+    "pots": {
+        "title": "Pots",
+        "number": "No.",
+        "moss": "Moss",
+        "rarity": "Rarity",
+        "yield": "Yield",
+        "since": "Planted",
+        "actions": "Actions",
+        "perHour": "{dew} /h",
+        "change": "Change",
+        "unplant": "Unplant {name}",
+        "unplanted": "Pot {pot} is empty again.",
+        "empty": "Empty pot",
+        "plant": "Plant a moss",
+        "locked": "Opens at glasshouse level {level}",
+        "noMoss": "Your herbarium is empty for now: cross level 2 to collect your first moss, then plant it here."
+    },
+    "plant": {
+        "title": "Plant a moss in pot {pot}",
+        "emptyTitle": "No moss to plant yet",
+        "emptyHint": "Complete tasks to cross level 2: each level brings a moss to your herbarium.",
+        "herbarium": "Open the herbarium",
+        "inPot": "in pot {pot}",
+        "done": "{name} planted in pot {pot}."
+    },
+    "facilities": {
+        "title": "Facilities",
+        "facility": "Facility",
+        "level": "Level",
+        "effect": "Now → next",
+        "cost": "Cost",
+        "levelOf": "{level} / {max}",
+        "then": "then",
+        "max": "Max level",
+        "upgrade": "Upgrade",
+        "upgradeTo": "Upgrade the {name} to level {level}",
+        "short": "{n} dew short",
+        "upgraded": "{name} raised to level {level}.",
+        "glasshouse": {
+            "name": "Glasshouse",
+            "description": "One more pot per level",
+            "effect": "{n} pot | {n} pots"
+        },
+        "condenser": {
+            "name": "Dew condenser",
+            "description": "A bigger tank",
+            "effect": "{n} dew"
+        },
+        "misters": {
+            "name": "Misters",
+            "description": "+10% production per level",
+            "effect": "+{n}%"
+        },
+        "rain_barrel": {
+            "name": "Rain barrel",
+            "description": "Longer watering from Plant tasks",
+            "effect": "{n} h"
+        }
+    },
+    "expedition": {
+        "section": "Expedition",
+        "title": "Field trip",
+        "description": "Go looking for a moss you do not have yet.",
+        "left": "no moss left to find | 1 moss left to find | {n} mosses left to find",
+        "complete": "Your herbarium is complete: there is no moss left to find.",
+        "launch": "Set out",
+        "back": "Back from the field",
+        "next": "The next field trip costs {cost}."
+    },
+    "sources": {
+        "title": "Where dew comes from",
+        "task": "Task",
+        "base": "Dew",
+        "extra": "Extra",
+        "total": "Total",
+        "watering": "+{n} watering ({hours} h)",
+        "mist": "+{n} mist, into the tank",
+        "none": "None",
+        "note": "Watering adds {hours} h of production straight to your dew, even when the tank is full. Mist tops up the tank with one hour of production. Streaks and deadlines do not change dew."
+    },
+    "rail": {
+        "label": "Dew in the greenhouse:",
+        "tankFull": "the tank is full"
+    },
+    "burst": {
+        "dew": "+{n} dew",
+        "watered": "watered",
+        "misted": "misted"
+    }
+}

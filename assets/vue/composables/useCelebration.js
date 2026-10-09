@@ -7,11 +7,17 @@ let nextId = 1;
 export function useCelebration() {
     const { drip } = useSound();
 
-    function reward({ reward, leveledUpTo, newSpecies }) {
+    function reward({ reward, dew, leveledUpTo, newSpecies }) {
         state.drops += 1;
         drip();
         if (reward) {
-            const burst = { id: nextId++, xp: reward.xp };
+            const burst = {
+                id: nextId++,
+                xp: reward.xp,
+                dew: dew?.amount ?? 0,
+                watered: (dew?.watering ?? 0) > 0,
+                misted: (dew?.mist ?? 0) > 0,
+            };
             state.bursts.push(burst);
             window.setTimeout(() => {
                 const index = state.bursts.indexOf(burst);

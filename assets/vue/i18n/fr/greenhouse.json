@@ -1,0 +1,118 @@
+{
+    "title": "Serre",
+    "subtitle": "Verrière niveau {level} · {pots} · {rate} gouttes par heure",
+    "potCount": "aucun pot | 1 pot | {count} pots",
+    "amount": "{n} goutte | {n} gouttes",
+    "collected": "{n} goutte récoltée. | {n} gouttes récoltées.",
+    "duration": {
+        "days": "{days} j {hours} h",
+        "hours": "{hours} h {minutes} min",
+        "minutes": "{minutes} min"
+    },
+    "resources": {
+        "dew": "Rosée",
+        "gathered": "{gathered} récoltées en tout",
+        "tank": "Réservoir",
+        "tankLevel": "{tank} / {capacity}",
+        "collect": "Récolter {n} goutte | Récolter {n} gouttes",
+        "full": "Plein : récoltez-le pour que les mousses continuent de condenser.",
+        "idle": "Plantez une mousse pour commencer à condenser.",
+        "fullIn": "Plein dans {duration}",
+        "production": "Production",
+        "perHour": "{rate} /h",
+        "misters": "Brumisateurs +{bonus} %",
+        "noMisters": "Pas encore de brumisateurs",
+        "pots": "Pots",
+        "potsUsed": "{used} / {total}",
+        "potsMax": "Jusqu’à {max} avec la verrière"
+    },
+    "pots": {
+        "title": "Pots",
+        "number": "N°",
+        "moss": "Mousse",
+        "rarity": "Rareté",
+        "yield": "Rendement",
+        "since": "Plantée",
+        "actions": "Actions",
+        "perHour": "{dew} /h",
+        "change": "Changer",
+        "unplant": "Dépoter {name}",
+        "unplanted": "Le pot {pot} est de nouveau vide.",
+        "empty": "Pot vide",
+        "plant": "Planter une mousse",
+        "locked": "S’ouvre au niveau {level} de la verrière",
+        "noMoss": "Votre herbier est encore vide : franchissez le niveau 2 pour récolter votre première mousse, puis plantez-la ici."
+    },
+    "plant": {
+        "title": "Planter une mousse dans le pot {pot}",
+        "emptyTitle": "Aucune mousse à planter pour l’instant",
+        "emptyHint": "Terminez des tâches pour franchir le niveau 2 : chaque niveau ajoute une mousse à votre herbier.",
+        "herbarium": "Ouvrir l’herbier",
+        "inPot": "dans le pot {pot}",
+        "done": "{name} plantée dans le pot {pot}."
+    },
+    "facilities": {
+        "title": "Installations",
+        "facility": "Installation",
+        "level": "Niveau",
+        "effect": "Actuel → suivant",
+        "cost": "Coût",
+        "levelOf": "{level} / {max}",
+        "then": "puis",
+        "max": "Niveau max",
+        "upgrade": "Améliorer",
+        "upgradeTo": "Passer {name} au niveau {level}",
+        "short": "Il manque {n} goutte | Il manque {n} gouttes",
+        "upgraded": "{name} passe au niveau {level}.",
+        "glasshouse": {
+            "name": "Verrière",
+            "description": "Un pot de plus par niveau",
+            "effect": "{n} pot | {n} pots"
+        },
+        "condenser": {
+            "name": "Condenseur de rosée",
+            "description": "Un réservoir plus grand",
+            "effect": "{n} goutte | {n} gouttes"
+        },
+        "misters": {
+            "name": "Brumisateurs",
+            "description": "+10 % de production par niveau",
+            "effect": "+{n} %"
+        },
+        "rain_barrel": {
+            "name": "Récupérateur d’eau de pluie",
+            "description": "Arrosage plus long avec les tâches Planter",
+            "effect": "{n} h"
+        }
+    },
+    "expedition": {
+        "section": "Expédition",
+        "title": "Sortie bryologique",
+        "description": "Partez chercher une mousse que vous n’avez pas encore.",
+        "left": "plus aucune mousse à trouver | 1 mousse à trouver | {n} mousses à trouver",
+        "complete": "Votre herbier est complet : il n’y a plus de mousse à trouver.",
+        "launch": "Partir",
+        "back": "De retour du terrain",
+        "next": "La prochaine sortie coûte {cost}."
+    },
+    "sources": {
+        "title": "D’où vient la rosée",
+        "task": "Tâche",
+        "base": "Rosée",
+        "extra": "Bonus",
+        "total": "Total",
+        "watering": "+{n} d’arrosage ({hours} h)",
+        "mist": "+{n} de brume, dans le réservoir",
+        "none": "Aucun",
+        "note": "L’arrosage ajoute {hours} h de production directement à votre rosée, même réservoir plein. La brume remplit le réservoir d’une heure de production. Séries et échéances ne changent pas la rosée."
+    },
+    "rail": {
+        "label": "Rosée de la serre :",
+        "tankFull": "le réservoir est plein"
+    },
+    "burst": {
+        "dew": "+{n} goutte | +{n} gouttes",
+        "watered": "arrosage",
+        "misted": "brume"
+    }
+}

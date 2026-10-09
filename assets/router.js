@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import AchievementsPage from './vue/pages/AchievementsPage.vue';
 import CreditsPage from './vue/pages/CreditsPage.vue';
 import DonePage from './vue/pages/DonePage.vue';
+import GreenhousePage from './vue/pages/GreenhousePage.vue';
 import HerbariumPage from './vue/pages/HerbariumPage.vue';
 import InboxPage from './vue/pages/InboxPage.vue';
 import MatrixPage from './vue/pages/MatrixPage.vue';
@@ -25,6 +26,7 @@ export const router = createRouter({
         { path: '/projects', name: 'projects', component: ProjectsPage },
         { path: '/projects/:id', name: 'project', component: ProjectPage, props: true },
         { path: '/herbarium', name: 'herbarium', component: HerbariumPage },
+        { path: '/greenhouse', name: 'greenhouse', component: GreenhousePage },
         { path: '/achievements', name: 'achievements', component: AchievementsPage },
         { path: '/stats', name: 'stats', component: StatsPage },
         { path: '/settings', name: 'settings', component: SettingsPage },
