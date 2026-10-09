@@ -118,6 +118,17 @@ final class GreenhouseTest extends TestCase
         self::assertSame(100000, $this->greenhouse->tankMilliAt($later));
     }
 
+    public function testMistOnlyTopsUpWholeDew(): void
+    {
+        $this->plant(1, self::VERY_RARE);
+        $later = $this->later('+44775 seconds');
+
+        $received = $this->greenhouse->receive(new DewGain(3, mist: 4), $later);
+
+        self::assertEquals(new DewGain(3, mist: 0), $received);
+        self::assertSame(99500, $this->greenhouse->tankMilliAt($later));
+    }
+
     public function testPlantingIntoAnOccupiedPotReplacesItsMoss(): void
     {
         $this->plant(1, self::COMMON);

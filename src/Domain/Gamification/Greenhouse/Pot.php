@@ -13,6 +13,7 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Entity]
 #[ORM\Table(name: 'greenhouse_pot')]
 #[ORM\UniqueConstraint(name: 'greenhouse_pot_number', columns: ['greenhouse_id', 'number'])]
+#[ORM\UniqueConstraint(name: 'greenhouse_pot_species', columns: ['greenhouse_id', 'species'])]
 class Pot
 {
     #[ORM\Id]

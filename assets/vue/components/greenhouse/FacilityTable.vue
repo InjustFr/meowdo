@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { ArrowRight, CloudDrizzle, CloudRain, Container, Warehouse } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
-import BaseButton from '../ui/BaseButton.vue';
+import ConfirmButton from '../ui/ConfirmButton.vue';
 import { useDew } from '../../composables/useDew.js';
 
 const ICONS = { glasshouse: Warehouse, condenser: Container, misters: CloudDrizzle, rain_barrel: CloudRain };
@@ -67,12 +67,16 @@ const rows = computed(() => props.facilities.map((facility) => ({
                     <td class="facilities__action">
                         <span v-if="facility.cost === null" class="facilities__max">{{ t('greenhouse.facilities.max') }}</span>
                         <template v-else>
-                            <BaseButton
+                            <ConfirmButton
+                                :label="t('greenhouse.facilities.upgrade')"
+                                :title="t('greenhouse.facilities.upgradeTo', { name: facility.name, level: facility.level + 1 })"
+                                :message="t('greenhouse.facilities.confirm', { cost: dewAmount(facility.cost) })"
+                                :confirm-label="t('greenhouse.facilities.upgrade')"
                                 :variant="facility.missing ? 'secondary' : 'primary'"
+                                confirm-variant="primary"
                                 :disabled="busy || facility.missing > 0"
-                                :aria-label="t('greenhouse.facilities.upgradeTo', { name: facility.name, level: facility.level + 1 })"
-                                @click="emit('upgrade', facility.id)"
-                            >{{ t('greenhouse.facilities.upgrade') }}</BaseButton>
+                                @confirm="emit('upgrade', facility.id)"
+                            />
                             <span v-if="facility.missing" class="facilities__short">{{ t('greenhouse.facilities.short', { n: number(facility.missing) }, facility.missing) }}</span>
                         </template>
                     </td>

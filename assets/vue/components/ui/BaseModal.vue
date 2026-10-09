@@ -9,9 +9,10 @@ defineProps({
     title: { type: String, required: true },
 });
 const open = defineModel('open', { type: Boolean, required: true });
+const emit = defineEmits(['closeAutoFocus']);
 
 function focusFirstField(event) {
-    const field = event.target.querySelector('.modal__body :is(input, textarea, button, [role="combobox"])');
+    const field = event.target.querySelector('.modal__body :is(input, textarea, button, [role="combobox"]):not(:disabled)');
     if (field) {
         event.preventDefault();
         field.focus();
@@ -23,7 +24,7 @@ function focusFirstField(event) {
     <DialogRoot v-model:open="open">
         <DialogPortal>
             <DialogOverlay class="modal">
-                <DialogContent class="modal__panel" :aria-describedby="undefined" @open-auto-focus="focusFirstField">
+                <DialogContent class="modal__panel" :aria-describedby="undefined" @open-auto-focus="focusFirstField" @close-auto-focus="emit('closeAutoFocus', $event)">
                     <header class="modal__header">
                         <DialogTitle class="modal__title">{{ title }}</DialogTitle>
                         <DialogClose class="modal__close" :aria-label="t('common.close')"><X size="1.125rem" aria-hidden="true" /></DialogClose>

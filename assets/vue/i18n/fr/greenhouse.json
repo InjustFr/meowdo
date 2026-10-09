@@ -62,6 +62,7 @@
         "max": "Niveau max",
         "upgrade": "Améliorer",
         "upgradeTo": "Passer {name} au niveau {level}",
+        "confirm": "Cela coûte {cost}. Un niveau ne redescend jamais : impossible d’annuler.",
         "short": "Il manque {n} goutte | Il manque {n} gouttes",
         "upgraded": "{name} passe au niveau {level}.",
         "glasshouse": {

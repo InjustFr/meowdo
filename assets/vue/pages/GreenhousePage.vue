@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import DewSources from '../components/greenhouse/DewSources.vue';
 import ExpeditionPanel from '../components/greenhouse/ExpeditionPanel.vue';
@@ -10,9 +10,11 @@ import PotTable from '../components/greenhouse/PotTable.vue';
 import PageHeader from '../components/ui/PageHeader.vue';
 import PageSection from '../components/ui/PageSection.vue';
 import { useApi } from '../composables/useApi.js';
+import { useCelebration } from '../composables/useCelebration.js';
 import { useDew } from '../composables/useDew.js';
 import { useNow } from '../composables/useNow.js';
 import { useToast } from '../composables/useToast.js';
+import { receivedAt } from '../greenhouse/received.js';
 import { fillRatio, secondsUntilFull, tankAt } from '../greenhouse/tank.js';
 
 const { t } = useI18n();
@@ -20,19 +22,17 @@ const api = useApi();
 const toast = useToast();
 const { rate } = useDew();
 const now = useNow();
+const { holdAchievements, releaseAchievements } = useCelebration();
 
 const greenhouse = ref(null);
 api.load('/api/greenhouse', greenhouse);
 
-const received = new WeakMap();
-const receivedAt = ref(Date.now());
+const viewReceivedAt = ref(Date.now());
 watch(greenhouse, (view) => {
-    if (!view) return;
-    if (!received.has(view)) received.set(view, Date.now());
-    receivedAt.value = received.get(view);
+    if (view) viewReceivedAt.value = receivedAt(view);
 }, { immediate: true });
 
-const elapsed = computed(() => Math.max(0, now.value - receivedAt.value));
+const elapsed = computed(() => Math.max(0, now.value - viewReceivedAt.value));
 const tank = computed(() => (greenhouse.value ? tankAt(greenhouse.value, elapsed.value) : 0));
 const ratio = computed(() => (greenhouse.value ? fillRatio(greenhouse.value, elapsed.value) : 0));
 const untilFull = computed(() => (greenhouse.value ? secondsUntilFull(greenhouse.value, elapsed.value) : null));
@@ -50,6 +50,7 @@ const busy = ref(false);
 const collecting = ref(false);
 const plantingPot = ref(null);
 const plantOpen = ref(false);
+const potTable = ref(null);
 const found = ref(null);
 
 async function act(action, success = null) {
@@ -83,8 +84,16 @@ async function plant(species) {
     if (planted) plantOpen.value = false;
 }
 
-function unplant(pot) {
-    act(() => api.del(`/api/greenhouse/pots/${pot}`), () => t('greenhouse.pots.unplanted', { pot }));
+async function unplant(pot) {
+    await act(() => api.del(`/api/greenhouse/pots/${pot}`), () => t('greenhouse.pots.unplanted', { pot }));
+    await nextTick();
+    potTable.value?.focusPot(pot);
+}
+
+function returnToPot(event) {
+    event.preventDefault();
+    const pot = plantingPot.value;
+    window.setTimeout(() => potTable.value?.focusPot(pot), 0);
 }
 
 function upgrade(id) {
@@ -93,9 +102,16 @@ function upgrade(id) {
 }
 
 async function launch() {
+    holdAchievements();
     const expedition = await act(() => api.post('/api/greenhouse/expeditions'));
     if (expedition) found.value = expedition.data;
+    else releaseAchievements();
 }
+
+watch(found, (expedition) => {
+    if (expedition === null) releaseAchievements();
+});
+onUnmounted(releaseAchievements);
 </script>
 
 <template>
@@ -106,7 +122,7 @@ async function launch() {
 
             <PageSection :title="t('greenhouse.pots.title')">
                 <p v-if="!greenhouse.plantable.length" class="greenhouse__hint">{{ t('greenhouse.pots.noMoss') }}</p>
-                <PotTable :pots="greenhouse.pots" :max-pots="greenhouse.maxPots" :busy="busy" @plant="choosePot" @unplant="unplant" />
+                <PotTable ref="potTable" :pots="greenhouse.pots" :max-pots="greenhouse.maxPots" :busy="busy" @plant="choosePot" @unplant="unplant" />
             </PageSection>
 
             <PageSection :title="t('greenhouse.facilities.title')">
@@ -122,7 +138,7 @@ async function launch() {
                 </PageSection>
             </div>
 
-            <PlantDialog v-model:open="plantOpen" :pot="plantingPot" :plantable="greenhouse.plantable" :busy="busy" @choose="plant" />
+            <PlantDialog v-model:open="plantOpen" :pot="plantingPot" :plantable="greenhouse.plantable" :busy="busy" @choose="plant" @close-auto-focus="returnToPot" />
         </template>
     </div>
 </template>

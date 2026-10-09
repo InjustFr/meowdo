@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { Lock, Shovel, Sprout } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import BaseButton from '../ui/BaseButton.vue';
@@ -19,11 +19,19 @@ const { t } = useI18n();
 const dates = useDates();
 
 const rows = computed(() => props.pots.map((pot) => ({ ...pot, moss: pot.species ? speciesOf(pot.species) : null, name: pot.species ? t(`species.${pot.species}`) : null })));
+const frame = ref(null);
+
+function focusPot(number) {
+    frame.value?.querySelector(`[data-test="pot-${number}"] .pots__main`)?.focus();
+}
+
+defineExpose({ focusPot });
+
 const locked = computed(() => (props.pots.length < props.maxPots ? { number: props.pots.length + 1, level: props.pots.length } : null));
 </script>
 
 <template>
-    <div class="pots-frame">
+    <div ref="frame" class="pots-frame">
         <table class="pots">
             <thead class="pots__head">
                 <tr>
@@ -52,14 +60,14 @@ const locked = computed(() => (props.pots.length < props.maxPots ? { number: pro
                         <td class="pots__yield pots__numeric tabular">{{ t('greenhouse.pots.perHour', { dew: pot.dewPerHour }) }}</td>
                         <td class="pots__since">{{ pot.plantedAt ? dates.short(pot.plantedAt.slice(0, 10)) : '' }}</td>
                         <td class="pots__actions">
-                            <BaseButton variant="secondary" :disabled="busy" @click="emit('plant', pot.number)">{{ t('greenhouse.pots.change') }}</BaseButton>
+                            <BaseButton class="pots__main" variant="secondary" :disabled="busy" @click="emit('plant', pot.number)">{{ t('greenhouse.pots.change') }}</BaseButton>
                             <IconButton :icon="Shovel" :label="t('greenhouse.pots.unplant', { name: pot.name })" :disabled="busy" @click="emit('unplant', pot.number)" />
                         </td>
                     </template>
                     <template v-else>
                         <td class="pots__empty" colspan="4"><span class="pots__slot">{{ t('greenhouse.pots.empty') }}</span></td>
                         <td class="pots__actions">
-                            <BaseButton :disabled="busy" @click="emit('plant', pot.number)"><Sprout size="1rem" :stroke-width="2" aria-hidden="true" />{{ t('greenhouse.pots.plant') }}</BaseButton>
+                            <BaseButton class="pots__main" :disabled="busy" @click="emit('plant', pot.number)"><Sprout size="1rem" :stroke-width="2" aria-hidden="true" />{{ t('greenhouse.pots.plant') }}</BaseButton>
                         </td>
                     </template>
                 </tr>

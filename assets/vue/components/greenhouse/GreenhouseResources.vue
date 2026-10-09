@@ -20,8 +20,8 @@ const { number, rate, duration } = useDew();
 
 const misters = computed(() => props.greenhouse.facilities.find((facility) => facility.id === 'misters')?.effect ?? 0);
 const usedPots = computed(() => props.greenhouse.pots.filter((pot) => pot.species).length);
+const full = computed(() => props.secondsUntilFull === 0);
 const tankHint = computed(() => {
-    if (props.secondsUntilFull === 0) return t('greenhouse.resources.full');
     if (props.secondsUntilFull === null) return t('greenhouse.resources.idle');
     return t('greenhouse.resources.fullIn', { duration: duration(props.secondsUntilFull) });
 });
@@ -34,7 +34,7 @@ const tankHint = computed(() => {
             <dd class="resources__value tabular" data-test="dew-balance">{{ number(greenhouse.dew) }}</dd>
             <dd class="resources__hint">{{ t('greenhouse.resources.gathered', { gathered: number(greenhouse.dewGathered) }) }}</dd>
         </div>
-        <div :class="['resources__tile', 'resources__tile--tank', { 'resources__tile--full': secondsUntilFull === 0 }]">
+        <div :class="['resources__tile', 'resources__tile--tank', { 'resources__tile--full': full }]">
             <dt class="resources__label">{{ t('greenhouse.resources.tank') }}</dt>
             <dd class="resources__tank">
                 <span class="resources__value tabular" data-test="tank">{{ t('greenhouse.resources.tankLevel', { tank: number(tank), capacity: number(greenhouse.capacity) }) }}</span>
@@ -43,7 +43,10 @@ const tankHint = computed(() => {
                 </BaseButton>
             </dd>
             <dd class="resources__meter"><TankMeter :tank="tank" :capacity="greenhouse.capacity" :ratio="ratio" /></dd>
-            <dd class="resources__hint" aria-live="polite">{{ tankHint }}</dd>
+            <dd class="resources__hint">
+                <span v-if="!full">{{ tankHint }}</span>
+                <span aria-live="polite">{{ full ? t('greenhouse.resources.full') : '' }}</span>
+            </dd>
         </div>
         <div class="resources__tile">
             <dt class="resources__label">{{ t('greenhouse.resources.production') }}</dt>

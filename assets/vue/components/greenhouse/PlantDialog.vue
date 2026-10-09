@@ -13,7 +13,7 @@ const props = defineProps({
     busy: { type: Boolean, default: false },
 });
 const open = defineModel('open', { type: Boolean, required: true });
-const emit = defineEmits(['choose']);
+const emit = defineEmits(['choose', 'closeAutoFocus']);
 
 const { t } = useI18n();
 
@@ -21,7 +21,7 @@ const mosses = computed(() => props.plantable.map((moss) => ({ ...moss, photo: s
 </script>
 
 <template>
-    <BaseModal v-model:open="open" :title="t('greenhouse.plant.title', { pot: pot ?? '' })">
+    <BaseModal v-model:open="open" :title="t('greenhouse.plant.title', { pot: pot ?? '' })" @close-auto-focus="emit('closeAutoFocus', $event)">
         <EmptyState v-if="!mosses.length" :title="t('greenhouse.plant.emptyTitle')" :hint="t('greenhouse.plant.emptyHint')">
             <RouterLink to="/herbarium" class="plant-dialog__link" @click="open = false">{{ t('greenhouse.plant.herbarium') }}</RouterLink>
         </EmptyState>

@@ -62,6 +62,7 @@
         "max": "Max level",
         "upgrade": "Upgrade",
         "upgradeTo": "Upgrade the {name} to level {level}",
+        "confirm": "This spends {cost}. Levels never drop, so it cannot be undone.",
         "short": "{n} dew short",
         "upgraded": "{name} raised to level {level}.",
         "glasshouse": {

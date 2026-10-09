@@ -1,7 +1,8 @@
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { useSound } from './useSound.js';
 
-const state = reactive({ drops: 0, bursts: [], levelUp: null, newSpecies: [], achievements: [] });
+const state = reactive({ drops: 0, bursts: [], levelUp: null, newSpecies: [], achievements: [], revealing: false });
+const achievementsDue = computed(() => state.levelUp === null && !state.revealing && state.achievements.length > 0);
 let nextId = 1;
 
 export function useCelebration() {
@@ -36,8 +37,11 @@ export function useCelebration() {
 
     return {
         state,
+        achievementsDue,
         reward,
         unlocked,
+        holdAchievements: () => { state.revealing = true; },
+        releaseAchievements: () => { state.revealing = false; },
         dismissLevelUp: () => {
             state.levelUp = null;
             state.newSpecies = [];

@@ -32,7 +32,10 @@ use App\Domain\Gamification\Herbarium\SpecimenRepository;
 use App\Domain\Identity\User;
 use App\Tests\Support\ActsAsUser;
 use App\Tests\Support\FreezesClock;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Clock\Clock;
 
@@ -219,6 +222,43 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         $collect();
 
         self::assertSame(['dew_1000'], $this->unlocked());
+    }
+
+    public function testASpendRacingAnotherChangeOfTheGreenhouseIsRefused(): void
+    {
+        $this->credit(300);
+        $this->changeMeanwhile('UPDATE greenhouse SET dew = dew + 12, dew_gathered = dew_gathered + 12, version = version + 1 WHERE owner_id = ?');
+
+        try {
+            self::getContainer()->get(LaunchExpeditionHandler::class)();
+            self::fail('The stale expedition should have been refused.');
+        } catch (OptimisticLockException) {
+            self::assertSame([312, 0, 0], [$this->stored('SELECT dew FROM greenhouse WHERE owner_id = ?'), $this->stored('SELECT expeditions FROM greenhouse WHERE owner_id = ?'), $this->stored('SELECT COUNT(*) FROM specimen WHERE owner_id = ?')]);
+        }
+    }
+
+    public function testTwoPotsNeverHoldTheSameMoss(): void
+    {
+        $this->collect('polytrichum-commune');
+        self::getContainer()->get(GreenhouseRepository::class)->of($this->user)->pots();
+        $this->changeMeanwhile("UPDATE greenhouse_pot SET species = 'polytrichum-commune' WHERE number = 1 AND greenhouse_id = (SELECT id FROM greenhouse WHERE owner_id = ?)");
+
+        $this->expectException(UniqueConstraintViolationException::class);
+
+        self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(2, 'polytrichum-commune'));
+    }
+
+    private function changeMeanwhile(string $sql): void
+    {
+        self::getContainer()->get(Connection::class)->executeStatement($sql, [$this->user->id()->toRfc4122()]);
+    }
+
+    private function stored(string $sql): int
+    {
+        $value = self::getContainer()->get(Connection::class)->fetchOne($sql, [$this->user->id()->toRfc4122()]);
+        self::assertIsNumeric($value);
+
+        return (int) $value;
     }
 
     /**

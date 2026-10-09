@@ -53,6 +53,10 @@ class Greenhouse
     #[ORM\Column]
     private int $expeditions = 0;
 
+    #[ORM\Version]
+    #[ORM\Column(type: 'integer')]
+    private int $version = 1;
+
     #[ORM\Embedded(class: Facilities::class, columnPrefix: 'facilities_')]
     private Facilities $facilities;
 
@@ -81,12 +85,12 @@ class Greenhouse
     public function receive(DewGain $gain, \DateTimeImmutable $now): DewGain
     {
         $this->settle($now);
-        $mistMilli = min(max(0, $this->capacity() * self::MILLI - $this->tankMilli), $gain->mist * self::MILLI);
-        $this->tankMilli += $mistMilli;
+        $mist = min(intdiv(max(0, $this->capacity() * self::MILLI - $this->tankMilli), self::MILLI), $gain->mist);
+        $this->tankMilli += $mist * self::MILLI;
         $this->dew += $gain->amount;
         $this->dewGathered += $gain->amount;
 
-        return new DewGain($gain->amount, $gain->watering, intdiv($mistMilli, self::MILLI));
+        return new DewGain($gain->amount, $gain->watering, $mist);
     }
 
     public function collect(\DateTimeImmutable $now): int

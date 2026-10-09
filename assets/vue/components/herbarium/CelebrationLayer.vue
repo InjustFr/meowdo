@@ -9,7 +9,7 @@ import { useCelebration } from '../../composables/useCelebration.js';
 import { usePlayer } from '../../composables/usePlayer.js';
 
 const { t } = useI18n();
-const { state, unlocked, dismissLevelUp, dismissAchievements } = useCelebration();
+const { state, achievementsDue, unlocked, dismissLevelUp, dismissAchievements } = useCelebration();
 const { player, markAchievementsSeen } = usePlayer();
 
 watch(() => player.value?.newAchievements, (ids) => {
@@ -18,7 +18,7 @@ watch(() => player.value?.newAchievements, (ids) => {
 
 const levelUpOpen = computed({ get: () => state.levelUp !== null, set: (open) => { if (!open) dismissLevelUp(); } });
 const achievementsOpen = computed({
-    get: () => state.levelUp === null && state.achievements.length > 0,
+    get: () => achievementsDue.value,
     set: (open) => {
         if (!open) {
             dismissAchievements();
