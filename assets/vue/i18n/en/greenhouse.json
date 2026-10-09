@@ -8,14 +8,15 @@
         "gathered": "Spent on facilities and field trips · {gathered} gathered in all",
         "yield": "Yield",
         "perTask": "{yield} / task",
-        "misters": "Potted mosses, +{bonus}% from the misters",
-        "noMisters": "Sum of your potted mosses",
+        "noMoss": "No moss potted: empty pots yield nothing",
+        "mosses": "Potted mosses: {mosses}",
+        "mossesMisted": "Potted mosses: {mosses}, × {factor} from the misters (+{bonus}%)",
         "pots": "Pots",
         "potsUsed": "{used} / {total}",
         "potsMax": "Each moss adds to the yield · up to {max} with a bigger glasshouse",
         "watering": "Watering",
         "multiplier": "× {n}",
-        "wateringHint": "Plant tasks get the yield × {n}, Water tasks × {half}"
+        "wateringHint": "2 + rain barrel level {level} · Plant tasks get the yield × {n}, Water tasks × {half}"
     },
     "pots": {
         "title": "Pots",
@@ -86,7 +87,8 @@
         "complete": "Your herbarium is complete: there is no moss left to find.",
         "launch": "Set out",
         "back": "Back from the field",
-        "next": "The next field trip costs {cost}."
+        "next": "The next field trip costs {cost}.",
+        "formula": "150 + 40 × {trips} + 8 × {trips}² = {cost}, before your first field trip | 150 + 40 × {trips} + 8 × {trips}² = {cost}, after 1 field trip | 150 + 40 × {trips} + 8 × {trips}² = {cost}, after {trips} field trips"
     },
     "sources": {
         "title": "Where dew comes from",
@@ -94,11 +96,17 @@
         "base": "Base",
         "extra": "Greenhouse bonus",
         "total": "Total",
-        "watering": "+{n} watering (yield × {multiplier})",
-        "halfWatering": "+{n} half watering (yield × {multiplier} ÷ 2)",
-        "mist": "+{n} mist (yield × 1)",
+        "watering": "+{n} watering",
+        "halfWatering": "+{n} half watering",
+        "mist": "+{n} mist",
+        "formula": "yield {yield} × {multiplier} = {exact}",
+        "formulaRounded": "yield {yield} × {multiplier} = {exact}, rounded down to {n}",
+        "halfFormula": "yield {yield} × {multiplier} ÷ 2 = {exact}",
+        "halfFormulaRounded": "yield {yield} × {multiplier} ÷ 2 = {exact}, rounded down to {n}",
+        "noYield": "yield 0: pot a moss to get a bonus",
+        "sum": "{base} + {bonus}",
         "none": "None",
-        "note": "Each completed task pays its dew once: a base set by its quadrant, plus a greenhouse bonus computed from the yield ({yield} dew per task now). Plant tasks are watered (yield × {multiplier}), Water tasks get half a watering, Trim tasks are misted (yield × 1), Compost and unsorted tasks get no bonus. Streaks and deadlines change XP, not dew."
+        "note": "Each completed task pays its dew once: a base set by its quadrant, plus a greenhouse bonus computed from the yield ({yield} dew per task now) and rounded down to whole dew. Plant tasks are watered (yield × {multiplier}, the watering multiplier), Water tasks get half a watering (yield × {multiplier} ÷ 2), Trim tasks are misted (yield × 1), Compost and unsorted tasks get no bonus. Streaks and deadlines change XP, not dew."
     },
     "rail": {
         "label": "Dew in the greenhouse:"

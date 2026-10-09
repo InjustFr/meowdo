@@ -41,7 +41,7 @@ final readonly class ShowGreenhouseHandler
             array_map(static fn (Pot $pot): PotView => PotView::of($pot), $greenhouse->pots()),
             Facility::Glasshouse->effectAt(Facility::Glasshouse->maxLevel()),
             array_map(static fn (Facility $facility): FacilityView => FacilityView::of($facility, $greenhouse->facilities()), Facility::cases()),
-            new ExpeditionOfferView($greenhouse->expeditionCost(), \count(SpeciesCatalog::all()) - \count($specimens)),
+            new ExpeditionOfferView($greenhouse->expeditionCost(), $greenhouse->expeditions(), \count(SpeciesCatalog::all()) - \count($specimens)),
             $this->plantable($greenhouse, $specimens),
             array_map(fn (?Quadrant $quadrant): TaskDewView => TaskDewView::of($quadrant, $this->policy->forQuadrant($quadrant, $greenhouse)), self::QUADRANTS),
         );

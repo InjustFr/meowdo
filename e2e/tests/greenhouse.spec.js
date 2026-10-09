@@ -27,7 +27,11 @@ test('completed tasks feed a greenhouse whose mosses raise every task reward', a
     await expect(page.getByTestId('dew-balance')).toHaveText('72');
     await expect(railDew(page)).toHaveText('72');
     await expect(page.getByTestId('yield')).toHaveText('0 / task');
+    await expect(page.getByTestId('yield-formula')).toHaveText('No moss potted: empty pots yield nothing');
     await expect(page.getByTestId('watering')).toHaveText('× 2');
+    await expect(page.locator('.resources')).toContainText('2 + rain barrel level 0');
+    await expect(page.getByTestId('dew-source-schedule')).toContainText('yield 0: pot a moss to get a bonus');
+    await expect(page.getByTestId('expedition-formula')).toHaveText('150 + 40 × 0 + 8 × 0² = 150, before your first field trip');
     await expect(page.getByTestId('dew-source-schedule')).toContainText('12');
     await expect(page.getByTestId('dew-source-eliminate')).toContainText('1');
     await expect(page.getByTestId('expedition')).toBeDisabled();
@@ -42,6 +46,8 @@ test('completed tasks feed a greenhouse whose mosses raise every task reward', a
     await expect(page.getByTestId('pot-1').getByRole('button', { name: 'Change' })).toBeFocused();
     await expect(page.getByTestId('yield')).not.toHaveText('0 / task');
     await expect(page.getByTestId('dew-source-schedule')).toContainText('watering');
+    await expect(page.getByTestId('yield-formula')).toHaveText(/^Potted mosses: \d+$/);
+    await expect(page.getByTestId('dew-source-schedule')).toContainText(/yield \d+ × 2 = \d+/);
 
     await page.getByTestId('pot-2').getByRole('button', { name: 'Plant a moss' }).click();
     const second = page.getByRole('dialog', { name: 'Plant a moss in pot 2' });

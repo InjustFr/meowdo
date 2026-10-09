@@ -43,7 +43,7 @@ final class GreenhouseTest extends TestCase
         self::assertSame([0, 0], [$greenhouse->dew(), $greenhouse->dewGathered()]);
         self::assertSame([1, 0, 0], [$facilities->glasshouse, $facilities->misters, $facilities->rainBarrel]);
         self::assertSame([[1, null], [2, null]], $this->pots());
-        self::assertSame([0, 2, 150], [$greenhouse->yieldTenths(), $greenhouse->wateringMultiplier(), $greenhouse->expeditionCost()]);
+        self::assertSame([0, 2, 0, 150], [$greenhouse->yieldTenths(), $greenhouse->wateringMultiplier(), $greenhouse->expeditions(), $greenhouse->expeditionCost()]);
         self::assertSame($this->owner, $greenhouse->owner());
     }
 
@@ -201,7 +201,7 @@ final class GreenhouseTest extends TestCase
         }
 
         self::assertSame([150, 198, 262, 342], $costs);
-        self::assertSame([1048, 438, 2000], [$this->greenhouse->dew(), $this->greenhouse->expeditionCost(), $this->greenhouse->dewGathered()]);
+        self::assertSame([1048, 4, 438, 2000], [$this->greenhouse->dew(), $this->greenhouse->expeditions(), $this->greenhouse->expeditionCost(), $this->greenhouse->dewGathered()]);
     }
 
     public function testAnExpeditionNeedsEnoughDew(): void

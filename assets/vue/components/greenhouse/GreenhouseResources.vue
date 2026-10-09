@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { CloudRain, Droplet, Sprout, Warehouse } from '@lucide/vue';
 import { useI18n } from 'vue-i18n';
 import { useDew } from '../../composables/useDew.js';
+import { yieldBreakdown } from '../../greenhouse/formulas.js';
 
 const props = defineProps({
     greenhouse: { type: Object, required: true },
@@ -11,9 +12,23 @@ const props = defineProps({
 const { t } = useI18n();
 const { number, decimal, yieldOf } = useDew();
 
-const misters = computed(() => props.greenhouse.facilities.find((facility) => facility.id === 'misters')?.effect ?? 0);
+const facility = (id) => props.greenhouse.facilities.find((candidate) => candidate.id === id);
+const misters = computed(() => facility('misters')?.effect ?? 0);
+const rainBarrel = computed(() => facility('rain_barrel')?.level ?? 0);
 const usedPots = computed(() => props.greenhouse.pots.filter((pot) => pot.species).length);
 const halfMultiplier = computed(() => decimal(props.greenhouse.wateringMultiplier / 2));
+
+const yieldFormula = computed(() => {
+    const { terms, sum, factor } = yieldBreakdown(props.greenhouse.pots, misters.value);
+    if (!terms.length) return t('greenhouse.resources.noMoss');
+
+    const mosses = terms.map(number).join(' + ');
+    if (!misters.value) return t('greenhouse.resources.mosses', { mosses });
+
+    const summed = terms.length > 1 ? `${mosses} = ${number(sum)}` : mosses;
+
+    return t('greenhouse.resources.mossesMisted', { mosses: summed, factor: decimal(factor), bonus: misters.value });
+});
 </script>
 
 <template>
@@ -26,7 +41,7 @@ const halfMultiplier = computed(() => decimal(props.greenhouse.wateringMultiplie
         <div class="resources__tile">
             <dt class="resources__label"><Sprout size="0.875rem" :stroke-width="2" aria-hidden="true" />{{ t('greenhouse.resources.yield') }}</dt>
             <dd class="resources__value tabular" data-test="yield">{{ t('greenhouse.resources.perTask', { yield: yieldOf(greenhouse.yieldTenths) }) }}</dd>
-            <dd class="resources__hint">{{ misters ? t('greenhouse.resources.misters', { bonus: misters }) : t('greenhouse.resources.noMisters') }}</dd>
+            <dd class="resources__hint tabular" data-test="yield-formula">{{ yieldFormula }}</dd>
         </div>
         <div class="resources__tile">
             <dt class="resources__label"><Warehouse size="0.875rem" :stroke-width="2" aria-hidden="true" />{{ t('greenhouse.resources.pots') }}</dt>
@@ -36,7 +51,7 @@ const halfMultiplier = computed(() => decimal(props.greenhouse.wateringMultiplie
         <div class="resources__tile">
             <dt class="resources__label"><CloudRain size="0.875rem" :stroke-width="2" aria-hidden="true" />{{ t('greenhouse.resources.watering') }}</dt>
             <dd class="resources__value tabular" data-test="watering">{{ t('greenhouse.resources.multiplier', { n: greenhouse.wateringMultiplier }) }}</dd>
-            <dd class="resources__hint">{{ t('greenhouse.resources.wateringHint', { n: greenhouse.wateringMultiplier, half: halfMultiplier }) }}</dd>
+            <dd class="resources__hint">{{ t('greenhouse.resources.wateringHint', { level: rainBarrel, n: greenhouse.wateringMultiplier, half: halfMultiplier }) }}</dd>
         </div>
     </dl>
 </template>

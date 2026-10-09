@@ -8,14 +8,15 @@
         "gathered": "À dépenser en installations et sorties · {gathered} récoltées en tout",
         "yield": "Rendement",
         "perTask": "{yield} / tâche",
-        "misters": "Mousses en pot, +{bonus} % grâce aux brumisateurs",
-        "noMisters": "Somme de vos mousses en pot",
+        "noMoss": "Aucune mousse en pot : un pot vide ne rapporte rien",
+        "mosses": "Mousses en pot : {mosses}",
+        "mossesMisted": "Mousses en pot : {mosses}, × {factor} grâce aux brumisateurs (+{bonus} %)",
         "pots": "Pots",
         "potsUsed": "{used} / {total}",
         "potsMax": "Chaque mousse augmente le rendement · jusqu’à {max} avec une verrière plus grande",
         "watering": "Arrosage",
         "multiplier": "× {n}",
-        "wateringHint": "Planter reçoit le rendement × {n}, Arroser × {half}"
+        "wateringHint": "2 + niveau du récupérateur {level} · Planter reçoit le rendement × {n}, Arroser × {half}"
     },
     "pots": {
         "title": "Pots",
@@ -86,7 +87,8 @@
         "complete": "Votre herbier est complet : il n’y a plus de mousse à trouver.",
         "launch": "Partir",
         "back": "De retour du terrain",
-        "next": "La prochaine sortie coûte {cost}."
+        "next": "La prochaine sortie coûte {cost}.",
+        "formula": "150 + 40 × {trips} + 8 × {trips}² = {cost}, avant votre première sortie | 150 + 40 × {trips} + 8 × {trips}² = {cost}, après 1 sortie | 150 + 40 × {trips} + 8 × {trips}² = {cost}, après {trips} sorties"
     },
     "sources": {
         "title": "D’où vient la rosée",
@@ -94,11 +96,17 @@
         "base": "Base",
         "extra": "Bonus de la serre",
         "total": "Total",
-        "watering": "+{n} d’arrosage (rendement × {multiplier})",
-        "halfWatering": "+{n} de demi-arrosage (rendement × {multiplier} ÷ 2)",
-        "mist": "+{n} de brume (rendement × 1)",
+        "watering": "+{n} d’arrosage",
+        "halfWatering": "+{n} de demi-arrosage",
+        "mist": "+{n} de brume",
+        "formula": "rendement {yield} × {multiplier} = {exact}",
+        "formulaRounded": "rendement {yield} × {multiplier} = {exact}, arrondi à {n}",
+        "halfFormula": "rendement {yield} × {multiplier} ÷ 2 = {exact}",
+        "halfFormulaRounded": "rendement {yield} × {multiplier} ÷ 2 = {exact}, arrondi à {n}",
+        "noYield": "rendement 0 : mettez une mousse en pot pour avoir un bonus",
+        "sum": "{base} + {bonus}",
         "none": "Aucun",
-        "note": "Chaque tâche terminée rapporte sa rosée une seule fois : une base fixée par son quadrant, plus un bonus de la serre calculé à partir du rendement ({yield} gouttes par tâche en ce moment). Les tâches Planter sont arrosées (rendement × {multiplier}), les tâches Arroser reçoivent un demi-arrosage, les tâches Tailler une brume (rendement × 1), les tâches Composter et non classées aucun bonus. Séries et échéances changent l’XP, pas la rosée."
+        "note": "Chaque tâche terminée rapporte sa rosée une seule fois : une base fixée par son quadrant, plus un bonus de la serre calculé à partir du rendement ({yield} gouttes par tâche en ce moment) et arrondi à la goutte inférieure. Les tâches Planter sont arrosées (rendement × {multiplier}, le multiplicateur d’arrosage), les tâches Arroser reçoivent un demi-arrosage (rendement × {multiplier} ÷ 2), les tâches Tailler une brume (rendement × 1), les tâches Composter et non classées aucun bonus. Séries et échéances changent l’XP, pas la rosée."
     },
     "rail": {
         "label": "Rosée de la serre :"

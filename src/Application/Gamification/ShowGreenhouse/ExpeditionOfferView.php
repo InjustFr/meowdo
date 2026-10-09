@@ -8,6 +8,7 @@ final readonly class ExpeditionOfferView
 {
     public function __construct(
         public int $cost,
+        public int $trips,
         public int $speciesLeft,
     ) {
     }

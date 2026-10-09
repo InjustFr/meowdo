@@ -40,7 +40,7 @@ final class GreenhouseApiTest extends WebTestCase
         self::assertSame(['number' => 1, 'species' => null, 'rarity' => null, 'yield' => 0, 'plantedAt' => null], Json::array($greenhouse, 'pots', 0));
         self::assertSame(['glasshouse', 'misters', 'rain_barrel'], array_column(Json::array($greenhouse, 'facilities'), 'id'));
         self::assertSame(['id' => 'glasshouse', 'level' => 1, 'maxLevel' => 11, 'effect' => 2, 'nextEffect' => 3, 'cost' => 80], Json::array($greenhouse, 'facilities', 0));
-        self::assertSame(['cost' => 150, 'speciesLeft' => 48], Json::array($greenhouse, 'expedition'));
+        self::assertSame(['cost' => 150, 'trips' => 0, 'speciesLeft' => 48], Json::array($greenhouse, 'expedition'));
         self::assertSame(['quadrant' => 'schedule', 'base' => 12, 'watering' => 0, 'mist' => 0, 'amount' => 12], Json::array($greenhouse, 'taskDew', 0));
     }
 

@@ -130,6 +130,11 @@ class Greenhouse
         return $this->facilities->effectOf(Facility::RainBarrel);
     }
 
+    public function expeditions(): int
+    {
+        return $this->expeditions;
+    }
+
     public function expeditionCost(): int
     {
         $trips = $this->expeditions;

@@ -40,6 +40,7 @@ const revealOpen = computed({ get: () => found.value !== null, set: (open) => { 
             <p v-if="expedition.speciesLeft" class="expedition__description">
                 {{ t('greenhouse.expedition.description') }}
                 <span class="expedition__left tabular">{{ t('greenhouse.expedition.left', { n: expedition.speciesLeft }, expedition.speciesLeft) }}</span>
+                <span class="expedition__formula tabular" data-test="expedition-formula">{{ t('greenhouse.expedition.formula', { trips: expedition.trips, cost: number(expedition.cost) }, expedition.trips) }}</span>
             </p>
             <p v-else class="expedition__description">{{ t('greenhouse.expedition.complete') }}</p>
         </div>
@@ -68,6 +69,7 @@ const revealOpen = computed({ get: () => found.value !== null, set: (open) => { 
 .expedition__left { display: block; color: var(--color-subtle); font-size: var(--font-size-sm); }
 .expedition__action { display: grid; grid-template-columns: auto auto; align-items: center; justify-items: end; gap: var(--space-1) var(--space-3); }
 .expedition__cost { color: color-mix(in oklch, var(--color-dew) 65%, var(--color-ink)); font-weight: 600; white-space: nowrap; }
+.expedition__formula { display: block; color: var(--color-subtle); font-size: var(--font-size-xs); }
 .expedition__short { grid-column: 1 / -1; color: var(--color-subtle); font-size: var(--font-size-xs); }
 .expedition__next { color: var(--color-muted); font-size: var(--font-size-md); }
 

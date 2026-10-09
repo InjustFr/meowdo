@@ -159,7 +159,7 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         self::assertSame($specimens[0]->species()->slug, $expedition->species->slug);
         self::assertSame(198, $expedition->nextCost);
         $greenhouse = $this->greenhouse();
-        self::assertSame([150, 198, \count(SpeciesCatalog::all()) - 1], [$greenhouse->dew, $greenhouse->expedition->cost, $greenhouse->expedition->speciesLeft]);
+        self::assertSame([150, 198, 1, \count(SpeciesCatalog::all()) - 1], [$greenhouse->dew, $greenhouse->expedition->cost, $greenhouse->expedition->trips, $greenhouse->expedition->speciesLeft]);
     }
 
     public function testACompleteHerbariumRefusesExpeditionsForFree(): void

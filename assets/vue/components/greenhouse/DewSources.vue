@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useDew } from '../../composables/useDew.js';
+import { bonusBreakdown } from '../../greenhouse/formulas.js';
 
 const props = defineProps({
     sources: { type: Array, required: true },
@@ -10,13 +11,24 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const { number, yieldOf } = useDew();
+const { number, decimal, precise, yieldOf } = useDew();
 
 function extra(source) {
-    if (source.quadrant === 'schedule') return t('greenhouse.sources.watering', { n: number(source.watering), multiplier: props.wateringMultiplier });
-    if (source.quadrant === 'do_first') return t('greenhouse.sources.halfWatering', { n: number(source.watering), multiplier: props.wateringMultiplier });
+    if (source.quadrant === 'schedule') return t('greenhouse.sources.watering', { n: number(source.watering) });
+    if (source.quadrant === 'do_first') return t('greenhouse.sources.halfWatering', { n: number(source.watering) });
     if (source.quadrant === 'delegate') return t('greenhouse.sources.mist', { n: number(source.mist) });
     return t('greenhouse.sources.none');
+}
+
+function formula(source) {
+    const bonus = bonusBreakdown(source.quadrant, props.yieldTenths, props.wateringMultiplier);
+    if (!bonus) return null;
+    if (!props.yieldTenths) return t('greenhouse.sources.noYield');
+
+    const values = { yield: decimal(bonus.yield), multiplier: bonus.multiplier, exact: precise(bonus.exact), n: number(source.watering + source.mist) };
+    const key = bonus.halved ? 'greenhouse.sources.halfFormula' : 'greenhouse.sources.formula';
+
+    return t(bonus.rounded ? `${key}Rounded` : key, values);
 }
 
 const rows = computed(() => props.sources.map((source) => {
@@ -26,7 +38,9 @@ const rows = computed(() => props.sources.map((source) => {
         name: source.quadrant ? t(`matrix.quadrants.${source.quadrant}.name`) : t('matrix.unsorted'),
         base: number(source.base),
         extra: extra(source),
+        formula: formula(source),
         total: number(source.amount),
+        sum: t('greenhouse.sources.sum', { base: number(source.base), bonus: number(source.watering + source.mist) }),
         color: `var(--quadrant-${key.replace('_', '-')})`,
     };
 }));
@@ -47,8 +61,14 @@ const rows = computed(() => props.sources.map((source) => {
                 <tr v-for="row in rows" :key="row.key" :class="['sources__row', { 'sources__row--best': row.key === 'schedule' }]" :data-test="`dew-source-${row.key}`">
                     <th scope="row" class="sources__name"><span class="sources__dot" :style="{ background: row.color }" aria-hidden="true" />{{ row.name }}</th>
                     <td class="sources__numeric tabular">{{ row.base }}</td>
-                    <td class="sources__extra">{{ row.extra }}</td>
-                    <td class="sources__numeric sources__total tabular">{{ row.total }}</td>
+                    <td class="sources__extra">
+                        {{ row.extra }}
+                        <span v-if="row.formula" class="sources__formula tabular">{{ row.formula }}</span>
+                    </td>
+                    <td class="sources__numeric tabular">
+                        <span class="sources__total">{{ row.total }}</span>
+                        <span v-if="row.formula" class="sources__formula sources__sum">{{ row.sum }}</span>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -66,6 +86,8 @@ const rows = computed(() => props.sources.map((source) => {
 .sources__name { color: var(--color-ink); font-weight: 500; white-space: nowrap; }
 .sources__dot { display: inline-block; width: 0.625rem; height: 0.625rem; margin-right: var(--space-2); border-radius: 50%; }
 .sources__extra { color: var(--color-muted); }
+.sources__formula { display: block; color: var(--color-subtle); font-size: var(--font-size-xs); }
+.sources__sum { white-space: nowrap; }
 .sources__total { color: color-mix(in oklch, var(--color-dew) 65%, var(--color-ink)); font-weight: 600; }
 .sources__row--best > * { background: var(--color-accent-soft); }
 .sources__row--best .sources__name { font-weight: 700; }
