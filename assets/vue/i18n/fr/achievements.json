@@ -43,6 +43,18 @@
         "title": "Carré bien rangé",
         "description": "Placez 20 tâches dans la matrice."
     },
+    "field_trip": {
+        "title": "Sortie bryologique",
+        "description": "Revenez de votre première expédition avec une nouvelle mousse."
+    },
+    "dew_1000": {
+        "title": "Rosée du matin",
+        "description": "Récoltez 1 000 gouttes de rosée dans la serre."
+    },
+    "glasshouse_5": {
+        "title": "Verrière en croissance",
+        "description": "Amenez la verrière au niveau 5."
+    },
     "level_5": {
         "title": "Bien enraciné",
         "description": "Atteignez le niveau 5."

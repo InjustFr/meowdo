@@ -28,6 +28,10 @@ final readonly class DoctrinePlayerStatsLedger implements PlayerStatsLedger
              FROM task WHERE owner_id = :owner',
             ['owner' => $owner, 'doFirst' => Quadrant::DoFirst->value, 'schedule' => Quadrant::Schedule->value],
         );
+        $greenhouse = $this->connection->fetchAssociative(
+            'SELECT dew_gathered, expeditions, facilities_glasshouse AS glasshouse FROM greenhouse WHERE owner_id = :owner',
+            ['owner' => $owner],
+        );
 
         return new PlayerStats(
             tasksCompleted: self::int($tasks['completed'] ?? 0),
@@ -36,6 +40,9 @@ final readonly class DoctrinePlayerStatsLedger implements PlayerStatsLedger
             tasksClassified: self::int($tasks['classified'] ?? 0),
             bestStreak: $player->streak()->best,
             level: $player->level(),
+            dewGathered: self::int($greenhouse['dew_gathered'] ?? 0),
+            expeditions: self::int($greenhouse['expeditions'] ?? 0),
+            glasshouseLevel: self::int($greenhouse['glasshouse'] ?? 1),
         );
     }
 

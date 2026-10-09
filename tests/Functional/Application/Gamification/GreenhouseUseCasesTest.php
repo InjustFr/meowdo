@@ -17,6 +17,8 @@ use App\Application\Gamification\ShowGreenhouse\ShowGreenhouseHandler;
 use App\Application\Gamification\ShowGreenhouse\TaskDewView;
 use App\Application\Gamification\UnplantMoss\UnplantMossHandler;
 use App\Application\Gamification\UpgradeFacility\UpgradeFacilityHandler;
+use App\Domain\Gamification\Achievement\UnlockedAchievement;
+use App\Domain\Gamification\Achievement\UnlockedAchievementRepository;
 use App\Domain\Gamification\Exception\HerbariumComplete;
 use App\Domain\Gamification\Exception\MossNotCollected;
 use App\Domain\Gamification\Exception\NotEnoughDew;
@@ -180,6 +182,54 @@ final class GreenhouseUseCasesTest extends KernelTestCase
         $this->expectExceptionObject(new NotEnoughDew(200, 199));
 
         self::getContainer()->get(LaunchExpeditionHandler::class)();
+    }
+
+    public function testTheFirstExpeditionUnlocksFieldTrip(): void
+    {
+        $this->credit(200);
+
+        self::getContainer()->get(LaunchExpeditionHandler::class)();
+
+        self::assertSame(['field_trip'], $this->unlocked());
+    }
+
+    public function testAGlasshouseAtLevelFiveUnlocksGrowingGlasshouse(): void
+    {
+        $this->credit(950);
+        $upgrade = self::getContainer()->get(UpgradeFacilityHandler::class);
+
+        $upgrade(Facility::Glasshouse);
+        $upgrade(Facility::Glasshouse);
+        $upgrade(Facility::Glasshouse);
+        self::assertSame([], $this->unlocked());
+
+        $upgrade(Facility::Glasshouse);
+        self::assertSame(['glasshouse_5'], $this->unlocked());
+    }
+
+    public function testCollectingTheThousandthDewUnlocksMorningDew(): void
+    {
+        $this->credit(998);
+        $this->collect('polytrichum-commune');
+        self::getContainer()->get(PlantMossHandler::class)(new PlantMoss(1, 'polytrichum-commune'));
+        self::freezeAt('2026-10-06 09:00 UTC');
+        $collect = self::getContainer()->get(CollectDewHandler::class);
+
+        self::assertSame([], $this->unlocked());
+        $collect();
+
+        self::assertSame(['dew_1000'], $this->unlocked());
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function unlocked(): array
+    {
+        return array_map(
+            static fn (UnlockedAchievement $achievement): string => $achievement->achievement(),
+            self::getContainer()->get(UnlockedAchievementRepository::class)->of($this->user),
+        );
     }
 
     private function greenhouse(): GreenhouseView

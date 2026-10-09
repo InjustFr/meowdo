@@ -6,13 +6,16 @@ namespace App\Tests\Unit\Domain\Gamification\Achievement;
 
 use App\Domain\Gamification\Achievement\AchievementRule;
 use App\Domain\Gamification\Achievement\PlayerStats;
+use App\Domain\Gamification\Achievement\Rule\FieldTrip;
 use App\Domain\Gamification\Achievement\Rule\FirstDrop;
 use App\Domain\Gamification\Achievement\Rule\FiveHundredTasks;
+use App\Domain\Gamification\Achievement\Rule\GrowingGlasshouse;
 use App\Domain\Gamification\Achievement\Rule\HundredTasks;
 use App\Domain\Gamification\Achievement\Rule\LevelFive;
 use App\Domain\Gamification\Achievement\Rule\LevelTen;
 use App\Domain\Gamification\Achievement\Rule\MatrixSorter;
 use App\Domain\Gamification\Achievement\Rule\MonthStreak;
+use App\Domain\Gamification\Achievement\Rule\MorningDew;
 use App\Domain\Gamification\Achievement\Rule\PatientGardener;
 use App\Domain\Gamification\Achievement\Rule\TenTasks;
 use App\Domain\Gamification\Achievement\Rule\TenWaterings;
@@ -52,6 +55,9 @@ final class AchievementRuleTest extends TestCase
         yield 'month streak' => [new MonthStreak(), 'streak_30', static fn (int $days): PlayerStats => new PlayerStats(bestStreak: $days), 30];
         yield 'level five' => [new LevelFive(), 'level_5', static fn (int $level): PlayerStats => new PlayerStats(level: $level), 5];
         yield 'level ten' => [new LevelTen(), 'level_10', static fn (int $level): PlayerStats => new PlayerStats(level: $level), 10];
+        yield 'field trip' => [new FieldTrip(), 'field_trip', static fn (int $count): PlayerStats => new PlayerStats(expeditions: $count), 1];
+        yield 'morning dew' => [new MorningDew(), 'dew_1000', static fn (int $dew): PlayerStats => new PlayerStats(dewGathered: $dew), 1_000];
+        yield 'growing glasshouse' => [new GrowingGlasshouse(), 'glasshouse_5', static fn (int $level): PlayerStats => new PlayerStats(glasshouseLevel: $level), 5];
     }
 
     public function testCompletedTasksDoNotCountForOtherRules(): void
@@ -61,5 +67,15 @@ final class AchievementRuleTest extends TestCase
         self::assertFalse(new TenWaterings()->isMetBy($stats));
         self::assertFalse(new WeekStreak()->isMetBy($stats));
         self::assertFalse(new LevelFive()->isMetBy($stats));
+        self::assertFalse(new MorningDew()->isMetBy($stats));
+    }
+
+    public function testANewGreenhouseUnlocksNothing(): void
+    {
+        $stats = new PlayerStats();
+
+        self::assertFalse(new FieldTrip()->isMetBy($stats));
+        self::assertFalse(new MorningDew()->isMetBy($stats));
+        self::assertFalse(new GrowingGlasshouse()->isMetBy($stats));
     }
 }

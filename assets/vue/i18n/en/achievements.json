@@ -43,6 +43,18 @@
         "title": "Tidy patch",
         "description": "Place 20 tasks in the matrix."
     },
+    "field_trip": {
+        "title": "Field trip",
+        "description": "Come back from your first expedition with a new moss."
+    },
+    "dew_1000": {
+        "title": "Morning dew",
+        "description": "Gather 1,000 dew in the greenhouse."
+    },
+    "glasshouse_5": {
+        "title": "Growing glasshouse",
+        "description": "Raise the glasshouse to level 5."
+    },
     "level_5": {
         "title": "Well rooted",
         "description": "Reach level 5."
